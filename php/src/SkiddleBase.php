@@ -97,6 +97,23 @@ class SkiddleBase
     }
 
     /**
+     * Alias for clearCond to support clearConditions()
+     */
+    public function clearConditions()
+    {
+        $this->clearCond();
+    }
+
+    /**
+     * Retrieves the current conditions map
+     * @return array
+     */
+    public function getConditions()
+    {
+        return $this->conditions;
+    }
+
+    /**
      * For logManyListings, there needs to be certain array keys which the API doesn't return
      * THIS FUNCTION SHOULDN'T GO OUT OF SKIDDLE, IT IS JUST FOR US
      * @param array $data The data to parse through.  Should be a result set from a SkiddleRequest::call()

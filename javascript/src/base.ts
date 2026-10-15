@@ -61,9 +61,16 @@ export class SkiddleBase {
   /**
    * Resets all registered query conditions.
    */
-  public clearCond(): this {
+  public clearConditions(): this {
     this.conditions = {};
     return this;
+  }
+
+  /**
+   * Resets all registered query conditions (alias for clearConditions).
+   */
+  public clearCond(): this {
+    return this.clearConditions();
   }
 
   /**

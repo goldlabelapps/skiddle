@@ -3,6 +3,7 @@ import { parseArgs, MAIN_MENU_OPTIONS } from '../src/index.js';
 import { checkEnv } from '../src/env.js';
 import { colors, banner, VERSION, getMonorepoVersion } from '../src/terminal.js';
 import { SCENARIO_DEFS } from '../src/commands/scenarios.js';
+import { generateCommitMessage, parseFileLine, categorizeFile } from '../src/commands/git.js';
 
 describe('CLI Main Menu Options', () => {
   it('includes expected core options in main menu', () => {
@@ -104,3 +105,69 @@ describe('Classic Scenarios Parity', () => {
     expect(ids).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 });
+
+describe('Git Auto Commit Message Generator', () => {
+  it('parses porcelain lines and file paths', () => {
+    expect(parseFileLine(' M cli/src/commands/git.js')).toEqual({
+      status: 'M',
+      path: 'cli/src/commands/git.js',
+    });
+    expect(parseFileLine('?? javascript/src/newfile.ts')).toEqual({
+      status: '??',
+      path: 'javascript/src/newfile.ts',
+    });
+    expect(parseFileLine('R  old.js -> new.js')).toEqual({
+      status: 'R',
+      path: 'new.js',
+    });
+  });
+
+  it('categorizes files into areas and modules', () => {
+    expect(categorizeFile('cli/src/commands/git.js')).toMatchObject({
+      area: 'cli',
+      module: 'git',
+      isTest: false,
+      isDoc: false,
+    });
+    expect(categorizeFile('php/src/SkiddleEvents.php')).toMatchObject({
+      area: 'php',
+      module: 'events',
+      isTest: false,
+      isDoc: false,
+    });
+    expect(categorizeFile('javascript/tests/sdk.test.ts')).toMatchObject({
+      area: 'js',
+      module: 'sdk',
+      isTest: true,
+      isDoc: false,
+    });
+    expect(categorizeFile('docs/TRANSCRIPT.md')).toMatchObject({
+      area: 'docs',
+      module: 'transcript',
+      isTest: false,
+      isDoc: true,
+    });
+  });
+
+  it('auto-generates relevant conventional commit titles and messages', () => {
+    const res1 = generateCommitMessage([' M cli/src/commands/git.js']);
+    expect(res1.title).toBe('feat(cli): update git functionality');
+    expect(res1.body).toContain('• M cli/src/commands/git.js');
+
+    const res2 = generateCommitMessage([' M docs/README.md']);
+    expect(res2.title).toBe('docs: update documentation');
+
+    const res3 = generateCommitMessage([' M javascript/tests/sdk.test.ts']);
+    expect(res3.title).toBe('test(js): test sdk functionality');
+
+    const res4 = generateCommitMessage(['?? cli/src/commands/benchmark.js']);
+    expect(res4.title).toBe('feat(cli): add benchmark functionality');
+
+    const res5 = generateCommitMessage([' M php/src/SkiddleEvents.php', ' M javascript/src/events.ts']);
+    expect(res5.title).toBe('feat(sdk): update events functionality');
+
+    const resEmpty = generateCommitMessage([]);
+    expect(resEmpty.title).toBe('chore: update repository files');
+  });
+});
+

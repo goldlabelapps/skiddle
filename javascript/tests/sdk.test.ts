@@ -157,6 +157,11 @@ describe('SkiddleBase & Conditions', () => {
 
     base.clearCond();
     expect(base.getConditions()).toEqual({});
+
+    base.addCond('limit', 10);
+    expect(base.getConditions()).toEqual({ limit: 10 });
+    base.clearConditions();
+    expect(base.getConditions()).toEqual({});
   });
 
   it('throws an exception when trying to delete a non-existent condition', () => {

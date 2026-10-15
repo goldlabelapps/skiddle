@@ -53,7 +53,7 @@ export const VERSION = getMonorepoVersion();
 
 export const banner = `
 ${colors.gold}  ╭───────────────────────────────────────────────────────────────────╮${colors.reset}
-${colors.gold}  │${colors.reset}  ${colors.bold}${colors.brightWhite}NX° Skiddle${colors.reset} ${colors.dim}${colors.cyan}v${VERSION}${colors.reset} ${colors.gold}•${colors.reset} ${colors.cyan}Developer Experience Toolkit${colors.reset}             ${colors.gold}│${colors.reset}
+${colors.gold}  │${colors.reset}  ${colors.bold}${colors.brightWhite}NX° Skiddle${colors.reset} ${colors.dim}${colors.cyan}v${VERSION}${colors.reset} ${colors.gold}•${colors.reset} ${colors.cyan}Developer Experience Toolkit${colors.reset}             ${colors.gold}   │${colors.reset}
 ${colors.gold}  ╰───────────────────────────────────────────────────────────────────╯${colors.reset}
 `;
 
