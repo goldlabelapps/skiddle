@@ -110,8 +110,8 @@ You are now ready to make calls to the API.  You can now technically make a call
 To add a condition, you just need to pass the field and value in the ```addCond()``` method:
 
 ```php
-$events->addCond('eventcode','CLUB');
-$events->addCond('ticketsavailable','1);
+$events->addCond('eventcode', 'CLUB');
+$events->addCond('ticketsavailable', '1');
 ```
 
 Likewise, to remove conditions, just use the ```delCond()``` method, using only the field name:
@@ -147,7 +147,7 @@ var_dump($listing);
 
 # Things to note<a name="notes"></a>
 
-1.  When querying eventcodes, try to keeo values uppercase.  Passing CLUB will work, whereas passing club may return an error
+1.  When querying eventcodes, try to keep values uppercase.  Passing CLUB will work, whereas passing club may return an error
 2.  When using the minDate and maxDate conditions, timestamps need to be in either `Y-m-d` or `Y-m-dTH:i:s` format.
 3.  Don't like objects?  You can get results in array format by passing a boolean in ```getListings()```:
     ```php
@@ -161,7 +161,7 @@ var_dump($listing);
 
 # License<a name="license"></a>
 
-This SDK is licensed under the GNU General Public License v3.0.  [View the license here](LICENSE)
+This SDK is licensed under the GNU General Public License v3.0.  [View the license here](../LICENSE)
 
 ---
 
