@@ -95,4 +95,21 @@
   - Configured `allowBuilds` for `esbuild` to support modern pnpm build script security.
   - Updated verification commands and documentation across `README.md`, `AGENTS.md`, docs, skills, and prompt helpers.
 
+---
+
+### Step 10: Skiddle API v3 Compatibility & Pagination Modernization
+- **Context & Diagnosis:**
+  - Executing scenarios and replay tests revealed repeated failures on the API v3 events endpoint (`/v3/events/instant-search/`):
+    `Parameters 'limit' and 'offset' have been deprecated use page[number] and page[size] instead`.
+  - Investigation revealed that when the PHP SDK previously switched `Events::getListings()` from API v1 to API v3, `transformRequestKeys` only translated `api_key` $\rightarrow$ `apiKey`, leaving legacy pagination (`limit`/`offset`) and parameter names (`eventcode`, `ticketsavailable`, `b`, `venueid`) untranslated.
+  - PHP 8.2+ runtime deprecations were also present due to undeclared dynamic properties (`$debug`, `$api_key`, `$dev_mode`, `$request`, `$conditions`, `$session`).
+- **Action & Dual-SDK Implementation:**
+  - **Pagination Normalization:** Enhanced `transformRequestKeys()` in both `php/src/SkiddleRequest.php` and `javascript/src/request.ts` to transparently map `limit` $\rightarrow$ `page[size]`, compute `page[number]` from `offset` (`floor(offset / pageSize) + 1`), and omit deprecated `limit`/`offset` keys from v3 requests.
+  - **Parameter Normalization:** Remapped legacy parameters for API v3 (`eventcode` $\rightarrow$ `eventCode` with uppercase enforcement, `tickets`/`ticketsavailable` $\rightarrow$ `ticketsAvailable`, `b` $\rightarrow$ `brandId`, `venueid`/`venueId` $\rightarrow$ `venueIds`, and filtered unsupported `order=random`).
+  - **PHP 8.2+ Hardening:** Explicitly typed/declared class properties across `SkiddleSession`, `SkiddleRequest`, and `SkiddleBase`, resolving all dynamic property deprecations, and ensured safe API key masking in dev-mode logs.
+  - **CLI Scenarios Update:** Updated `cli/src/commands/scenarios.js` to recognize both API v3 response format (`res.data`) and legacy v1 format (`res.results`).
+  - **Unit & Live Verification:** Updated Vitest suite (`javascript/tests/sdk.test.ts`), verified clean TypeScript checks (`pnpm typecheck`), and re-executed all 10 CLI scenarios: **10/10 scenarios passed successfully**.
+- **Reference Doc:** [08-api-v3-pagination-and-compatibility.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/08-api-v3-pagination-and-compatibility.md)
+
+
 

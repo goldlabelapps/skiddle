@@ -166,6 +166,9 @@ export class SkiddleBase {
     if (args.eventCode && typeof args.eventCode === 'string') {
       args.eventCode = args.eventCode.toUpperCase();
     }
+    if (args.eventcode && typeof args.eventcode === 'string') {
+      args.eventcode = args.eventcode.toUpperCase();
+    }
 
     // Attach API key
     args.api_key = this.session.apiKey;

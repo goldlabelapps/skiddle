@@ -147,7 +147,9 @@ export async function runScenariosCommand(idArg, options = {}) {
     try {
       const res = await events.getListings();
       const elapsed = Date.now() - t0;
-      const count = Array.isArray(res.results) ? res.results.length : 0;
+      const count = Array.isArray(res.results)
+        ? res.results.length
+        : (Array.isArray(res.data) ? res.data.length : 0);
       results.push({ id: def.id, title: def.title, ok: true, count, elapsed });
       console.log(`     ${colors.brightGreen}✔${colors.reset} Passed (${elapsed}ms) — Returned ${count} event(s)`);
     } catch (err) {

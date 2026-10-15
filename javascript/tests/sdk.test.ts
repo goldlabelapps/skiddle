@@ -43,18 +43,24 @@ describe('SkiddleSession', () => {
 });
 
 describe('SkiddleRequest', () => {
-  it('correctly renames keys for API v3 in transformRequestKeys', () => {
+  it('correctly renames keys and translates deprecated limit/offset for API v3 in transformRequestKeys', () => {
     const request = new SkiddleRequest();
     const transformed = request.transformRequestKeys({
       api_key: 'abc',
       keyword: 'Warehouse',
       limit: 10,
+      offset: 20,
+      eventcode: 'fest',
+      ticketsavailable: 1,
     });
 
     expect(transformed).toEqual({
       apiKey: 'abc',
       keyword: 'Warehouse',
-      limit: 10,
+      'page[size]': 10,
+      'page[number]': 3,
+      eventCode: 'FEST',
+      ticketsAvailable: 1,
     });
   });
 

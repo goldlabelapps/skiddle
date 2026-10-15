@@ -41,19 +41,54 @@ export class SkiddleRequest {
   }
 
   /**
-   * Updates casing of query keys for API v3 compatibility.
-   * Mirrors PHP transformRequestKeys(): 'api_key' => 'apiKey'
+   * Updates casing of query keys and translates deprecated parameters for API v3 compatibility.
+   * Mirrors PHP transformRequestKeys().
    */
   public transformRequestKeys(requestData: Record<string, unknown>): Record<string, unknown> {
     const renameKeys: Record<string, string> = {
       api_key: 'apiKey',
+      eventcode: 'eventCode',
+      ticketsavailable: 'ticketsAvailable',
+      tickets: 'ticketsAvailable',
+      b: 'brandId',
+      venueid: 'venueIds',
+      venueId: 'venueIds',
     };
 
     const newArgs: Record<string, unknown> = {};
+    let limit: unknown = undefined;
+    let offset: unknown = undefined;
+
     for (const [key, val] of Object.entries(requestData)) {
+      if (key === 'limit') {
+        limit = val;
+        continue;
+      }
+      if (key === 'offset') {
+        offset = val;
+        continue;
+      }
+      if (key === 'order' && typeof val === 'string' && val.toLowerCase() === 'random') {
+        // 'random' is deprecated / unsupported in API v3; omitting allows default ordering
+        continue;
+      }
       const targetKey = renameKeys[key] || key;
-      newArgs[targetKey] = val;
+      newArgs[targetKey] =
+        targetKey === 'eventCode' && typeof val === 'string' ? val.toUpperCase() : val;
     }
+
+    // Translate deprecated limit / offset to page[size] and page[number] for API v3
+    if (limit !== undefined && newArgs['page[size]'] === undefined) {
+      newArgs['page[size]'] = limit;
+    }
+
+    if (offset !== undefined && newArgs['page[number]'] === undefined) {
+      const parsedLimit = Number(limit);
+      const pageSize = !isNaN(parsedLimit) && parsedLimit > 0 ? parsedLimit : 20;
+      const parsedOffset = Number(offset) || 0;
+      newArgs['page[number]'] = Math.floor(parsedOffset / pageSize) + 1;
+    }
+
     return newArgs;
   }
 

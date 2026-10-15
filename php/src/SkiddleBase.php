@@ -11,6 +11,20 @@ namespace SkiddleSDK;
 
 class SkiddleBase
 {
+    /**
+     * @var SkiddleRequest
+     */
+    public $request;
+
+    /**
+     * @var array
+     */
+    public $conditions = [];
+
+    /**
+     * @var SkiddleSession
+     */
+    public $session;
 
     /**
      * Basic constructor.  Here we basically initiate the SkiddleRequest class if it doesn't exist already
@@ -172,6 +186,9 @@ class SkiddleBase
         //QUIRK: API expects eventcode to be uppercase
         if (isset($args['eventCode'])) {
             $args['eventCode'] = strtoupper($args['eventCode']);
+        }
+        if (isset($args['eventcode'])) {
+            $args['eventcode'] = strtoupper($args['eventcode']);
         }
         //append the api key to the arguments
         $args['api_key'] = $this->session->api_key;
