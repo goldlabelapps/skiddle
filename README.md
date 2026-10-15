@@ -1,170 +1,104 @@
-# Skiddle PHP SDK
+# Skiddle TypeScript SDK & NX° Developer Experience CLI
+
+> **Interview Experiment & Porting Project for Skiddle Ltd**  
+> *Role: Front End React Developer*  
+> *Interview Panel: Adam Chandler (Front-End) & Chris Seaton (Back-End Team Leader)*
 
 ---
 
-The purpose of the SDK is to allow for easy access to the Skiddle API.  This will allow developers to easily communicate with the Skiddle API to pull through information about events, artists and venues
+## 📖 Overview
+
+This repository contains a modern **TypeScript / Node.js** port of the official Skiddle PHP SDK, accompanied by **NX° Developer Experience**—a specialized developer CLI for testing, querying, and benchmarking the Skiddle API.
+
+The entire step-by-step engineering process is logged chronologically in the [`/docs`](./docs) directory as a transcript for the Skiddle engineering team.
+
+### What’s Inside:
+1. **TypeScript SDK (`/src`)**: Zero-bloat, strongly typed SDK with dual ESM and CommonJS support, native `fetch`, fluent condition builders, and Skiddle API v1 & v3 compatibility.
+2. **NX° Developer Experience CLI (`/cli`)**: Terminal utility to inspect live events, test credentials, run legacy test scenarios, and benchmark endpoint latency.
+3. **Legacy PHP SDK (`/php`)**: The original PHP SDK and tests preserved cleanly in an isolated directory.
+4. **Documentation Transcript (`/docs`)**: Step-by-step logs and architectural rationale.
 
 ---
 
-## Table of contents
+## 🚀 Quickstart
 
-1. [Requirements](#requirements)
-2. [Installation](#installation)
-    1. [Download the SDK](#download)
-    2. [Get an API Key](#apikey)
-    3. [Integrate](#integrate)
-3. [Examples](#examples)
-    1. [Authenticate Yourself](#authenticate)
-    2. [Get the class Ready](#getready)
-    3. [Add and Remove conditions](#addremove)
-    4. [Get results](#results)
-    5. [Get a single result](#resultsingle)
-4. [Things to note](#notes)
-5. [License](#license)
-6. [Contact](#contact)
-
----
-
-## Requirements<a name="requirements"></a>
-
-The API requires PHP > 5.4.0, due to using autoloading and new array constructs.  It also requires cURL to be enabled, which is normally done by default in PHP, but best to double check.
-
-To connect to the API, TLS v1.2 or above is required. This has been supported by Curl using OpenSSL since version 1.0.1
-
----
-
-## Installation<a name="installation"></a>
-
-### Download the SDK<a name="download"></a>
-
-There are a couple of ways to get the SDK integrated to your project, the easiest way is probably via composer:
-
-````
-"require": {
-    "skiddle/skiddle-php-sdk": "1.0.0"
-}
-````
-
-You can also clone the git repository
-````
-git clone https://github.com/Skiddle/skiddle-php-sdk
-````
-
-Or, simply download the zip [here](https://github.com/Skiddle/skiddle-php-sdk/archive/master.zip) and unzip to your project.
-
-If using either of the last two methods, you will need to include the ````autoloader.php```` file in your project to load everything up
-
-### Get an API Key<a name="apikey"></a>
-
-Getting an API key is simple and free, simply go to [https://www.skiddle.com/api/join.php](https://www.skiddle.com/api/join.php) to get one now
-
-### Integrate<a name="integrate"></a>
-
-Once you have the code and an API key, you are ready to get started!!
-
----
-
-## Examples<a name="examples"></a>
-
-You can view code samples in the ````/demo/```` directory included in the repo
-
-### Authenticate yourself<a name="authenticate"></a>
-
-The first step is to simply authenticate yourself - just tell the SDK what your API Key is
-
-```php
-try {
-    $session = new SkiddleSDK\SkiddleSession(['api_key'=>'APIKEYGOESHERE']);
-} catch (SkiddleSDK\SkiddleException $e) {
-    echo $e->getMessage();
-    exit();
-}
+### 1. Install Dependencies
+```bash
+npm install
 ```
 
-If you don't want to store this in your code, you can add it to your server environment as ```SKIDDLE_API_KEY``` and the SDK will read from there.
+### 2. Build the Package
+```bash
+npm run build
+```
+Generates dual ESM (`dist/index.js`), CJS (`dist/index.cjs`), and TypeScript declarations (`dist/index.d.ts`).
+
+### 3. Run Automated Tests
+```bash
+npm test
+```
+Executes the Vitest test suite (14 passing tests in < 400ms).
 
 ---
 
-### Get the class Ready<a name="getready"></a>
+## 🛠 Using the SDK
 
-After you have successfully authenticated yourself, you then need to pass your credentials to the revelant class that you want to use.  This combines your authentication info with the endpoint necessary to make the calls.
+```typescript
+import { createClient } from 'skiddle-sdk';
 
-To do this, simply call the setSession() method of the class you wish to use:
+// Automatically picks up SKIDDLE_API_KEY from environment or config
+const client = createClient({ apiKey: 'YOUR_API_KEY' });
 
-```php
-$events = new SkiddleSDK\Events;
-try {
-    $events->setSession($session);
-} catch (SkiddleSDK\SkiddleException $e) {
-    echo $e->getMessage();
-    exit();
-}
+// Fluent filtering for events
+client.events
+  .addCond('keyword', 'Creamfields')
+  .addCond('limit', 5);
+
+const response = await client.events.getListings();
+console.log(response.results);
 ```
 
 ---
 
-### Add and Remove conditions<a name="addremove"></a>
+## ⚡ NX° Developer Experience CLI
 
-You are now ready to make calls to the API.  You can now technically make a call to return listings, however the Skiddle SDK allows you to easily add or remove conditions to make your query specific to your needs.
+Launch the interactive CLI or run commands directly:
 
-To add a condition, you just need to pass the field and value in the ```addCond()``` method:
+```bash
+# Launch interactive terminal UI
+npm run cli -- interactive
 
-```php
-$events->addCond('eventcode','CLUB');
-$events->addCond('ticketsavailable','1);
+# Run health diagnostics & verify API key
+npm run cli -- doctor
+
+# Search live events
+npm run cli -- events "Warehouse Project" --limit 5
+
+# Inspect a single event
+npm run cli -- event 4040
+
+# Run the 10 classic test scenarios from the legacy PHP load test
+npm run cli -- scenarios 1
+
+# Run performance & latency benchmark
+npm run cli -- benchmark --concurrency 5 --requests 20
 ```
-
-Likewise, to remove conditions, just use the ```delCond()``` method, using only the field name:
-
-```php
-$events->delCond('ticketsavailable');
-```
-
-
-### Get Results<a name="results"></a>
-
-Once you have built up your filter list, you can then get your listings!
-
-```php
-$listings = $events->getListings();
-
-foreach($listings->results as $result) {...}
-```
-
-For a full list of arguments you can filter by, [have a look here](https://github.com/Skiddle/web-api/)
-
-### Get a single result<a name="resultsingle"></a>
-
-If you need to get a single result, you can call `getListing()`, without having to build an array of arguments - just pass the relevant ID
-
-For example:
-
-```php
-$listing = $events->getListing(12345);
-
-var_dump($listing);
-```
-
-# Things to note<a name="notes"></a>
-
-1.  When querying eventcodes, try to keeo values uppercase.  Passing CLUB will work, whereas passing club may return an error
-2.  When using the minDate and maxDate conditions, timestamps need to be in either `Y-m-d` or `Y-m-dTH:i:s` format.
-3.  Don't like objects?  You can get results in array format by passing a boolean in ```getListings()```:
-    ```php
-    $listings = $events->getListings(true);
-
-    foreach($listings['results'] as $result) {...}
-    ```
-4.  Check back for more
 
 ---
 
-# License<a name="license"></a>
+## 📚 Migration Transcript & Architecture Docs
 
-This SDK is licensed under the GNU General Public License v3.0.  [View the license here](LICENSE)
+Detailed documentation for the interview discussion is located in [`/docs`](./docs):
+- [`docs/TRANSCRIPT.md`](./docs/TRANSCRIPT.md) - Chronological log of steps and decisions
+- [`docs/01-project-restructure.md`](./docs/01-project-restructure.md) - Isolating legacy PHP code
+- [`docs/02-package-and-toolchain.md`](./docs/02-package-and-toolchain.md) - Dual ESM/CJS build pipeline & tooling
+- [`docs/03-sdk-port-architecture.md`](./docs/03-sdk-port-architecture.md) - TypeScript architecture, error normalization, and API v3 parity
+- [`docs/04-testing-and-verification.md`](./docs/04-testing-and-verification.md) - Vitest test suite breakdown
+- [`docs/05-nx-developer-experience-cli.md`](./docs/05-nx-developer-experience-cli.md) - CLI features and command reference
+- [`docs/06-interview-discussion-guide.md`](./docs/06-interview-discussion-guide.md) - Talking points for Adam Chandler & Chris Seaton
 
 ---
 
-# Contact<a name="contact"></a>
+## 📄 License
 
-Got any questions, or ways to improve the SDK?  Feel free to log an issue, or pull and fork as much as you want!
+MIT. Original PHP codebase copyright Skiddle Ltd. Modern TypeScript port & NX° CLI created for technical demonstration.

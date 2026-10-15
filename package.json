@@ -1,0 +1,61 @@
+{
+  "name": "skiddle-sdk",
+  "version": "1.0.0",
+  "description": "Modern TypeScript & JavaScript SDK for the Skiddle API with NX° Developer Experience CLI",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "nx": "./cli/bin/nx.js",
+    "skiddle-nx": "./cli/bin/nx.js"
+  },
+  "files": [
+    "dist",
+    "cli",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "cli": "node ./cli/bin/nx.js"
+  },
+  "keywords": [
+    "skiddle",
+    "events",
+    "ticketing",
+    "api",
+    "sdk",
+    "typescript"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
