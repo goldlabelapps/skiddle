@@ -1,5 +1,5 @@
-import pc from 'picocolors';
 import { SkiddleSession, Events, SkiddleException } from 'skiddle-sdk';
+import { log, colors, banner, promptSelect, playSound } from '../terminal.js';
 
 export const SCENARIO_DEFS = [
   {
@@ -61,49 +61,115 @@ export const SCENARIO_DEFS = [
       events.addCond('limit', '5');
     },
   },
+  {
+    id: 8,
+    title: 'Festivals in the UK',
+    setup: (events) => {
+      events.addCond('eventcode', 'FEST');
+      events.addCond('limit', '5');
+    },
+  },
+  {
+    id: 9,
+    title: 'Comedy events in London',
+    setup: (events) => {
+      events.addCond('eventcode', 'COMEDY');
+      events.addCond('latitude', '51.5074');
+      events.addCond('longitude', '-0.1278');
+      events.addCond('radius', '15');
+      events.addCond('limit', '5');
+    },
+  },
+  {
+    id: 10,
+    title: 'Live Music in Glasgow',
+    setup: (events) => {
+      events.addCond('eventcode', 'LIVE');
+      events.addCond('latitude', '55.8642');
+      events.addCond('longitude', '-4.2518');
+      events.addCond('radius', '15');
+      events.addCond('limit', '5');
+    },
+  },
 ];
 
-export async function runScenariosCommand(scenarioId, options = {}) {
+export async function runScenariosCommand(idArg, options = {}) {
   const apiKey = options.key || process.env.SKIDDLE_API_KEY;
   if (!apiKey) {
-    console.error(pc.red('Error: Skiddle API key is required. Set SKIDDLE_API_KEY or use --key <apiKey>'));
-    return;
+    log.error('Skiddle API key is required. Set SKIDDLE_API_KEY or use --key <apiKey>');
+    return false;
+  }
+
+  let selectedId = idArg ? parseInt(idArg, 10) : null;
+
+  // Interactive Scenario Selection
+  if (!selectedId && options.interactive) {
+    const menuOptions = [
+      { label: 'Run All 10 Reference Scenarios', value: 'all', desc: 'full cross-SDK PHP loadTest parity replay' },
+      ...SCENARIO_DEFS.map((s) => ({
+        label: `Scenario ${s.id}: ${s.title}`,
+        value: String(s.id),
+      })),
+    ];
+
+    const choice = await promptSelect('Scenarios Replay Menu', menuOptions);
+    if (choice === 'exit') return { escaped: true };
+    if (choice !== 'all') {
+      selectedId = parseInt(choice, 10);
+    }
   }
 
   const session = new SkiddleSession({ apiKey });
-  const targets = scenarioId
-    ? SCENARIO_DEFS.filter((s) => s.id === Number(scenarioId))
+  const targets = selectedId
+    ? SCENARIO_DEFS.filter((s) => s.id === selectedId)
     : SCENARIO_DEFS;
 
   if (targets.length === 0) {
-    console.error(pc.red(`Scenario #${scenarioId} not found. Available: 1 to ${SCENARIO_DEFS.length}`));
-    return;
+    log.error(`Scenario ID ${selectedId} not found (must be 1-${SCENARIO_DEFS.length})`);
+    return false;
   }
 
-  console.log(pc.bold(`\nExecuting ${targets.length} Skiddle Test Scenario(s) via TypeScript SDK:\n`));
+  log.info(`Executing ${targets.length} test scenario(s) (PHP LoadTest Parity)...`);
+  log.divider();
 
-  for (const s of targets) {
+  const results = [];
+  const tTotalStart = Date.now();
+
+  for (let i = 0; i < targets.length; i++) {
+    const def = targets[i];
+    log.step(i + 1, targets.length, `${colors.bold}${def.title}${colors.reset}`);
+
     const events = new Events();
     events.setSession(session);
-    s.setup(events);
+    def.setup(events);
 
-    const conditions = events.getConditions();
-    const condStr = Object.entries(conditions)
-      .map(([k, v]) => `${k}=${v}`)
-      .join(', ');
-
-    process.stdout.write(`  [Scenario #${s.id}] ${pc.bold(s.title)}\n`);
-    process.stdout.write(`    Filters: ${pc.gray(condStr)}\n`);
-
+    const t0 = Date.now();
     try {
-      const t0 = Date.now();
       const res = await events.getListings();
       const elapsed = Date.now() - t0;
       const count = Array.isArray(res.results) ? res.results.length : 0;
-      console.log(`    Result: ${pc.green('✔ SUCCESS')} (${count} items, ${elapsed}ms)\n`);
+      results.push({ id: def.id, title: def.title, ok: true, count, elapsed });
+      console.log(`     ${colors.brightGreen}✔${colors.reset} Passed (${elapsed}ms) — Returned ${count} event(s)`);
     } catch (err) {
-      const msg = err instanceof SkiddleException ? `[Status ${err.code}] ${err.message}` : (err.message || String(err));
-      console.log(`    Result: ${pc.red('✖ FAILED')} (${msg})\n`);
+      const elapsed = Date.now() - t0;
+      const msg = err instanceof SkiddleException ? err.message : (err.message || String(err));
+      results.push({ id: def.id, title: def.title, ok: false, error: msg, elapsed });
+      console.log(`     ${colors.brightRed}✖${colors.reset} Failed (${elapsed}ms) — ${msg}`);
     }
+  }
+
+  const totalElapsed = Date.now() - tTotalStart;
+  const passedCount = results.filter((r) => r.ok).length;
+  const failedCount = results.length - passedCount;
+
+  log.divider();
+  if (failedCount === 0) {
+    log.success(`All ${passedCount} scenarios passed successfully in ${totalElapsed}ms.`);
+    playSound('pass');
+    return true;
+  } else {
+    log.warn(`${passedCount}/${results.length} scenarios passed, ${failedCount} failed in ${totalElapsed}ms.`);
+    playSound('fail');
+    return false;
   }
 }
