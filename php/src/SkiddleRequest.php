@@ -39,6 +39,11 @@ class SkiddleRequest
     public $apiVersion = 1;
 
     /**
+     * @var string Debug log HTML
+     */
+    public $debug;
+
+    /**
      * Basic constructor
      */
     public function __construct()
@@ -56,27 +61,59 @@ class SkiddleRequest
     }
 
     /**
-     * Updates the casing of names in request data
+     * Updates casing of names and translates deprecated parameters for API v3
      * @param array  $requestData request keys to replace
      * @return array The formatted results
      */
     public function transformRequestKeys(array $requestData)
     {
-
         $renameKeys = [
-            'api_key' => 'apiKey'
+            'api_key' => 'apiKey',
+            'eventcode' => 'eventCode',
+            'ticketsavailable' => 'ticketsAvailable',
+            'tickets' => 'ticketsAvailable',
+            'b' => 'brandId',
+            'venueid' => 'venueIds',
+            'venueId' => 'venueIds',
         ];
 
         $newArgs = [];
+        $limit = null;
+        $offset = null;
+
         foreach ($requestData as $key => $val) {
+            if ($key === 'limit') {
+                $limit = $val;
+                continue;
+            }
+            if ($key === 'offset') {
+                $offset = $val;
+                continue;
+            }
+            if ($key === 'order' && is_string($val) && strtolower($val) === 'random') {
+                // 'random' is deprecated / unsupported in API v3; omitting allows default ordering
+                continue;
+            }
             if (array_key_exists($key, $renameKeys)) {
                 $key = $renameKeys[$key];
+            }
+            if ($key === 'eventCode' && is_string($val)) {
+                $val = strtoupper($val);
             }
             $newArgs[$key] = $val;
         }
 
-        return $newArgs;
+        // Translate deprecated limit / offset to page[size] and page[number] for API v3
+        if ($limit !== null && !isset($newArgs['page[size]'])) {
+            $newArgs['page[size]'] = $limit;
+        }
 
+        if ($offset !== null && !isset($newArgs['page[number]'])) {
+            $pageSize = ($limit !== null && (int)$limit > 0) ? (int)$limit : 20;
+            $newArgs['page[number]'] = intdiv((int)$offset, $pageSize) + 1;
+        }
+
+        return $newArgs;
     }
 
     /**
@@ -135,11 +172,14 @@ class SkiddleRequest
         $options[CURLOPT_URL] .= $url;
 
         if ($this->dev_mode) {
+            $apiKeyToMask = isset($args['apiKey']) ? $args['apiKey'] : (isset($args['api_key']) ? $args['api_key'] : '');
             $start = strtotime('now');
             $this->debug = '<pre>Debug info</pre>';
             $this->debug = '<pre>Call made at ' . date('Y-m-d H:i:s', $start) . '</pre>';
             $debugurl = $options[CURLOPT_URL];
-            $debugurl = str_replace($args['api_key'], 'xxxxxxxxxxxxxxxxxx', $debugurl);//Hide the API Key from prying eyes
+            if ($apiKeyToMask) {
+                $debugurl = str_replace($apiKeyToMask, 'xxxxxxxxxxxxxxxxxx', $debugurl);//Hide the API Key from prying eyes
+            }
             $this->debug .= '<pre>URL called: ' . $debugurl . '</pre>';
         }
 
@@ -148,8 +188,13 @@ class SkiddleRequest
         $response = curl_exec($ch);
 
         if ($this->dev_mode) {
+            $apiKeyToMask = isset($args['apiKey']) ? $args['apiKey'] : (isset($args['api_key']) ? $args['api_key'] : '');
             $end = strtotime('now');
-            $this->debug .= '<pre>cURL request info: ' . str_replace($args['api_key'], 'xxxxxxxxxxxxxxxxxx', json_encode(curl_getinfo($ch))) . '</pre>';
+            $infoStr = json_encode(curl_getinfo($ch));
+            if ($apiKeyToMask) {
+                $infoStr = str_replace($apiKeyToMask, 'xxxxxxxxxxxxxxxxxx', $infoStr);
+            }
+            $this->debug .= '<pre>cURL request info: ' . $infoStr . '</pre>';
             $this->debug .= '<pre>Response at ' . date('Y-m-d H:i:s', $end) . '</pre>';
             $this->debug .= '<pre>Time (seconds):' . ($end - $start) . '</pre>';
         }

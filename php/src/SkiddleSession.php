@@ -18,6 +18,16 @@ class SkiddleSession
     const API_KEY_NAME = "SKIDDLE_API_KEY";
 
     /**
+     * @var string User API key
+     */
+    public $api_key;
+
+    /**
+     * @var bool Whether debug / dev mode is enabled
+     */
+    public $dev_mode = false;
+
+    /**
      * Basic constructor.  Here we want to set the API key and any other session based stuff
      * @param array $config The details of the session config. Needs an API key (unless that is in the env)
      * @throws SkiddleException

@@ -1,170 +1,167 @@
-# Skiddle PHP SDK
+# Skiddle SDKs & Developer Toolkit
+
+> **Official & Modern SDKs for the Skiddle Events, Artists & Venues API**  
+> *Providing first-class developer tooling in both PHP and JavaScript / TypeScript, backed by the NX° Developer Experience CLI.*
 
 ---
 
-The purpose of the SDK is to allow for easy access to the Skiddle API.  This will allow developers to easily communicate with the Skiddle API to pull through information about events, artists and venues
+## 🏛 Repository Architecture
 
----
+This polyglot monorepo is managed with **Turborepo** and **pnpm workspaces**:
 
-## Table of contents
-
-1. [Requirements](#requirements)
-2. [Installation](#installation)
-    1. [Download the SDK](#download)
-    2. [Get an API Key](#apikey)
-    3. [Integrate](#integrate)
-3. [Examples](#examples)
-    1. [Authenticate Yourself](#authenticate)
-    2. [Get the class Ready](#getready)
-    3. [Add and Remove conditions](#addremove)
-    4. [Get results](#results)
-    5. [Get a single result](#resultsingle)
-4. [Things to note](#notes)
-5. [License](#license)
-6. [Contact](#contact)
-
----
-
-## Requirements<a name="requirements"></a>
-
-The API requires PHP > 5.4.0, due to using autoloading and new array constructs.  It also requires cURL to be enabled, which is normally done by default in PHP, but best to double check.
-
-To connect to the API, TLS v1.2 or above is required. This has been supported by Curl using OpenSSL since version 1.0.1
-
----
-
-## Installation<a name="installation"></a>
-
-### Download the SDK<a name="download"></a>
-
-There are a couple of ways to get the SDK integrated to your project, the easiest way is probably via composer:
-
-````
-"require": {
-    "skiddle/skiddle-php-sdk": "1.0.0"
-}
-````
-
-You can also clone the git repository
-````
-git clone https://github.com/Skiddle/skiddle-php-sdk
-````
-
-Or, simply download the zip [here](https://github.com/Skiddle/skiddle-php-sdk/archive/master.zip) and unzip to your project.
-
-If using either of the last two methods, you will need to include the ````autoloader.php```` file in your project to load everything up
-
-### Get an API Key<a name="apikey"></a>
-
-Getting an API key is simple and free, simply go to [https://www.skiddle.com/api/join.php](https://www.skiddle.com/api/join.php) to get one now
-
-### Integrate<a name="integrate"></a>
-
-Once you have the code and an API key, you are ready to get started!!
-
----
-
-## Examples<a name="examples"></a>
-
-You can view code samples in the ````/demo/```` directory included in the repo
-
-### Authenticate yourself<a name="authenticate"></a>
-
-The first step is to simply authenticate yourself - just tell the SDK what your API Key is
-
-```php
-try {
-    $session = new SkiddleSDK\SkiddleSession(['api_key'=>'APIKEYGOESHERE']);
-} catch (SkiddleSDK\SkiddleException $e) {
-    echo $e->getMessage();
-    exit();
-}
+```
+skiddle/
+├── apps/
+│   └── web/              # Next.js 15 application consuming @skiddle/sdk
+├── packages/
+│   ├── sdk/              # Modern TypeScript & JavaScript SDK (@skiddle/sdk, zero runtime deps)
+│   └── cli/              # NX° Developer Experience CLI (@skiddle/cli)
+├── php/                  # Official Skiddle PHP SDK (Composer, PSR-4, cURL)
+├── docs/                 # Architectural transcripts & technical documentation
+└── .agents/              # AI pair-programming skills & prompt templates
 ```
 
-If you don't want to store this in your code, you can add it to your server environment as ```SKIDDLE_API_KEY``` and the SDK will read from there.
+| Package / App | Directory | Runtime | Status | Name |
+| :--- | :--- | :--- | :--- | :--- |
+| **Next.js Web App** | [`/apps/web`](./apps/web) | Next.js 15 / React 19 | App | `web` |
+| **JavaScript / TS SDK** | [`/packages/sdk`](./packages/sdk) | Node.js >= 18 / Browsers | First-Class | `@skiddle/sdk` |
+| **NX° Developer CLI** | [`/packages/cli`](./packages/cli) | Node.js >= 18 | Package / CLI | `@skiddle/cli` |
+| **PHP SDK** | [`/php`](./php) | PHP >= 7.4 / 8.x | First-Class | `skiddle/skiddle-php-sdk` |
 
 ---
 
-### Get the class Ready<a name="getready"></a>
+## ⚡ Turborepo Workflow
 
-After you have successfully authenticated yourself, you then need to pass your credentials to the revelant class that you want to use.  This combines your authentication info with the endpoint necessary to make the calls.
+```bash
+# Build all apps & packages with caching
+pnpm build
 
-To do this, simply call the setSession() method of the class you wish to use:
+# Run unit tests across the monorepo
+pnpm test
 
-```php
-$events = new SkiddleSDK\Events;
-try {
-    $events->setSession($session);
-} catch (SkiddleSDK\SkiddleException $e) {
-    echo $e->getMessage();
-    exit();
-}
+# Run typechecking across the monorepo
+pnpm typecheck
+
+# Start development mode
+pnpm dev
 ```
 
 ---
 
-### Add and Remove conditions<a name="addremove"></a>
+## ⚡ JavaScript & TypeScript SDK (`@skiddle/sdk`)
 
-You are now ready to make calls to the API.  You can now technically make a call to return listings, however the Skiddle SDK allows you to easily add or remove conditions to make your query specific to your needs.
+A zero-external-dependency, modern TypeScript and JavaScript client supporting Skiddle API v1 & v3 with native `fetch` and dual ESM/CommonJS distribution.
 
-To add a condition, you just need to pass the field and value in the ```addCond()``` method:
-
-```php
-$events->addCond('eventcode','CLUB');
-$events->addCond('ticketsavailable','1);
+### Installation
+```bash
+pnpm add @skiddle/sdk
+# or in this monorepo workspace:
+pnpm install && pnpm build
 ```
 
-Likewise, to remove conditions, just use the ```delCond()``` method, using only the field name:
+### Quickstart
+```typescript
+import { createClient } from '@skiddle/sdk';
 
-```php
-$events->delCond('ticketsavailable');
+const client = createClient({ apiKey: process.env.SKIDDLE_API_KEY });
+
+// Fluent query builder
+client.events
+  .addCond('keyword', 'Creamfields')
+  .addCond('limit', 5);
+
+const response = await client.events.getListings();
+console.log(response.results);
 ```
 
-
-### Get Results<a name="results"></a>
-
-Once you have built up your filter list, you can then get your listings!
-
-```php
-$listings = $events->getListings();
-
-foreach($listings->results as $result) {...}
+### Verification & Testing
+```bash
+pnpm test          # Run Vitest test suite
+pnpm typecheck     # TypeScript compiler verification
+pnpm build         # Generate ESM, CJS, and .d.ts declaration maps
 ```
 
-For a full list of arguments you can filter by, [have a look here](https://github.com/Skiddle/web-api/)
-
-### Get a single result<a name="resultsingle"></a>
-
-If you need to get a single result, you can call `getListing()`, without having to build an array of arguments - just pass the relevant ID
-
-For example:
-
-```php
-$listing = $events->getListing(12345);
-
-var_dump($listing);
-```
-
-# Things to note<a name="notes"></a>
-
-1.  When querying eventcodes, try to keeo values uppercase.  Passing CLUB will work, whereas passing club may return an error
-2.  When using the minDate and maxDate conditions, timestamps need to be in either `Y-m-d` or `Y-m-dTH:i:s` format.
-3.  Don't like objects?  You can get results in array format by passing a boolean in ```getListings()```:
-    ```php
-    $listings = $events->getListings(true);
-
-    foreach($listings['results'] as $result) {...}
-    ```
-4.  Check back for more
+👉 See full details in the [**JavaScript SDK Documentation**](./javascript/README.md).
 
 ---
 
-# License<a name="license"></a>
+## 🐘 PHP SDK (`/php`)
 
-This SDK is licensed under the GNU General Public License v3.0.  [View the license here](LICENSE)
+The battle-tested, PSR-4 compliant PHP SDK providing fluent API access, query condition builders, and cURL transport for server-side PHP environments.
+
+### Installation
+```bash
+composer require skiddle/skiddle-php-sdk
+# or from this repo:
+cd php && composer install
+```
+
+### Quickstart
+```php
+require_once 'vendor/autoload.php'; // or autoloader.php
+
+$session = new \SkiddleSDK\SkiddleSession([
+    'apiKey' => getenv('SKIDDLE_API_KEY'),
+    'devMode' => false
+]);
+
+$events = new \SkiddleSDK\Events();
+$events->setSession($session);
+$events->addCond('keyword', 'Creamfields');
+$events->addCond('limit', 5);
+
+$response = $events->getListings();
+print_r($response);
+```
+
+### Running PHP Demos & Tests
+```bash
+cd php
+php demo/loadTest.php
+```
+
+👉 See full details in the [**PHP SDK Documentation**](./php/README.md).
 
 ---
 
-# Contact<a name="contact"></a>
+## 🛠 NX° Developer Experience CLI (`/cli`)
 
-Got any questions, or ways to improve the SDK?  Feel free to log an issue, or pull and fork as much as you want!
+An interactive developer utility for validating API keys, running latency benchmarks, testing live event endpoints, and executing legacy test scenarios.
+
+```bash
+# Setup all workspace dependencies
+pnpm install
+
+# Run diagnostics and verify API key
+pnpm cli doctor
+
+# Search live events
+pnpm cli events "Warehouse Project" --limit 5
+
+# Benchmark endpoint latency and throughput
+pnpm cli benchmark --concurrency 5 --requests 20
+
+# Run classic test scenarios
+pnpm cli scenarios 1
+```
+
+👉 See command details in [**NX° CLI Guide**](./docs/05-nx-developer-experience-cli.md).
+
+---
+
+## 📚 Technical Documentation & Logs
+
+Chronological engineering logs and architectural decision records:
+- [`docs/TRANSCRIPT.md`](./docs/TRANSCRIPT.md) - Chronological log of steps and decisions
+- [`docs/01-project-restructure.md`](./docs/01-project-restructure.md) - Isolating legacy PHP code & polyglot restructuring
+- [`docs/02-package-and-toolchain.md`](./docs/02-package-and-toolchain.md) - Dual ESM/CJS build pipeline & tooling
+- [`docs/03-sdk-port-architecture.md`](./docs/03-sdk-port-architecture.md) - TypeScript architecture, error normalization, and API v3 parity
+- [`docs/04-testing-and-verification.md`](./docs/04-testing-and-verification.md) - Vitest test suite breakdown
+- [`docs/05-nx-developer-experience-cli.md`](./docs/05-nx-developer-experience-cli.md) - CLI features and command reference
+- [`docs/06-interview-discussion-guide.md`](./docs/06-interview-discussion-guide.md) - Technical talking points & design rationale
+
+---
+
+## 📄 License
+
+MIT License. Skiddle PHP SDK & TypeScript SDK © Skiddle Ltd.
