@@ -1,5 +1,5 @@
 {
-  "name": "skiddle-nx-cli",
+  "name": "@skiddle/cli",
   "version": "1.0.0",
   "description": "NX° Developer Experience CLI for Skiddle API",
   "type": "module",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "skiddle-sdk": "workspace:*"
+    "@skiddle/sdk": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^2.1.8"

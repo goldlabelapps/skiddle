@@ -1,5 +1,5 @@
 {
-  "name": "skiddle-sdk",
+  "name": "@skiddle/sdk",
   "version": "1.0.0",
   "description": "Modern TypeScript & JavaScript SDK for the Skiddle API",
   "type": "module",

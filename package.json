@@ -4,12 +4,16 @@
   "private": true,
   "packageManager": "pnpm@12.10.1",
   "scripts": {
-    "build": "pnpm --filter skiddle-sdk build",
-    "dev": "pnpm --filter skiddle-sdk dev",
-    "test": "pnpm --filter skiddle-sdk test",
-    "test:watch": "pnpm --filter skiddle-sdk test:watch",
-    "test:coverage": "pnpm --filter skiddle-sdk test:coverage",
-    "typecheck": "pnpm --filter skiddle-sdk typecheck",
-    "cli": "node ./cli/bin/nx.js"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "test:coverage": "turbo run test:coverage",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "cli": "node ./packages/cli/bin/nx.js"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.4"
   }
 }

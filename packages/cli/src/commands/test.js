@@ -31,7 +31,7 @@ export async function runTest(subcommand, options = {}) {
 
   // Watch mode workflow
   if (mode === 'watch') {
-    const cmd = `${pm} --filter skiddle-sdk test:watch`;
+    const cmd = `${pm} --filter @skiddle/sdk test:watch`;
     log.info(`Running Vitest unit test suite in watch mode...`);
     log.divider();
 
@@ -52,7 +52,7 @@ export async function runTest(subcommand, options = {}) {
 
   // Typecheck mode
   if (mode === 'typecheck') {
-    const cmd = `${pm} --filter skiddle-sdk typecheck`;
+    const cmd = `${pm} --filter @skiddle/sdk typecheck`;
     log.info('Running TypeScript typecheck...');
     log.divider();
 
@@ -70,7 +70,7 @@ export async function runTest(subcommand, options = {}) {
 
   // Build mode
   if (mode === 'build') {
-    const cmd = `${pm} --filter skiddle-sdk build`;
+    const cmd = `${pm} --filter @skiddle/sdk build`;
     log.info('Building Skiddle SDK (Dual ESM + CJS + .d.ts)...');
     log.divider();
 
@@ -92,9 +92,9 @@ export async function runTest(subcommand, options = {}) {
   log.divider();
 
   const pipeline = [
-    { title: 'TypeScript Typecheck', cmd: `${pm} --filter skiddle-sdk typecheck` },
-    { title: 'Vitest Unit Tests', cmd: `${pm} --filter skiddle-sdk test` },
-    { title: 'Dual ESM/CJS Build', cmd: `${pm} --filter skiddle-sdk build` },
+    { title: 'TypeScript Typecheck', cmd: `${pm} --filter @skiddle/sdk typecheck` },
+    { title: 'Vitest Unit Tests', cmd: `${pm} --filter @skiddle/sdk test` },
+    { title: 'Dual ESM/CJS Build', cmd: `${pm} --filter @skiddle/sdk build` },
   ];
 
   if (options.dryRun) {

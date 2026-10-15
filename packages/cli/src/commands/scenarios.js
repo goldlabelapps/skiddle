@@ -1,4 +1,4 @@
-import { SkiddleSession, Events, SkiddleException } from 'skiddle-sdk';
+import { SkiddleSession, Events, SkiddleException } from '@skiddle/sdk';
 import { log, colors, banner, promptSelect, playSound } from '../terminal.js';
 
 export const SCENARIO_DEFS = [

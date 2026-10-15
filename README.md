@@ -7,39 +7,61 @@
 
 ## 🏛 Repository Architecture
 
-This polyglot repository maintains two first-class, equally supported SDKs for the Skiddle API, alongside a shared developer toolkit:
+This polyglot monorepo is managed with **Turborepo** and **pnpm workspaces**:
 
 ```
 skiddle/
+├── apps/
+│   └── web/              # Next.js 15 application consuming @skiddle/sdk
+├── packages/
+│   ├── sdk/              # Modern TypeScript & JavaScript SDK (@skiddle/sdk, zero runtime deps)
+│   └── cli/              # NX° Developer Experience CLI (@skiddle/cli)
 ├── php/                  # Official Skiddle PHP SDK (Composer, PSR-4, cURL)
-├── javascript/           # Modern TypeScript & JavaScript SDK (Zero dependencies, ESM/CJS)
-├── cli/                  # NX° Developer Experience CLI (Diagnostic & testing toolkit)
 ├── docs/                 # Architectural transcripts & technical documentation
 └── .agents/              # AI pair-programming skills & prompt templates
 ```
 
-| SDK / Tool | Directory | Runtime | Status | Package |
+| Package / App | Directory | Runtime | Status | Name |
 | :--- | :--- | :--- | :--- | :--- |
+| **Next.js Web App** | [`/apps/web`](./apps/web) | Next.js 15 / React 19 | App | `web` |
+| **JavaScript / TS SDK** | [`/packages/sdk`](./packages/sdk) | Node.js >= 18 / Browsers | First-Class | `@skiddle/sdk` |
+| **NX° Developer CLI** | [`/packages/cli`](./packages/cli) | Node.js >= 18 | Package / CLI | `@skiddle/cli` |
 | **PHP SDK** | [`/php`](./php) | PHP >= 7.4 / 8.x | First-Class | `skiddle/skiddle-php-sdk` |
-| **JavaScript / TypeScript SDK** | [`/javascript`](./javascript) | Node.js >= 18 / Browsers | First-Class | `skiddle-sdk` |
-| **NX° Developer CLI** | [`/cli`](./cli) | Node.js >= 18 | Developer Tool | `nx` / `skiddle-nx` |
 
 ---
 
-## ⚡ JavaScript & TypeScript SDK (`/javascript`)
+## ⚡ Turborepo Workflow
+
+```bash
+# Build all apps & packages with caching
+pnpm build
+
+# Run unit tests across the monorepo
+pnpm test
+
+# Run typechecking across the monorepo
+pnpm typecheck
+
+# Start development mode
+pnpm dev
+```
+
+---
+
+## ⚡ JavaScript & TypeScript SDK (`@skiddle/sdk`)
 
 A zero-external-dependency, modern TypeScript and JavaScript client supporting Skiddle API v1 & v3 with native `fetch` and dual ESM/CommonJS distribution.
 
 ### Installation
 ```bash
-pnpm add skiddle-sdk
+pnpm add @skiddle/sdk
 # or in this monorepo workspace:
 pnpm install && pnpm build
 ```
 
 ### Quickstart
 ```typescript
-import { createClient } from 'skiddle-sdk';
+import { createClient } from '@skiddle/sdk';
 
 const client = createClient({ apiKey: process.env.SKIDDLE_API_KEY });
 

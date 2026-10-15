@@ -1,4 +1,4 @@
-import { SkiddleSession, Events, SkiddleException } from 'skiddle-sdk';
+import { SkiddleSession, Events, SkiddleException } from '@skiddle/sdk';
 import { log, colors, banner, playSound, promptConfirm, openAntigravity } from '../terminal.js';
 import { printEnvSummary } from '../env.js';
 

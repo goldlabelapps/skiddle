@@ -9,6 +9,17 @@ This document provides instructions, constraints, and architecture guidelines fo
 
 ```
 skiddle/
+├── apps/
+│   └── web/            # Next.js 15 application consuming @skiddle/sdk
+├── packages/
+│   ├── sdk/            # Modern JavaScript & TypeScript SDK (@skiddle/sdk, First-Class)
+│   │   ├── src/        # Zero external dependency TS source
+│   │   ├── tests/      # Vitest test suite
+│   │   ├── dist/       # Built ESM (.js) and CJS (.cjs) bundles + .d.ts
+│   │   ├── package.json# SDK npm package configuration (@skiddle/sdk)
+│   │   ├── tsconfig.json# TypeScript configuration
+│   │   └── tsup.config.ts# tsup dual build config
+│   └── cli/            # NX° Developer Experience CLI (@skiddle/cli)
 ├── php/                # Official Skiddle PHP SDK (First-Class)
 │   ├── src/            # PHP Classes (PSR-4: SkiddleSDK\)
 │   ├── tests/          # PHPUnit test cases
@@ -16,19 +27,8 @@ skiddle/
 │   ├── autoloader.php  # Standalone autoloader
 │   ├── composer.json   # Composer configuration
 │   └── README.md       # PHP SDK documentation
-├── javascript/         # Modern JavaScript & TypeScript SDK (First-Class)
-│   ├── src/            # Zero external dependency TS source
-│   ├── tests/          # Vitest test suite
-│   ├── dist/           # Built ESM (.js) and CJS (.cjs) bundles + .d.ts
-│   ├── package.json    # SDK npm package configuration
-│   ├── tsconfig.json   # TypeScript configuration
-│   ├── tsup.config.ts  # tsup dual build config
-│   └── README.md       # JavaScript SDK documentation
-├── cli/                # NX° Developer Experience CLI (Shared Developer Tool)
-│   ├── bin/nx.js       # CLI entrypoint executable
-│   ├── package.json    # CLI dependencies (commander, picocolors, prompts, dotenv)
-│   └── src/            # Commander CLI commands (doctor, events, benchmark, scenarios)
 ├── docs/               # Architecture decision records & interview transcripts
+├── turbo.json          # Turborepo task pipeline configuration
 └── .agents/            # Skills and prompt templates for Antigravity
 ```
 
@@ -41,12 +41,13 @@ skiddle/
    - Parity in features and query ergonomics (fluent condition builder: `addCond`, `delCond`, `getConditions`, `clearConditions`).
 
 2. **Zero External Dependencies for JavaScript SDK Core**:
-   - `javascript/src/` MUST NOT import external npm packages. It relies exclusively on native modern Node/Web APIs (`fetch`, `URL`, `URLSearchParams`, `AbortController`).
-   - CLI dependencies (`commander`, `picocolors`, `prompts`, `dotenv`) belong strictly in `cli/`.
+   - `packages/sdk/src/` MUST NOT import external npm packages. It relies exclusively on native modern Node/Web APIs (`fetch`, `URL`, `URLSearchParams`, `AbortController`).
+   - CLI dependencies belong strictly in `packages/cli/`.
+   - Web application code belongs strictly in `apps/web/`.
 
 3. **Dual CommonJS & ESM Distribution for JavaScript**:
-   - Built via `tsup` into `javascript/dist/index.js` (ESM), `javascript/dist/index.cjs` (CJS), and `javascript/dist/index.d.ts`.
-   - All internal relative imports in `javascript/src/` must include explicit `.js` extensions for ES Module resolution.
+   - Built via `tsup` into `packages/sdk/dist/index.js` (ESM), `packages/sdk/dist/index.cjs` (CJS), and `packages/sdk/dist/index.d.ts`.
+   - All internal relative imports in `packages/sdk/src/` must include explicit `.js` extensions for ES Module resolution.
 
 4. **Fluent Condition Builder Pattern**:
    - All queryable resources extend `SkiddleBase`.
@@ -65,10 +66,11 @@ Follow the narrowest possible command to verify changes:
 
 | Task | Preferred Command |
 | :--- | :--- |
-| **Run JS Affected Tests** | `pnpm --filter skiddle-sdk test tests/sdk.test.ts` |
-| **Run JS Full Test Suite**| `pnpm test` |
-| **JS Type Check** | `pnpm typecheck` |
-| **JS SDK Build** | `pnpm build` |
+| **Run JS Affected Tests** | `pnpm --filter @skiddle/sdk test tests/sdk.test.ts` |
+| **Run Full Monorepo Tests** | `pnpm test` (via Turborepo) |
+| **Full Typecheck** | `pnpm typecheck` (via Turborepo) |
+| **Full Build** | `pnpm build` (via Turborepo) |
+| **Test Next.js App** | `pnpm --filter web dev` or `pnpm --filter web build` |
 | **PHP Syntax Check** | `cd php && php -l autoloader.php` |
 | **Test NX° CLI** | `pnpm cli doctor` or `pnpm cli events "Warehouse"` |
 

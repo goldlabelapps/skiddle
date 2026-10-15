@@ -1,4 +1,4 @@
-import { SkiddleSession, Events, SkiddleException } from 'skiddle-sdk';
+import { SkiddleSession, Events, SkiddleException } from '@skiddle/sdk';
 import { log, colors, banner, promptInput, promptSelect, promptConfirm, openBrowser, playSound } from '../terminal.js';
 
 export async function getEventCommand(id, options = {}) {

@@ -1,4 +1,4 @@
-import { SkiddleSession, Events } from 'skiddle-sdk';
+import { SkiddleSession, Events } from '@skiddle/sdk';
 import { log, colors, banner, promptInput, playSound } from '../terminal.js';
 
 export async function benchmarkCommand(options = {}) {

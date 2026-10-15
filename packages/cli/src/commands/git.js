@@ -51,8 +51,9 @@ export function categorizeFile(filePath) {
   const isDoc = norm.endsWith('.md') || norm.startsWith('docs/');
 
   let area = 'root';
-  if (norm.startsWith('cli/')) area = 'cli';
-  else if (norm.startsWith('javascript/')) area = 'js';
+  if (norm.startsWith('cli/') || norm.startsWith('apps/cli/') || norm.startsWith('packages/cli/')) area = 'cli';
+  else if (norm.startsWith('apps/')) area = 'app';
+  else if (norm.startsWith('javascript/') || norm.startsWith('packages/sdk/') || (norm.startsWith('packages/') && !norm.startsWith('packages/cli/'))) area = 'js';
   else if (norm.startsWith('php/')) area = 'php';
   else if (norm.startsWith('docs/')) area = 'docs';
   else if (norm.startsWith('.github/')) area = 'ci';

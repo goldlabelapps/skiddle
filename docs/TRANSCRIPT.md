@@ -111,5 +111,25 @@
   - **Unit & Live Verification:** Updated Vitest suite (`javascript/tests/sdk.test.ts`), verified clean TypeScript checks (`pnpm typecheck`), and re-executed all 10 CLI scenarios: **10/10 scenarios passed successfully**.
 - **Reference Doc:** [08-api-v3-pagination-and-compatibility.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/08-api-v3-pagination-and-compatibility.md)
 
+---
 
-
+### Step 11: Turborepo Monorepo Architecture & Multi-Package Migration
+- **Context & Decision:**
+  - Transitioned the repository into a production-grade Turborepo monorepo to support multiple Next.js applications (`apps/`) and reusable, npm-publishable shared libraries (`packages/`).
+- **Action & Implementation:**
+  - **Directory Structuring:**
+    - Created `apps/` and `packages/` boundaries.
+    - Moved JavaScript/TypeScript SDK to `packages/sdk` and renamed the package to `@skiddle/sdk`.
+    - Moved the developer CLI to `packages/cli` and renamed the package to `@skiddle/cli` to facilitate future npm registry publishing (`npx @skiddle/cli`).
+    - Bootstrapped baseline Next.js 15 application in `apps/web` with TypeScript, React 19, and App Router, linked to `@skiddle/sdk` via workspace protocol (`workspace:*`).
+  - **Turborepo Orchestration:**
+    - Added root `turbo.json` defining dependency graphs and caching outputs for `build`, `test`, `typecheck`, `dev`, and `lint`.
+    - Configured `pnpm-workspace.yaml` for `apps/*` and `packages/*`.
+    - Replaced root `package.json` task runners with Turborepo commands (`pnpm build`, `pnpm test`, `pnpm typecheck`).
+  - **Documentation & Tooling Synchronization:**
+    - Updated `README.md`, `AGENTS.md`, and CLI commands to align with scoped packages and updated folder paths.
+  - **Verification:**
+    - `pnpm turbo run build test typecheck`: 6/6 tasks passed successfully across cold and warm cached runs.
+    - `pnpm cli doctor`: 100% operational from root.
+    - `php -l php/autoloader.php`: PHP SDK completely unaffected.
+- **Reference Doc:** [09-turborepo-monorepo-architecture.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/09-turborepo-monorepo-architecture.md)
