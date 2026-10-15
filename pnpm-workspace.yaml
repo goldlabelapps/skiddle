@@ -1,0 +1,6 @@
+packages:
+  - 'javascript'
+  - 'cli'
+
+allowBuilds:
+  esbuild: true

@@ -63,3 +63,36 @@
 ### Step 6: Interview Discussion Guide & Architectural Rationale
 - **Action:** Created tailored talking points and interview answers addressing Agenda Item 3 (*"Discuss the code you supplied and the rationale behind the decisions you made"*) and Item 4 (*"Questions based on the role and how you handle certain situations"*).
 - **Reference Doc:** [06-interview-discussion-guide.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/06-interview-discussion-guide.md)
+
+---
+
+### Step 7: Antigravity AI Prompting Helpers & Agent Automation
+- **Action:** Implemented official Antigravity configuration system with automatic progressive discovery:
+  - Repository-level rules in `AGENTS.md` and `GEMINI.md`.
+  - Workspace skills in `.agents/skills/` (`skiddle-sdk-dev`, `skiddle-cli-dev`, `skiddle-mock-tester`).
+  - Pre-engineered prompt helper templates in `.agents/prompts/` (`add-endpoint.md`, `port-php-feature.md`, `add-cli-command.md`, `fix-bug.md`).
+- **Reference Doc:** [07-ai-prompting-helpers.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/07-ai-prompting-helpers.md)
+
+---
+
+### Step 8: Polyglot Dual-SDK Restructure (PHP & JavaScript / TypeScript)
+- **Action:** Refactored the repository layout to treat both the PHP SDK and the JavaScript / TypeScript SDK as two first-class, equally important SDKs:
+  - Moved JavaScript / TypeScript source, tests, and configuration into dedicated `/javascript` workspace.
+  - Retained `/php` as a first-class official PHP SDK.
+  - Kept `/cli` as a top-level developer companion toolkit.
+  - Ensured `/javascript/package.json` has zero production dependencies (100% native web standards).
+  - Isolated CLI dependencies (`commander`, `dotenv`, `picocolors`, `prompts`) cleanly inside `/cli/package.json`.
+  - Updated root `README.md` and `AGENTS.md` to showcase both languages with equal prominence.
+
+---
+
+### Step 9: PNPM Workspace & Monorepo Toolchain Refactor
+- **Action:** Migrated repository package management from plain npm to `pnpm` workspaces:
+  - Created `pnpm-workspace.yaml` declaring `javascript` and `cli` packages.
+  - Configured root `package.json` with workspace delegation scripts (`pnpm build`, `pnpm test`, `pnpm typecheck`, `pnpm cli`).
+  - Linked `cli` to the JavaScript SDK via workspace dependency (`"skiddle-sdk": "workspace:*"`), removing fragile relative file imports in favor of clean package resolution.
+  - Cleaned up obsolete `package-lock.json` files and generated reproducible `pnpm-lock.yaml`.
+  - Configured `allowBuilds` for `esbuild` to support modern pnpm build script security.
+  - Updated verification commands and documentation across `README.md`, `AGENTS.md`, docs, skills, and prompt helpers.
+
+

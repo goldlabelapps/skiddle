@@ -1,0 +1,21 @@
+{
+  "name": "skiddle-nx-cli",
+  "version": "1.0.0",
+  "description": "NX° Developer Experience CLI for Skiddle API",
+  "type": "module",
+  "bin": {
+    "nx": "./bin/nx.js",
+    "skiddle-nx": "./bin/nx.js"
+  },
+  "scripts": {
+    "start": "node ./bin/nx.js",
+    "doctor": "node ./bin/nx.js doctor"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2",
+    "skiddle-sdk": "workspace:*"
+  }
+}

@@ -1,5 +1,5 @@
 import pc from 'picocolors';
-import { SkiddleSession, Events } from '../../../dist/index.js';
+import { SkiddleSession, Events } from 'skiddle-sdk';
 
 export async function benchmarkCommand(options = {}) {
   const apiKey = options.key || process.env.SKIDDLE_API_KEY;

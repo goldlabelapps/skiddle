@@ -91,7 +91,7 @@ export async function runCli() {
   // If no arguments provided, show help
   if (process.argv.length <= 2) {
     program.outputHelp();
-    console.log(pc.cyan('\n💡 Tip: Run `npm run cli -- interactive` or `node cli/bin/nx.js doctor` to get started!\n'));
+    console.log(pc.cyan('\n💡 Tip: Run `pnpm cli interactive` or `node cli/bin/nx.js doctor` to get started!\n'));
     return;
   }
 

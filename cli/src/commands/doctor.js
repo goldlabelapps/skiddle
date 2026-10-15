@@ -1,5 +1,5 @@
 import pc from 'picocolors';
-import { SkiddleSession, Events, SkiddleException } from '../../../dist/index.js';
+import { SkiddleSession, Events, SkiddleException } from 'skiddle-sdk';
 
 export async function doctorCommand(options = {}) {
   console.log(pc.bold('Running NX° Health Diagnostics...\n'));

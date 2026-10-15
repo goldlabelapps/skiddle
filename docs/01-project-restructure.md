@@ -16,10 +16,10 @@ Isolate the legacy PHP SDK into `/php` while keeping git history intact, clearin
    - Preserved `.git` tracking.
    - Updated `.gitignore` to ignore Node artifacts (`node_modules/`, `dist/`, `.env*`, coverage) while maintaining legacy PHP ignores.
 
-## Architecture Before vs. After
+## Architecture Evolution
 
 ```
-Before (PHP Root):
+1. Initial State (Legacy PHP at Root):
 .
 ├── autoloader.php
 ├── composer.json
@@ -27,14 +27,29 @@ Before (PHP Root):
 ├── src/ (PHP classes)
 └── tests/ (PHPUnit)
 
-After (Modern JS/TS Monorepo Layout):
+2. Intermediate State (JS SDK at Root):
 .
 ├── cli/           # "NX° Developer Experience" CLI toolkit
 ├── dist/          # Compiled ESM, CJS, and TypeScript definitions
 ├── docs/          # Step-by-step engineering transcript & rationale
 ├── php/           # Preserved original PHP SDK & demos
-├── src/           # Modern TypeScript SDK source code
-├── tests/         # Vitest unit & integration test suite
-├── package.json   # Root workspace dependencies & scripts
-└── tsconfig.json  # TypeScript strict compiler options
+├── src/           # TypeScript SDK source code
+└── tests/         # Vitest unit & integration test suite
+
+3. Final State (Dual First-Class Polyglot SDKs):
+.
+├── php/           # Official Skiddle PHP SDK (Composer, PSR-4)
+│   ├── src/
+│   ├── tests/
+│   ├── demo/
+│   └── composer.json
+├── javascript/    # Modern Skiddle JavaScript & TypeScript SDK (Zero dependencies, ESM/CJS)
+│   ├── src/
+│   ├── tests/
+│   ├── dist/
+│   └── package.json
+├── cli/           # NX° Developer Experience CLI (Root developer tool)
+│   ├── bin/nx.js
+│   └── package.json
+└── docs/          # Step-by-step engineering transcript & rationale
 ```

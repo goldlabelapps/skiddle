@@ -6,8 +6,8 @@ Provide developers with a terminal utility to inspect live Skiddle events, run h
 ## Installation & Execution
 
 ```bash
-# Via npm script
-npm run cli -- <command>
+# Via pnpm script
+pnpm cli <command>
 
 # Or directly via binary
 ./cli/bin/nx.js <command>
@@ -18,19 +18,19 @@ npm run cli -- <command>
 ### 1. `doctor`
 Validates local Node.js environment, checks presence of `SKIDDLE_API_KEY`, and pings the v3 instant-search endpoint to verify live connectivity and latency.
 ```bash
-npm run cli -- doctor
+pnpm cli doctor
 ```
 
 ### 2. `events [keyword]`
 Searches live events and outputs a formatted summary including event date, venue, ticket availability status, and deep link.
 ```bash
-npm run cli -- events "Creamfields" --limit 3
+pnpm cli events "Creamfields" --limit 3
 ```
 
 ### 3. `event <id>`
 Fetches detailed payload for a specific event listing ID.
 ```bash
-npm run cli -- event 4040
+pnpm cli event 4040
 ```
 
 ### 4. `scenarios [id]`
@@ -44,17 +44,17 @@ Executes the test scenarios from Skiddle's legacy PHP `loadTest.php`, evaluating
 - Scenario 7: Venue showcase (Thekla, Bristol)
 
 ```bash
-npm run cli -- scenarios 1
+pnpm cli scenarios 1
 ```
 
 ### 5. `benchmark`
 Runs parallel load requests to measure API throughput (req/s), average latency, and p50/p95/p99 percentiles.
 ```bash
-npm run cli -- benchmark --concurrency 5 --requests 20
+pnpm cli benchmark --concurrency 5 --requests 20
 ```
 
 ### 6. `interactive`
 Launches an interactive prompt menu allowing developers to navigate features without remembering command-line flags.
 ```bash
-npm run cli -- interactive
+pnpm cli interactive
 ```

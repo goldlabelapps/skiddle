@@ -1,5 +1,5 @@
 import pc from 'picocolors';
-import { SkiddleSession, Events, SkiddleException } from '../../../dist/index.js';
+import { SkiddleSession, Events, SkiddleException } from 'skiddle-sdk';
 
 export async function searchEventsCommand(keyword, options = {}) {
   const apiKey = options.key || process.env.SKIDDLE_API_KEY;

@@ -33,7 +33,7 @@ We implemented targeted unit tests using **Vitest** in `tests/sdk.test.ts`.
 ## Test Execution Results
 
 ```bash
-$ npm test
+$ pnpm test
 
  ✓ tests/sdk.test.ts (14)
    ✓ SkiddleSession (4)
