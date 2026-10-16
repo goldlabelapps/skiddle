@@ -133,3 +133,19 @@
     - `pnpm cli doctor`: 100% operational from root.
     - `php -l php/autoloader.php`: PHP SDK completely unaffected.
 - **Reference Doc:** [09-turborepo-monorepo-architecture.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/09-turborepo-monorepo-architecture.md)
+
+---
+
+### Step 12: Interactive API Testing Component & Next.js 15 Integration
+- **Context & Decision:**
+  - Creating a headless SDK and command-line diagnostics proved core functionality, but demonstrating end-to-end viability in modern frontend applications required an interactive, full-stack visual testing harness.
+- **Action & Implementation:**
+  - **Full-Stack Server Actions Architecture:** Built `apps/web/src/app/actions.ts` with `'use server'` (`executeSkiddleQuery`), securing environment credentials (`process.env.SKIDDLE_API_KEY`) on the server while eliminating browser CORS restrictions when communicating with `api.skiddle.com` and `www.skiddle.com`.
+  - **Fluent Condition Management UI:** Developed the `ApiTester` client component (`apps/web/src/components/ApiTester/ApiTester.tsx`) providing an interactive visual representation of SDK query condition chaining (`addCond`, `delCond`, `clearConditions`, `getConditions`) with tag chips and dynamic custom parameter forms.
+  - **Tri-Mode Diagnostic Views:** Engineered three switchable inspection modes:
+    - *Cards View*: Rich presentation layer with responsive cards, lazy loading, date formatting, pricing badges, and fallback image placeholders.
+    - *Raw JSON View*: Formatted syntax-highlighted response contracts with a 1-click clipboard copy utility.
+    - *SDK Debug Trace View*: Real-time telemetry displaying latency in milliseconds, HTTP status, and sanitized URLs with masked API credentials from `client.getDebugInfo()`.
+  - **Preset Integration Demos & Error Trapping:** Added one-click shortcuts for classic scenarios (Manchester Live, UK Festivals, Creamfields, Single Event #42616476, Venues, Artists) and an explicit error handling test validating `SkiddleException` handling.
+- **Verification:** Verified with `pnpm --filter web typecheck` and `pnpm --filter web build`.
+- **Reference Doc:** [10-interactive-api-testing-component.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/10-interactive-api-testing-component.md)
