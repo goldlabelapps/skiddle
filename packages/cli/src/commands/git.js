@@ -254,7 +254,8 @@ export async function runGit(options = {}) {
         repoUrl = remote.slice(0, -4);
       }
       const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
-      const prUrl = `${repoUrl}/compare/${branch}?expand=1`;
+      const baseBranch = 'master';
+      const prUrl = `${repoUrl}/compare/${baseBranch}...${branch}?expand=1`;
 
       log.highlight('Pull Request URL', prUrl);
       if (options.interactive) {

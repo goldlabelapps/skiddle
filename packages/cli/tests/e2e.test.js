@@ -31,9 +31,13 @@ describe('CLI End-to-End (E2E) Execution Suite', () => {
     expect(output).toContain('benchmark');
   });
 
-  it('executes runTest in dry-run mode across CI pipeline stages', async () => {
-    const res = await runTest('ci', { dryRun: true, quiet: true });
-    expect(res).toBe(true);
+  it('executes runTest in dry-run mode across all CI pipeline stages and submodes', async () => {
+    expect(await runTest('ci', { dryRun: true, quiet: true })).toBe(true);
+    expect(await runTest('unit', { dryRun: true, quiet: true })).toBe(true);
+    expect(await runTest('e2e', { dryRun: true, quiet: true })).toBe(true);
+    expect(await runTest('php', { dryRun: true, quiet: true })).toBe(true);
+    expect(await runTest('lint', { dryRun: true, quiet: true })).toBe(true);
+    expect(await runTest('build', { dryRun: true, quiet: true })).toBe(true);
   });
 
   it('executes getEventCommand end-to-end with mocked SDK transport', async () => {
