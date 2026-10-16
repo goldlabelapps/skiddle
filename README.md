@@ -178,6 +178,7 @@ Chronological engineering logs and architectural decision records:
 - [`docs/07-ai-prompting-helpers.md`](./docs/07-ai-prompting-helpers.md) - Antigravity skills, prompt templates & agent guidelines
 - [`docs/08-api-v3-pagination-and-compatibility.md`](./docs/08-api-v3-pagination-and-compatibility.md) - API v3 pagination translation, parameter normalization, and PHP 8.2+ hardening
 - [`docs/09-turborepo-monorepo-architecture.md`](./docs/09-turborepo-monorepo-architecture.md) - Turborepo monorepo architecture, Next.js integration, and publishable package structuring
+- [`docs/10-interactive-api-testing-component.md`](./docs/10-interactive-api-testing-component.md) - Interactive API testing component, Next.js 15 Server Actions, condition builder UI & multi-view diagnostics
 
 ---
 
