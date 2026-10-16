@@ -30,17 +30,24 @@ skiddle/
 
 ---
 
-## ⚡ Turborepo Workflow
+## ⚡ Turborepo & TDD CI Workflow
 
 ```bash
+# Run full Vercel-parity CI quality gate (Typecheck + Lint + Unit/E2E Tests + PHP Tests + Build)
+pnpm run ci
+
 # Build all apps & packages with caching
 pnpm build
 
-# Run unit tests across the monorepo
+# Run all unit & E2E tests across the monorepo
 pnpm test
+pnpm test:unit
+pnpm test:e2e
+pnpm test:php
 
-# Run typechecking across the monorepo
+# Run typechecking and linting across the monorepo
 pnpm typecheck
+pnpm lint
 
 # Start development mode
 pnpm dev
@@ -179,6 +186,8 @@ Chronological engineering logs and architectural decision records:
 - [`docs/08-api-v3-pagination-and-compatibility.md`](./docs/08-api-v3-pagination-and-compatibility.md) - API v3 pagination translation, parameter normalization, and PHP 8.2+ hardening
 - [`docs/09-turborepo-monorepo-architecture.md`](./docs/09-turborepo-monorepo-architecture.md) - Turborepo monorepo architecture, Next.js integration, and publishable package structuring
 - [`docs/10-interactive-api-testing-component.md`](./docs/10-interactive-api-testing-component.md) - Interactive API testing component, Next.js 15 Server Actions, condition builder UI & multi-view diagnostics
+- [`docs/11-event-detail-and-eflyer-schema.md`](./docs/11-event-detail-and-eflyer-schema.md) - Event detail schema, eFlyer promotional data model & TypeScript contracts
+- [`docs/12-tdd-testing-suite-and-ci-cd.md`](./docs/12-tdd-testing-suite-and-ci-cd.md) - TDD testing pyramid (Unit, E2E, PHP Parity), architectural linting & GitHub Actions CI/CD
 
 ---
 

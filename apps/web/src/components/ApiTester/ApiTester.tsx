@@ -264,7 +264,7 @@ export function ApiTester() {
             <button
               type="button"
               className={styles.presetBtn}
-              style={{ borderColor: '#ef4444', color: '#fca5a5' }}
+              style={{ borderColor: '#fca5a5', color: '#dc2626', background: '#fef2f2' }}
               onClick={handleTestInvalidKey}
               title="Deliberately send an invalid API key to demonstrate SkiddleException error catching"
             >
@@ -358,22 +358,20 @@ export function ApiTester() {
             {/* Custom Condition Add */}
             <div className={styles.formGroup}>
               <label className={styles.label}>Fluent Condition (addCond)</label>
-              <div style={{ display: 'flex', gap: 6 }}>
+              <div className={styles.conditionAddRow}>
                 <input
                   type="text"
-                  className={styles.input}
+                  className={`${styles.input} ${styles.conditionInput}`}
                   placeholder="key (e.g. radius)"
                   value={customKeyInput}
                   onChange={(e) => setCustomKeyInput(e.target.value)}
-                  style={{ flex: 1 }}
                 />
                 <input
                   type="text"
-                  className={styles.input}
+                  className={`${styles.input} ${styles.conditionInput}`}
                   placeholder="value (e.g. 10)"
                   value={customValInput}
                   onChange={(e) => setCustomValInput(e.target.value)}
-                  style={{ flex: 1 }}
                 />
                 <button
                   type="button"
@@ -389,7 +387,7 @@ export function ApiTester() {
           <div className={styles.controlsGrid}>
             <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
               <label className={styles.label}>Event / Listing ID</label>
-              <div style={{ display: 'flex', gap: 10 }}>
+              <div className={styles.singleIdRow}>
                 <input
                   type="text"
                   className={styles.input}
@@ -397,7 +395,7 @@ export function ApiTester() {
                   value={singleId}
                   onChange={(e) => setSingleId(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleRunCurrent()}
-                  style={{ maxWidth: 360 }}
+                  style={{ flex: '1 1 200px', maxWidth: 360, minWidth: 0 }}
                 />
                 <button
                   type="button"
@@ -418,7 +416,7 @@ export function ApiTester() {
         {activeTab !== 'event-single' && (
           <div className={styles.conditionsBar}>
             <div className={styles.conditionChips}>
-              <span style={{ fontSize: 12, color: '#ffffff', fontWeight: 700 }}>
+              <span style={{ fontSize: 12, color: '#0f172a', fontWeight: 700 }}>
                 SDK Conditions Map:
               </span>
               {Object.keys(conditions).length === 0 ? (
@@ -512,7 +510,7 @@ export function ApiTester() {
                 checked={devMode}
                 onChange={(e) => setDevMode(e.target.checked)}
               />
-              <label htmlFor="devModeCheck" style={{ fontSize: 13, color: '#ffffff' }}>
+              <label htmlFor="devModeCheck" style={{ fontSize: 13, color: '#334155' }}>
                 Enable Dev Mode (captures full debug traces and execution metrics)
               </label>
             </div>
@@ -540,7 +538,7 @@ export function ApiTester() {
           <div className={styles.telemetryBar}>
             <div className={styles.telemetryItem}>
               <span>Status:</span>
-              <span className={styles.telemetryValue} style={{ color: '#00d26a' }}>
+              <span className={styles.telemetryValue} style={{ color: '#047857' }}>
                 200 OK
               </span>
             </div>
@@ -554,7 +552,7 @@ export function ApiTester() {
             </div>
             <div className={styles.telemetryItem}>
               <span>Endpoint:</span>
-              <span className={styles.telemetryValue} style={{ color: '#38bdf8' }}>
+              <span className={styles.telemetryValue} style={{ color: '#0284c7' }}>
                 {activeTab === 'events'
                   ? '/events/instant-search/ (v3)'
                   : activeTab === 'event-single'
@@ -688,7 +686,7 @@ export function ApiTester() {
                                 View on Skiddle ↗
                               </a>
                             ) : (
-                              <span style={{ fontSize: 12, color: '#ffffff' }}>
+                              <span style={{ fontSize: 12, color: '#64748b' }}>
                                 ID: {item.id}
                               </span>
                             )}
@@ -724,23 +722,23 @@ export function ApiTester() {
           {/* VIEW: DEBUG */}
           {viewMode === 'debug' && (
             <div className={styles.debugBox}>
-              <h4 style={{ color: '#ffffff', marginBottom: 12, fontSize: 14 }}>
+              <h4 style={{ color: '#0f172a', marginBottom: 12, fontSize: 14 }}>
                 SDK Debug Log (Captured via <code>client.getDebugInfo()</code>)
               </h4>
               {result.debugInfo && result.debugInfo.length > 0 ? (
                 result.debugInfo.map((entry: any, i: number) => (
                   <div key={i} className={styles.debugEntry}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#0f172a' }}>
                       <span><strong>{entry.method}</strong> {entry.status} OK</span>
                       <span>{entry.durationMs}ms &bull; {entry.timestamp}</span>
                     </div>
-                    <div style={{ color: '#38bdf8', wordBreak: 'break-all' }}>
+                    <div style={{ color: '#0284c7', wordBreak: 'break-all' }}>
                       {entry.url}
                     </div>
                   </div>
                 ))
               ) : (
-                <div style={{ color: '#ffffff' }}>
+                <div style={{ color: '#64748b' }}>
                   No debug entries recorded. Ensure devMode is enabled in SDK configuration.
                 </div>
               )}

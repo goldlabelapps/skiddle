@@ -4,56 +4,46 @@ export default function HomePage() {
   const apiKeyConfigured = Boolean(process.env.SKIDDLE_API_KEY);
 
   return (
-    <main style={{ maxWidth: 1080, margin: '40px auto 80px', padding: '0 24px', lineHeight: 1.6, color: '#ffffff' }}>
+    <main
+      style={{
+        maxWidth: 1080,
+        width: '100%',
+        margin: '32px auto 80px',
+        padding: '0 16px',
+        lineHeight: 1.6,
+        color: '#0f172a',
+        boxSizing: 'border-box',
+        minWidth: 0,
+      }}
+    >
       {/* MONOREPO HEADER BADGE */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         <div
           style={{
             width: 12,
             height: 12,
             borderRadius: '50%',
             backgroundColor: apiKeyConfigured ? '#00d26a' : '#f59e0b',
-            boxShadow: apiKeyConfigured ? '0 0 8px rgba(0, 210, 106, 0.6)' : 'none',
+            boxShadow: apiKeyConfigured ? '0 0 8px rgba(0, 210, 106, 0.4)' : 'none',
+            flexShrink: 0,
           }}
         />
-        <span style={{ fontSize: 13, color: '#ffffff', textTransform: 'uppercase', letterSpacing: 1.2, fontWeight: 600 }}>
+        <span style={{ fontSize: 13, color: '#64748b', textTransform: 'uppercase', letterSpacing: 1.2, fontWeight: 600, wordBreak: 'break-word' }}>
           Skiddle Monorepo &bull; Turborepo &bull; Next.js 15
         </span>
       </div>
 
-      <h1 style={{ fontSize: 34, fontWeight: 800, marginBottom: 12, letterSpacing: -0.5, color: '#ffffff' }}>
+      <h1 style={{ fontSize: 'clamp(24px, 5vw, 34px)', fontWeight: 800, marginBottom: 12, letterSpacing: -0.5, color: '#0f172a', wordBreak: 'break-word' }}>
         Skiddle SDK Web Integration
       </h1>
 
-      <p style={{ color: '#ffffff', fontSize: 17, marginBottom: 28, maxWidth: 840, opacity: 0.95 }}>
-        This Next.js application consumes the shared workspace library <code style={{ color: '#38bdf8' }}>@skiddle/sdk</code> directly from{' '}
-        <code style={{ color: '#38bdf8' }}>packages/sdk</code>. Test endpoints, construct fluent query conditions, and inspect live responses below.
+      <p style={{ color: '#475569', fontSize: 'clamp(15px, 3.5vw, 17px)', marginBottom: 28, maxWidth: 840, lineHeight: 1.6, wordBreak: 'break-word' }}>
+        This Next.js application consumes the shared workspace library <code style={{ color: '#0284c7', background: '#e2e8f0', padding: '2px 6px', borderRadius: 4, wordBreak: 'break-word' }}>@skiddle/sdk</code> directly from{' '}
+        <code style={{ color: '#0284c7', background: '#e2e8f0', padding: '2px 6px', borderRadius: 4, wordBreak: 'break-word' }}>packages/sdk</code>. Test endpoints, construct fluent query conditions, and inspect live responses below.
       </p>
 
       {/* COMPREHENSIVE INTERACTIVE API TESTER */}
       <ApiTester />
-
-      {/* ARCHITECTURE STATUS (AT THE BOTTOM) */}
-      <div
-        style={{
-          marginTop: 48,
-          backgroundColor: '#111827',
-          border: '1px solid #1f2937',
-          borderRadius: 10,
-          padding: 24,
-          color: '#ffffff',
-        }}
-      >
-        <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 12, color: '#ffffff' }}>
-          Architecture Status
-        </h2>
-        <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14, color: '#ffffff' }}>
-          <li>🚀 <strong style={{ color: '#ffffff' }}>Turborepo:</strong> Pipeline caching for build, test, and typecheck</li>
-          <li>📦 <strong style={{ color: '#ffffff' }}>Workspace Package:</strong> <code style={{ color: '#38bdf8' }}>@skiddle/sdk</code> (TypeScript / Zero External Dependencies)</li>
-          <li>⚡ <strong style={{ color: '#ffffff' }}>API Transport:</strong> Native <code>fetch</code> with dual v1/v3 endpoint routing</li>
-          <li>🔑 <strong style={{ color: '#ffffff' }}>Environment API Key:</strong> {apiKeyConfigured ? <span style={{ color: '#00d26a', fontWeight: 600 }}>Configured & Loaded</span> : <span style={{ color: '#f59e0b', fontWeight: 600 }}>Offline / Enter Key Manually</span>}</li>
-        </ul>
-      </div>
     </main>
   );
 }

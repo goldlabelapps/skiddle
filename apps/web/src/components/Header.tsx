@@ -17,10 +17,12 @@ export function Header() {
         style={{
           maxWidth: 1080,
           margin: '0 auto',
-          padding: '14px 24px',
+          padding: '14px 16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12,
         }}
       >
         <Link
@@ -47,7 +49,7 @@ export function Header() {
           />
         </Link>
 
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           <a
             href="https://promotioncentre.co.uk"
             target="_blank"

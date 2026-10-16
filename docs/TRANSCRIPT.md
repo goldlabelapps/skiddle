@@ -149,3 +149,15 @@
   - **Preset Integration Demos & Error Trapping:** Added one-click shortcuts for classic scenarios (Manchester Live, UK Festivals, Creamfields, Single Event #42616476, Venues, Artists) and an explicit error handling test validating `SkiddleException` handling.
 - **Verification:** Verified with `pnpm --filter web typecheck` and `pnpm --filter web build`.
 - **Reference Doc:** [10-interactive-api-testing-component.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/10-interactive-api-testing-component.md)
+
+### Step 11: Event Detail Schema & eFlyer Promotion Model Definition
+- **Date:** 2026-10-16
+- **Context & Decision:**
+  - Standardized the single event data shape (`/api/v1/events/{id}/`) required for generating eFlyer promotional campaigns, marketing emails, and rich event previews.
+- **Action & Implementation:**
+  - **TypeScript Interfaces (`packages/sdk/src/types.ts`):** Defined `SkiddleEventDetail`, `SkiddleEventDetailVenue`, `SkiddleEventOpeningTimes`, `SkiddleEventGenreDetail`, `SkiddleEventRep`, and `SkiddleEventArtistDetail`.
+  - **Execution & Response Envelopes:** Defined `SkiddleSingleEventApiResponse<T>` and `SkiddleSingleEventExecutionResult<T>` ensuring type safety across Server Actions and diagnostic traces.
+  - **Normalized eFlyer Model & Helper (`packages/sdk/src/eflyer.ts`):** Created `EFlyerPromotionData` and the `toEFlyerPromotionData()` converter to automatically map raw event details into a clean ViewModel (handling cancellation booleans, hero image fallbacks, hex color themes, and formatted door timings).
+  - **SDK Method Typing (`packages/sdk/src/events.ts`):** Enhanced `Events.getListing<T = SkiddleEventDetail>()` to default to `SkiddleEventDetail`.
+- **Verification:** Tested with Vitest unit tests in `packages/sdk/tests/sdk.test.ts` and monorepo typecheck via `pnpm typecheck`.
+- **Reference Doc:** [11-event-detail-and-eflyer-schema.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/11-event-detail-and-eflyer-schema.md)

@@ -1,5 +1,5 @@
 import { SkiddleBase } from './base.js';
-import type { SkiddleApiResponse, SkiddleEvent } from './types.js';
+import type { SkiddleApiResponse, SkiddleEvent, SkiddleEventDetail } from './types.js';
 
 /**
  * Handles operations against the Skiddle Events endpoints.
@@ -22,8 +22,8 @@ export class Events extends SkiddleBase {
    *
    * @param listingId The event / listing ID
    */
-  public async getListing(listingId: string | number): Promise<SkiddleApiResponse<SkiddleEvent>> {
+  public async getListing<T = SkiddleEventDetail>(listingId: string | number): Promise<SkiddleApiResponse<T>> {
     this.request.setApiVersion(1);
-    return this.makeCall<SkiddleApiResponse<SkiddleEvent>>(`${Events.SINGLE_ENDPOINT}${listingId}/`);
+    return this.makeCall<SkiddleApiResponse<T>>(`${Events.SINGLE_ENDPOINT}${listingId}/`);
   }
 }
