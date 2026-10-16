@@ -19,3 +19,8 @@ coverage/
 *.tsbuildinfo
 .turbo/
 .next/
+
+# Next.js PWA generated files
+apps/web/public/sw*
+apps/web/public/workbox-*
+apps/web/public/swe-worker*
