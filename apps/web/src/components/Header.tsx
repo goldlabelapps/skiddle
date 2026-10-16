@@ -53,10 +53,10 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: '#9ca3af',
+              color: '#ffffff',
               fontSize: 14,
               textDecoration: 'none',
-              transition: 'color 0.2s',
+              transition: 'opacity 0.2s',
             }}
           >
             Promotion Centre ↗
@@ -66,10 +66,10 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: '#9ca3af',
+              color: '#ffffff',
               fontSize: 14,
               textDecoration: 'none',
-              transition: 'color 0.2s',
+              transition: 'opacity 0.2s',
             }}
           >
             Skiddle.com ↗

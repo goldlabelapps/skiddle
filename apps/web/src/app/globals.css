@@ -1,8 +1,8 @@
 :root {
   --bg-color: #0b0f19;
   --card-bg: #111827;
-  --text-primary: #f9fafb;
-  --text-muted: #9ca3af;
+  --text-primary: #ffffff;
+  --text-muted: #e5e7eb;
   --accent: #00d26a;
   --border: #1f2937;
   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -16,9 +16,24 @@
 
 body {
   background-color: var(--bg-color);
-  color: var(--text-primary);
+  color: #ffffff;
   font-family: var(--font-family);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+input, select, textarea, button {
+  font-family: inherit;
+  color: #ffffff;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #d1d5db;
+  opacity: 0.9;
+}
+
+select option {
+  background-color: #111827;
+  color: #ffffff;
 }
