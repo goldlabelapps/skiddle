@@ -32,9 +32,9 @@ export function showHelp() {
   console.log(`                    ${colors.dim}Expectation:${colors.reset} Spawns concurrent workers against Skiddle API and reports`);
   console.log(`                    RPS throughput, average latency, and p50 / p95 / p99 percentiles.\n`);
 
-  console.log(`    ${colors.bold}${colors.brightGreen}test${colors.reset}            Pre-merge CI quality gate pipeline`);
-  console.log(`                    ${colors.dim}Expectation:${colors.reset} Runs sequential checks including TypeScript type-checking,`);
-  console.log(`                    Vitest unit tests, and production build bundle verification.\n`);
+  console.log(`    ${colors.bold}${colors.brightGreen}test${colors.reset}            Pre-merge CI quality gate pipeline (GitHub Actions / Vercel parity)`);
+  console.log(`                    ${colors.dim}Expectation:${colors.reset} Runs sequential checks including SDK build, monorepo typecheck,`);
+  console.log(`                    linting, unit tests, E2E tests, PHP SDK tests, and full production build.\n`);
 
   console.log(`    ${colors.bold}${colors.brightGreen}git${colors.reset}             Git workflow manager`);
   console.log(`                    ${colors.dim}Expectation:${colors.reset} Inspects uncommitted changes, stages and commits with conventional`);
@@ -54,7 +54,7 @@ export function showHelp() {
   console.log(`    ${colors.bold}${colors.brightGreen}doctor${colors.reset}             Validate API key, environment sanity, and endpoint health`);
   console.log(`    ${colors.bold}${colors.brightGreen}scenarios${colors.reset} [id]     Replay 10 classic Skiddle test scenarios (or pick 1-10)`);
   console.log(`    ${colors.bold}${colors.brightGreen}benchmark${colors.reset}          Run concurrent latency and throughput benchmark`);
-  console.log(`    ${colors.bold}${colors.brightGreen}test${colors.reset}               Run full CI quality pipeline (typecheck, tests, build)`);
+  console.log(`    ${colors.bold}${colors.brightGreen}test${colors.reset} [mode]         Run CI quality gate (${colors.dim}ci, unit, e2e, php, lint, watch, build${colors.reset})`);
   console.log(`    ${colors.bold}${colors.brightGreen}git${colors.reset} [action]        Git manager (${colors.dim}status, commit, pr${colors.reset})`);
   console.log(`    ${colors.bold}${colors.brightGreen}env${colors.reset}                Display toolchain and runtime diagnostics`);
   console.log(`    ${colors.bold}${colors.brightWhite}help${colors.reset}               Display this Unix manual synopsis\n`);
