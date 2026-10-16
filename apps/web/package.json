@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@skiddle/sdk": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",

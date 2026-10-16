@@ -12,6 +12,10 @@ export function showHelp() {
   console.log(`${colors.bold}${colors.brightWhite}MAIN MENU OPTIONS & EXPECTATIONS${colors.reset}`);
   console.log(`  Interactive mode (${colors.bold}pnpm cli${colors.reset}) provides access to the following main menu options:\n`);
 
+  console.log(`    ${colors.bold}${colors.brightGreen}dev${colors.reset}             Start development server and watchers (pnpm dev)`);
+  console.log(`                    ${colors.dim}Expectation:${colors.reset} Launches local dev servers and file watchers across`);
+  console.log(`                    the monorepo via Turborepo (Next.js web app & SDK build watcher).\n`);
+
   console.log(`    ${colors.bold}${colors.brightGreen}events${colors.reset}          Search and inspect live Skiddle events`);
   console.log(`                    ${colors.dim}Expectation:${colors.reset} Queries the Skiddle events API by keyword or trending,`);
   console.log(`                    displays rich event cards, and enables deep inspection or ticket browsing.\n`);
@@ -44,6 +48,7 @@ export function showHelp() {
   console.log(`                    ${colors.dim}Expectation:${colors.reset} Prints this manual synopsis, command options, and examples.\n`);
 
   console.log(`${colors.bold}${colors.brightWhite}COMMAND SYNOPSIS LIST${colors.reset}`);
+  console.log(`    ${colors.bold}${colors.brightGreen}dev${colors.reset}                 Run local development servers (pnpm dev)`);
   console.log(`    ${colors.bold}${colors.brightGreen}events${colors.reset} [keyword]   Search live Skiddle events by keyword or filter`);
   console.log(`    ${colors.bold}${colors.brightGreen}event${colors.reset} <id>         Fetch and display single event listing by ID`);
   console.log(`    ${colors.bold}${colors.brightGreen}doctor${colors.reset}             Validate API key, environment sanity, and endpoint health`);

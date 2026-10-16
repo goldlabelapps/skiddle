@@ -5,9 +5,12 @@ import { colors, banner, VERSION, getMonorepoVersion } from '../src/terminal.js'
 import { SCENARIO_DEFS } from '../src/commands/scenarios.js';
 import { generateCommitMessage, parseFileLine, categorizeFile } from '../src/commands/git.js';
 
+import { devCommand } from '../src/commands/dev.js';
+
 describe('CLI Main Menu Options', () => {
   it('includes expected core options in main menu', () => {
     const values = MAIN_MENU_OPTIONS.map((o) => o.value);
+    expect(values).toContain('dev');
     expect(values).toContain('events');
     expect(values).toContain('doctor');
     expect(values).toContain('scenarios');
@@ -18,11 +21,23 @@ describe('CLI Main Menu Options', () => {
     expect(values).toContain('help');
   });
 
+  it('places dev option at the top of the main menu', () => {
+    expect(MAIN_MENU_OPTIONS[0].value).toBe('dev');
+    expect(MAIN_MENU_OPTIONS[0].label).toBe('dev');
+    expect(MAIN_MENU_OPTIONS[0].desc).toContain('pnpm dev');
+  });
+
   it('provides descriptions for each menu item', () => {
     MAIN_MENU_OPTIONS.forEach((opt) => {
       expect(opt.label).toBeTruthy();
       expect(opt.desc).toBeTruthy();
     });
+  });
+
+  it('supports devCommand in dryRun mode', async () => {
+    const res = await devCommand({ dryRun: true, quiet: true });
+    expect(res.success).toBe(true);
+    expect(res.dryRun).toBe(true);
   });
 });
 

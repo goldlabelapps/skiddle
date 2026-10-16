@@ -81,7 +81,23 @@ pnpm typecheck     # TypeScript compiler verification
 pnpm build         # Generate ESM, CJS, and .d.ts declaration maps
 ```
 
-👉 See full details in the [**JavaScript SDK Documentation**](./javascript/README.md).
+👉 See full details in the [**JavaScript SDK Documentation**](./packages/sdk/README.md).
+
+---
+
+## 📱 Next.js Web App (`/apps/web`)
+
+A modern Next.js 15 application utilizing React 19 and App Router, configured to consume `@skiddle/sdk` directly via workspace linking (`workspace:*`).
+
+```bash
+# Run web app in development
+pnpm --filter web dev
+
+# Production build
+pnpm --filter web build
+```
+
+👉 See details in the [**Web App Documentation**](./apps/web/README.md).
 
 ---
 
@@ -124,7 +140,7 @@ php demo/loadTest.php
 
 ---
 
-## 🛠 NX° Developer Experience CLI (`/cli`)
+## 🛠 NX° Developer Experience CLI (`/packages/cli`)
 
 An interactive developer utility for validating API keys, running latency benchmarks, testing live event endpoints, and executing legacy test scenarios.
 
@@ -145,7 +161,7 @@ pnpm cli benchmark --concurrency 5 --requests 20
 pnpm cli scenarios 1
 ```
 
-👉 See command details in [**NX° CLI Guide**](./docs/05-nx-developer-experience-cli.md).
+👉 See full details in the [**NX° CLI Documentation**](./packages/cli/README.md) and [**CLI Guide**](./docs/05-nx-developer-experience-cli.md).
 
 ---
 
@@ -159,6 +175,9 @@ Chronological engineering logs and architectural decision records:
 - [`docs/04-testing-and-verification.md`](./docs/04-testing-and-verification.md) - Vitest test suite breakdown
 - [`docs/05-nx-developer-experience-cli.md`](./docs/05-nx-developer-experience-cli.md) - CLI features and command reference
 - [`docs/06-interview-discussion-guide.md`](./docs/06-interview-discussion-guide.md) - Technical talking points & design rationale
+- [`docs/07-ai-prompting-helpers.md`](./docs/07-ai-prompting-helpers.md) - Antigravity skills, prompt templates & agent guidelines
+- [`docs/08-api-v3-pagination-and-compatibility.md`](./docs/08-api-v3-pagination-and-compatibility.md) - API v3 pagination translation, parameter normalization, and PHP 8.2+ hardening
+- [`docs/09-turborepo-monorepo-architecture.md`](./docs/09-turborepo-monorepo-architecture.md) - Turborepo monorepo architecture, Next.js integration, and publishable package structuring
 
 ---
 
