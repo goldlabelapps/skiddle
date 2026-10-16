@@ -2,6 +2,7 @@ import process from 'node:process';
 import { colors, log, promptSelect, clearScreen, promptPostAction, VERSION } from './terminal.js';
 import { printEnvSummary } from './env.js';
 import { showHelp } from './commands/help.js';
+import { devCommand } from './commands/dev.js';
 import { doctorCommand } from './commands/doctor.js';
 import { searchEventsCommand, getEventCommand } from './commands/events.js';
 import { runScenariosCommand } from './commands/scenarios.js';
@@ -10,6 +11,7 @@ import { runTest } from './commands/test.js';
 import { runGit } from './commands/git.js';
 
 export const MAIN_MENU_OPTIONS = [
+  { label: 'dev', value: 'dev', desc: 'start development server and watchers (pnpm dev)' },
   { label: 'events', value: 'events', desc: 'search and inspect live Skiddle events & ticket details' },
   { label: 'doctor', value: 'doctor', desc: 'diagnose environment, API credentials, and endpoint latency' },
   { label: 'scenarios', value: 'scenarios', desc: 'replay 10 classic Skiddle test scenarios (PHP test parity)' },
@@ -148,6 +150,11 @@ async function runInteractiveMenu(flags) {
     log.divider();
 
     switch (choice) {
+      case 'dev': {
+        const res = await devCommand({ ...flags, interactive: true });
+        if (res && typeof res === 'object' && res.escaped) continue;
+        break;
+      }
       case 'events': {
         const res = await searchEventsCommand(undefined, { ...flags, interactive: true });
         if (res && typeof res === 'object' && res.escaped) continue;
@@ -225,6 +232,10 @@ export async function runCli(rawArgs = process.argv.slice(2)) {
 
     // Direct command routing
     switch (cmdLower) {
+      case 'dev':
+        await devCommand(flags);
+        break;
+
       case 'events':
         await searchEventsCommand(subcommand || extra[0], {
           ...flags,
