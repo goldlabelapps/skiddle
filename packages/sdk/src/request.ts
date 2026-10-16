@@ -1,15 +1,7 @@
 import { SkiddleException } from './errors.js';
-import type { SkiddleRequestOptions } from './types.js';
+import type { SkiddleRequestOptions, DebugEntry } from './types.js';
 
-export interface DebugEntry {
-  timestamp: string;
-  url: string;
-  method: string;
-  durationMs: number;
-  status: number;
-  headers: Record<string, string>;
-  responseSnippet: string;
-}
+export type { DebugEntry };
 
 /**
  * Handles HTTP transport, URL construction, query parameter serialization,

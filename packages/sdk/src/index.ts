@@ -11,6 +11,7 @@ export * from './base.js';
 export * from './events.js';
 export * from './artists.js';
 export * from './venues.js';
+export * from './eflyer.js';
 
 import { SkiddleSession } from './session.js';
 import { Events } from './events.js';
@@ -23,7 +24,7 @@ import type { SkiddleSessionConfig } from './types.js';
  *
  * @example
  * ```ts
- * import { createClient } from 'skiddle-sdk';
+ * import { createClient } from '@skiddle/sdk';
  *
  * const client = createClient({ apiKey: 'YOUR_KEY' });
  * client.events.addCond('keyword', 'Warehouse Project');

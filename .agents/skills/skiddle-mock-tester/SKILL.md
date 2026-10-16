@@ -90,5 +90,7 @@ it('throws SkiddleException when API returns an error structure', async () => {
 
 Run targeted test verification:
 ```bash
-pnpm --filter skiddle-sdk test tests/sdk.test.ts
+pnpm --filter @skiddle/sdk test:unit
+pnpm --filter @skiddle/sdk test:e2e
+pnpm --filter web test
 ```

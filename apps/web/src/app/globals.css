@@ -1,10 +1,10 @@
 :root {
-  --bg-color: #0b0f19;
-  --card-bg: #111827;
-  --text-primary: #ffffff;
-  --text-muted: #e5e7eb;
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
   --accent: #00d26a;
-  --border: #1f2937;
+  --border: #e2e8f0;
   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -14,9 +14,15 @@
   padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
 body {
   background-color: var(--bg-color);
-  color: #ffffff;
+  color: var(--text-primary);
   font-family: var(--font-family);
   min-height: 100vh;
   display: flex;
@@ -25,15 +31,22 @@ body {
 
 input, select, textarea, button {
   font-family: inherit;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 input::placeholder, textarea::placeholder {
-  color: #d1d5db;
-  opacity: 0.9;
+  color: #94a3b8;
+  opacity: 1;
 }
 
 select option {
-  background-color: #111827;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+/* Hide Next.js Dev Indicator */
+nextjs-portal,
+[data-nextjs-dev-indicator],
+[data-next-badge] {
+  display: none !important;
 }

@@ -1,61 +1,52 @@
 # Step 4: Testing & Verification
 
 ## Objective
-Provide automated regression and contract testing for all SDK classes without relying on live external networks during CI runs.
+Provide automated Test-Driven Development (TDD) regression, contract, and End-to-End (E2E) testing across the entire monorepo (`@skiddle/sdk`, `@skiddle/cli`, `apps/web`, and `php/`) without relying on live external networks during CI runs.
 
-## Test Strategy
+## Test Strategy & Architecture
 
-We implemented targeted unit tests using **Vitest** in `tests/sdk.test.ts`.
+We use **Vitest** across all JavaScript/TypeScript workspaces (`@skiddle/sdk`, `@skiddle/cli`, `web`) and a zero-dependency PHP test runner (`php/tests/run.php`) for the PHP SDK, orchestrated by **Turborepo** and verified on every push via **GitHub Actions** (`.github/workflows/ci.yml`).
 
 ### Test Coverage Areas
-1. **Authentication & Session**:
-   - Initializing with explicit keys.
-   - Falling back to `process.env.SKIDDLE_API_KEY`.
-   - Throwing `SkiddleException` on missing credentials.
-   - Toggling developer/debug mode.
 
-2. **Request Layer & Transport**:
-   - Query key transformation (`api_key` → `apiKey` in v3).
-   - Base URL switching between `api.skiddle.com/v3` and `www.skiddle.com/api/v1`.
-   - Decoding error payloads from both API v1 (`errormessage`) and API v3 (`detail`).
-   - Masking API keys in debug logging (`xxxxxxxxxxxxxxxxxx`).
+1. **JavaScript/TypeScript SDK (`packages/sdk/tests/`)**:
+   - **Unit Tests (`sdk.test.ts`)**:
+     - `SkiddleException`: Error codes, details payload, prototype chain preservation.
+     - `SkiddleSession`: Explicit API key, `SKIDDLE_API_KEY` env fallback, missing key exception, `devMode` toggling.
+     - `SkiddleRequest`: API v1/v3 URL routing, `transformRequestKeys()` parameter renaming and pagination translation (`limit`/`offset` → `page[size]`/`page[number]`), network transport errors, malformed JSON handling, API v1/v3 error decoding, and API key masking in debug traces.
+     - `SkiddleBase`: Fluent condition builder (`addCond`, `delCond`, `clearConditions`, `getConditions` immutability), `eventCode` uppercase normalization, `formatForLog` key mapping.
+     - Entities & Helpers: `Events`, `Artists`, `Venues`, `createClient()`, and `toEFlyerPromotionData()`.
+   - **E2E & Contract Tests (`e2e.test.ts`)**:
+     - Full discovery-to-promotion workflow (Search Events v3 → Single Event Detail v1 → eFlyer Promotion ViewModel).
+     - Upstream error recovery and retry resilience.
+     - Dual ESM (`dist/index.js`), CJS (`dist/index.cjs`), and TypeScript declaration (`dist/index.d.ts`) bundle contract verification.
 
-3. **Condition Management**:
-   - Fluent method chaining (`addCond`).
-   - Array serialization (`['house', 'techno']` → `'house,techno'`).
-   - Safe condition deletion and throwing on invalid deletion.
-   - Automatic uppercase transformation of `eventCode`.
+2. **NX° Developer CLI (`packages/cli/tests/`)**:
+   - **Unit Tests (`cli.test.js`)**: Argument parser (`parseArgs`), environment diagnostics (`checkEnv`), terminal formatting, 10 classic Skiddle scenarios, and conventional commit generator.
+   - **E2E Tests (`e2e.test.js`)**: CLI binary execution (`nx --version`, `nx --help`), dry-run CI pipeline, and end-to-end command flows (`doctorCommand`, `getEventCommand`, `searchEventsCommand`) with mocked HTTP transport.
 
-4. **Entity Clients & Factory**:
-   - Mocking single event fetch (`getListing`).
-   - Verifying `createClient()` factory ergonomics.
+3. **Next.js 15 Web Application (`apps/web/tests/`)**:
+   - **Unit Tests (`tests/unit/actions.test.ts`)**: Server Actions (`checkServerConfig`, `executeSkiddleQuery`), condition pruning, custom vs environment API key resolution, and structured `SkiddleException` error responses.
+   - **E2E & Integration Tests (`tests/e2e/web-e2e.test.ts`)**: PWA Web App Manifest contract, RootLayout metadata/viewport validation, and end-to-end Server Action → `@skiddle/sdk` → `toEFlyerPromotionData` integration.
 
-## Test Execution Results
+4. **PHP SDK (`php/tests/`)**:
+   - **Unit & Parity Tests (`run.php`, `SkiddleSessionTest.php`, `SkiddleRequestTest.php`, `EventsTest.php`)**: Cross-SDK parity for session initialization, API v3 parameter/pagination translation, and fluent condition builders.
+
+## Running the Test Suite
 
 ```bash
-$ pnpm test
+# Run all JS/TS unit & E2E tests via Turborepo
+pnpm test
 
- ✓ tests/sdk.test.ts (14)
-   ✓ SkiddleSession (4)
-     ✓ initializes successfully with an explicit apiKey
-     ✓ falls back to SKIDDLE_API_KEY environment variable when no key is passed
-     ✓ throws a SkiddleException when no API key is provided
-     ✓ allows toggling devMode
-   ✓ SkiddleRequest (5)
-     ✓ correctly renames keys for API v3 in transformRequestKeys
-     ✓ constructs v3 endpoint and headers when apiVersion is 3
-     ✓ parses API v1 error format properly
-     ✓ parses API v3 error format properly
-     ✓ masks API key in debug logs when devMode is true
-   ✓ SkiddleBase & Conditions (3)
-     ✓ manages query conditions fluently
-     ✓ throws an exception when trying to delete a non-existent condition
-     ✓ uppercases eventCode quirk automatically
-   ✓ Entities: Events, Artists, Venues (2)
-     ✓ fetches single event by id via getListing
-     ✓ works seamlessly with createClient helper
+# Run targeted unit or E2E suites
+pnpm test:unit
+pnpm test:e2e
 
- Test Files  1 passed (1)
-      Tests  14 passed (14)
-   Duration  358ms
+# Run PHP SDK unit tests
+pnpm test:php
+
+# Run the full Vercel-parity CI quality gate (typecheck + lint + test + test:php + build)
+pnpm run ci
 ```
+
+👉 See [`docs/12-tdd-testing-suite-and-ci-cd.md`](./12-tdd-testing-suite-and-ci-cd.md) for the complete TDD workflow and GitHub Actions CI documentation.

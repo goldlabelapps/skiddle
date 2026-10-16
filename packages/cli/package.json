@@ -11,7 +11,11 @@
     "start": "node ./bin/nx.js",
     "cli": "node ./bin/nx.js",
     "doctor": "node ./bin/nx.js doctor",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:unit": "vitest run tests/cli.test.js",
+    "test:e2e": "vitest run tests/e2e.test.js",
+    "typecheck": "node ./scripts/lint.mjs",
+    "lint": "node ./scripts/lint.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

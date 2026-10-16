@@ -11,7 +11,7 @@ const withPWA = withPWAInit({
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@skiddle/sdk'],
+  devIndicators: false,
 };
 
 export default withPWA(nextConfig);
-

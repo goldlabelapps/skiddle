@@ -21,9 +21,12 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
+    "test:unit": "vitest run tests/sdk.test.ts",
+    "test:e2e": "vitest run tests/e2e.test.ts",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "node ./scripts/lint.mjs"
   },
   "keywords": [
     "skiddle",
