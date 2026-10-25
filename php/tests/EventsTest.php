@@ -60,4 +60,17 @@ class EventsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('/artists/', Artists::ENDPOINT);
         $this->assertEquals('/venues/', Venues::ENDPOINT);
     }
+
+    public function testArtistsAndVenuesFluentConditions()
+    {
+        $artists = new Artists();
+        $artists->addCond('name', 'Bicep');
+        $this->assertEquals('Bicep', $artists->getConditions()['name']);
+
+        $venues = new Venues();
+        $venues->addCond('keyword', 'The Warehouse Project');
+        $this->assertEquals('The Warehouse Project', $venues->getConditions()['keyword']);
+        $venues->delCond('keyword');
+        $this->assertFalse(isset($venues->getConditions()['keyword']));
+    }
 }

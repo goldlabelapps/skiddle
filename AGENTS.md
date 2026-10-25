@@ -36,26 +36,35 @@ skiddle/
 
 ## ⚠️ Core Architectural Constraints
 
-1. **Equal First-Class Status for Both PHP and JavaScript SDKs**:
+0. **Engineering Philosophy: Guardrails Over "Vibe Coding"**:
+   - This repository is not "vibe coding". All AI pair-programming operates under rigid, human-architected guardrails.
+   - Without senior engineering architecture, types, tests, and domain constraints, AI is undisciplined and fragile.
+   - Every change must respect static typing, zero-dependency boundaries, and automated test gates.
+
+1. **Day-0 Developer Experience**:
+   - The CLI (`pnpm cli`) is the primary interactive DX entry point (`pnpm install && pnpm cli`).
+   - Any developer joining the project must be able to run diagnostics, test endpoints, and benchmark latency with zero manual configuration.
+
+2. **Equal First-Class Status for Both PHP and JavaScript SDKs**:
    - Both SDKs are actively maintained and first-class citizens.
    - Parity in features and query ergonomics (fluent condition builder: `addCond`, `delCond`, `getConditions`, `clearConditions`).
 
-2. **Zero External Dependencies for JavaScript SDK Core**:
+3. **Zero External Dependencies for JavaScript SDK Core**:
    - `packages/sdk/src/` MUST NOT import external npm packages. It relies exclusively on native modern Node/Web APIs (`fetch`, `URL`, `URLSearchParams`, `AbortController`).
    - CLI dependencies belong strictly in `packages/cli/`.
    - Web application code belongs strictly in `apps/web/`.
 
-3. **Dual CommonJS & ESM Distribution for JavaScript**:
+4. **Dual CommonJS & ESM Distribution for JavaScript**:
    - Built via `tsup` into `packages/sdk/dist/index.js` (ESM), `packages/sdk/dist/index.cjs` (CJS), and `packages/sdk/dist/index.d.ts`.
    - All internal relative imports in `packages/sdk/src/` must include explicit `.js` extensions for ES Module resolution.
 
-4. **Fluent Condition Builder Pattern**:
+5. **Fluent Condition Builder Pattern**:
    - All queryable resources extend `SkiddleBase`.
    - Use `addCond(key, value)` (arrays automatically convert to comma-separated strings).
    - Use `delCond(key)` (throws `SkiddleException` if key is not found, preserving cross-SDK parity).
    - Use `getConditions()` and `clearConditions()`.
 
-5. **Error Handling**:
+6. **Error Handling**:
    - Throw `SkiddleException` for missing keys, validation errors, HTTP errors, or API-level error responses.
 
 ---

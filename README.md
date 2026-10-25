@@ -5,6 +5,33 @@
 
 ---
 
+## ⚡ Day-0 Developer Experience
+
+> *"How is the CLI used? It's used always, from the start: `pnpm install && pnpm cli`. That's how we manage DX, how other developers can use and get involved with zero onboarding."*
+
+```bash
+# Clone and install dependencies
+git clone <repo-url> && cd skiddle
+pnpm install
+
+# Launch the interactive NX° Developer Experience CLI
+pnpm cli
+```
+Within 30 seconds, any engineer can run health diagnostics (`doctor`), query live events, benchmark latency, and verify test parity.
+
+---
+
+## 🛡️ Engineering Philosophy: Guardrails Over "Vibe Coding"
+
+A person is a good fit if their **code is a good fit**. This monorepo is engineered to be production-ready from Day 1:
+
+- **Not "Vibe Coding":** When developers talk about coding with AI, people often mistake it for "vibe coding"—generating untyped, untested spaghetti and hoping it runs. Nothing could be further from the truth. This codebase uses **Agentic AI alongside rigid, human-architected guardrails** dependent on senior engineering experience. Without these guardrails, AI is useless.
+- **Zero-Dependency SDK Core:** `packages/sdk/src/` has **zero external runtime dependencies**. It runs purely on native Web/Node APIs (`fetch`, `URL`, `AbortController`).
+- **Polyglot Parity:** Ported from the official Skiddle PHP SDK, maintaining 100% test scenario compatibility, PSR-4 alignment, and fluent condition builder ergonomics (`addCond`, `delCond`, `getConditions`, `clearConditions`).
+- **End-to-End TDD Quality Gate:** Turborepo-orchestrated CI pipeline (`pnpm run ci`) enforcing static typing, linting, Vitest unit/E2E tests, and PHPUnit parity before any deployment.
+
+---
+
 ## 🏛 Repository Architecture
 
 This polyglot monorepo is managed with **Turborepo** and **pnpm workspaces**:
@@ -188,6 +215,8 @@ Chronological engineering logs and architectural decision records:
 - [`docs/10-interactive-api-testing-component.md`](./docs/10-interactive-api-testing-component.md) - Interactive API testing component, Next.js 15 Server Actions, condition builder UI & multi-view diagnostics
 - [`docs/11-event-detail-and-eflyer-schema.md`](./docs/11-event-detail-and-eflyer-schema.md) - Event detail schema, eFlyer promotional data model & TypeScript contracts
 - [`docs/12-tdd-testing-suite-and-ci-cd.md`](./docs/12-tdd-testing-suite-and-ci-cd.md) - TDD testing pyramid (Unit, E2E, PHP Parity), architectural linting & GitHub Actions CI/CD
+- [`docs/13-event-search-filter-and-discovery.md`](./docs/13-event-search-filter-and-discovery.md) - Real-time event search, multi-facet filtering, regex-safe highlighting, and promotion discovery architecture
+
 
 ---
 

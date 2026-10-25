@@ -603,6 +603,24 @@ export function ApiTester() {
           {/* VIEW: CARDS */}
           {viewMode === 'cards' && (
             <>
+              {activeTab === 'event-single' && (
+                <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                  <button
+                    type="button"
+                    className={styles.backBtn}
+                    onClick={() => {
+                      setActiveTab('events');
+                      runQueryWithParams('events', conditions);
+                    }}
+                  >
+                    ← Back to Live Event Search
+                  </button>
+                  <span style={{ fontSize: 13, color: '#64748b', fontWeight: 500 }}>
+                    Inspecting Event ID: <code style={{ color: '#0284c7', background: '#e2e8f0', padding: '2px 6px', borderRadius: 4 }}>{singleId}</code> via Skiddle API v1
+                  </span>
+                </div>
+              )}
+
               {items.length === 0 ? (
                 <div className={styles.emptyState}>
                   No items matched your current search conditions.
@@ -621,10 +639,14 @@ export function ApiTester() {
                     const venueName =
                       item.venue?.name || item.venue?.town || item.town || '';
                     const venueTown = item.venue?.town || item.town || '';
+                    const venueAddress = item.venue?.address || '';
+                    const venuePostcode = item.venue?.postcode || '';
                     const price = item.entryPrice || item.entryprice || 'Check website';
                     const link =
                       item.link ||
                       (item.id ? `https://www.skiddle.com/whats-on/?id=${item.id}` : '#');
+                    const doorsOpen = item.openingTimes?.doorsopen || item.doorsopen;
+                    const minAge = item.minage || item.minAge;
 
                     return (
                       <div key={item.id || idx} className={styles.card}>
@@ -655,6 +677,7 @@ export function ApiTester() {
                               <span>
                                 {venueName}
                                 {venueTown && venueTown !== venueName ? `, ${venueTown}` : ''}
+                                {venueAddress ? ` (${venueAddress}${venuePostcode ? ` ${venuePostcode}` : ''})` : ''}
                               </span>
                             </div>
                           )}
@@ -663,6 +686,20 @@ export function ApiTester() {
                             <div className={styles.cardMeta}>
                               <span>📅</span>
                               <span>{dateStr}</span>
+                            </div>
+                          )}
+
+                          {doorsOpen && (
+                            <div className={styles.cardMeta}>
+                              <span>🚪</span>
+                              <span>Doors: {doorsOpen}</span>
+                            </div>
+                          )}
+
+                          {minAge && (
+                            <div className={styles.cardMeta}>
+                              <span>🔞</span>
+                              <span>Age Restriction: {minAge}+</span>
                             </div>
                           )}
 
@@ -691,6 +728,22 @@ export function ApiTester() {
                               </span>
                             )}
                           </div>
+
+                          {activeTab === 'events' && item.id && (
+                            <button
+                              type="button"
+                              className={styles.selectEventBtn}
+                              onClick={() => {
+                                const eventId = String(item.id);
+                                setSingleId(eventId);
+                                setActiveTab('event-single');
+                                runQueryWithParams('event-single', {}, eventId);
+                              }}
+                              title={`Drill down and inspect event ${item.id} using Skiddle API v1`}
+                            >
+                              <span>🔍</span> Select & Inspect Event (v1) →
+                            </button>
+                          )}
                         </div>
                       </div>
                     );

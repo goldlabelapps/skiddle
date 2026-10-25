@@ -24,12 +24,18 @@ export interface DebugEntry {
 }
 
 export interface SkiddleApiResponse<T = unknown> {
-  error: number | string;
+  error?: number | string;
   totalresults?: number;
   totalcount?: number;
   page?: number;
   pagecount?: number;
-  results: T;
+  results?: T;
+  data?: T;
+  meta?: {
+    totalresults?: number;
+    count?: number;
+    [key: string]: unknown;
+  };
   requestId?: string;
   [key: string]: unknown;
 }
@@ -189,19 +195,24 @@ export interface EFlyerPromotionData {
 }
 
 export interface SkiddleEvent {
-  id: string;
+  id: string | number;
   EventCode?: string;
-  eventname: string;
+  eventCode?: string;
+  eventname?: string;
+  eventName?: string;
   description: string;
   date: string;
-  startdate: string;
+  startdate?: string;
+  startDate?: string;
   enddate?: string;
-  venue: {
-    id: number | string;
-    name: string;
-    address: string;
-    town: string;
+  endDate?: string;
+  venue?: {
+    id?: number | string;
+    name?: string;
+    address?: string;
+    town?: string;
     postcode_lookup?: string;
+    postcodeLookup?: string;
     postcode?: string;
     country?: string;
     latitude?: number;
@@ -213,19 +224,34 @@ export interface SkiddleEvent {
     doorsclose?: string;
     lastentry?: string;
   };
+  openingTimes?: {
+    doorsOpen?: string;
+    doorsClose?: string;
+    lastEntry?: string;
+  };
   minage?: number | string;
+  MinAge?: number | string;
   entryprice?: string;
+  entryPrice?: string;
   imageurl?: string;
+  imageUrl?: string;
   largeimageurl?: string;
+  largeImageUrl?: string;
+  headerhex?: string;
+  headerHex?: string;
   link?: string;
   artists?: Array<{
-    artistid: string;
+    artistid?: string;
+    id?: string;
     name: string;
     imageurl?: string;
+    imageUrl?: string;
+    [key: string]: unknown;
   }>;
   genres?: Array<{
     name: string;
     id: string;
+    [key: string]: unknown;
   }>;
   tickets?: boolean;
   ticketcount?: number;

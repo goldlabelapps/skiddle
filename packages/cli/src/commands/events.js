@@ -98,9 +98,9 @@ export async function searchEventsCommand(keyword, options = {}) {
     const response = await events.getListings();
     const elapsed = Date.now() - t0;
 
-    const results = Array.isArray(response.results) ? response.results : [];
+    const results = Array.isArray(response.data) ? response.data : (Array.isArray(response.results) ? response.results : []);
     log.divider();
-    log.success(`Found ${colors.bold}${results.length}${colors.reset} event(s) in ${elapsed}ms (Total in index: ${response.totalresults ?? 'N/A'})\n`);
+    log.success(`Found ${colors.bold}${results.length}${colors.reset} event(s) in ${elapsed}ms (Total in index: ${response.totalresults ?? response.meta?.totalresults ?? 'N/A'})\n`);
 
     if (results.length === 0) {
       log.warn('No events matched your search criteria.');
@@ -108,10 +108,10 @@ export async function searchEventsCommand(keyword, options = {}) {
     }
 
     results.forEach((evt, idx) => {
-      const name = `${colors.bold}${colors.brightWhite}${evt.eventname || 'Untitled Event'}${colors.reset}`;
+      const name = `${colors.bold}${colors.brightWhite}${evt.eventname || evt.eventName || 'Untitled Event'}${colors.reset}`;
       const date = `${colors.cyan}${evt.date || evt.startdate || 'Date TBD'}${colors.reset}`;
       const venueName = evt.venue ? `${evt.venue.name || 'Venue TBD'} (${evt.venue.town || ''})` : 'Unknown venue';
-      const price = evt.entryprice ? `${colors.brightGreen}${evt.entryprice}${colors.reset}` : `${colors.gray}Price not listed${colors.reset}`;
+      const price = (evt.entryprice || evt.entryPrice) ? `${colors.brightGreen}${evt.entryprice || evt.entryPrice}${colors.reset}` : `${colors.gray}Price not listed${colors.reset}`;
       const tickets = evt.tickets ? `${colors.brightGreen}🎟 Tickets Available${colors.reset}` : `${colors.yellow}Sold Out / Off Sale${colors.reset}`;
 
       console.log(`  ${colors.brightCyan}[${idx + 1}]${colors.reset} ${name}`);
@@ -126,7 +126,7 @@ export async function searchEventsCommand(keyword, options = {}) {
     // In interactive mode, let the user inspect an event or open in browser
     if (options.interactive && results.length > 0) {
       const inspectOptions = results.map((evt, idx) => ({
-        label: `${evt.eventname || 'Event #' + (idx + 1)} (${evt.date || 'TBD'})`,
+        label: `${evt.eventname || evt.eventName || 'Event #' + (idx + 1)} (${evt.date || 'TBD'})`,
         value: String(idx),
       }));
 

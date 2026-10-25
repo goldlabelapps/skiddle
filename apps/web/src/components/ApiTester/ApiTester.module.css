@@ -741,3 +741,47 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.selectEventBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.selectEventBtn:hover {
+  background-color: #0369a1;
+  transform: translateY(-1px);
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ffffff;
+  color: #0284c7;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.backBtn:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0369a1;
+}

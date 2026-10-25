@@ -34,11 +34,11 @@ flowchart TD
 
     subgraph Packages ["Workspace Coverage"]
         Unit --> SDK_U["packages/sdk/tests/sdk.test.ts (30 tests)"]
-        Unit --> CLI_U["packages/cli/tests/cli.test.js (15 tests)"]
-        Unit --> Web_U["apps/web/tests/unit/actions.test.ts (7 tests)"]
+        Unit --> CLI_U["packages/cli/tests/cli.test.js (16 tests)"]
+        Unit --> Web_U["apps/web/tests/unit/ (5 suites: 31 tests)"]
 
         E2E --> SDK_E["packages/sdk/tests/e2e.test.ts (3 tests)"]
-        E2E --> CLI_E["packages/cli/tests/e2e.test.js (6 tests)"]
+        E2E --> CLI_E["packages/cli/tests/e2e.test.js (7 tests)"]
         E2E --> Web_E["apps/web/tests/e2e/web-e2e.test.ts (3 tests)"]
     end
 
@@ -46,7 +46,7 @@ flowchart TD
         PHP --> PHP_Syntax["php -l php/src/*.php"]
         PHP --> PHP_Session["SkiddleSessionTest.php (3 tests)"]
         PHP --> PHP_Req["SkiddleRequestTest.php (2 tests)"]
-        PHP --> PHP_Events["EventsTest.php (3 tests)"]
+        PHP --> PHP_Events["EventsTest.php (4 tests)"]
     end
 ```
 
@@ -100,14 +100,14 @@ All test, lint, and typecheck tasks in `turbo.json` declare `"dependsOn": ["^bui
 
 | File | Command | Tests | Responsibilities |
 | :--- | :--- | :---: | :--- |
-| `tests/cli.test.js` | `pnpm --filter @skiddle/cli test:unit` | **15** | Main menu options, `parseArgs` flag/positional parser, `checkEnv` diagnostics, ANSI terminal styling, 10 classic scenarios, and Git auto-commit generator. |
-| `tests/e2e.test.js` | `pnpm --filter @skiddle/cli test:e2e` | **6** | Child-process execution of `bin/nx.js` (`--version`, `--help`), dry-run CI pipeline verification, and mocked E2E runs of `getEventCommand`, `searchEventsCommand`, and `doctorCommand`. |
+| `tests/cli.test.js` | `pnpm --filter @skiddle/cli test:unit` | **16** | Main menu options, `devCommand` dry-run, `parseArgs` flag/positional parser, `checkEnv` diagnostics, ANSI terminal styling, 10 classic scenarios, and Git auto-commit generator. |
+| `tests/e2e.test.js` | `pnpm --filter @skiddle/cli test:e2e` | **7** | Child-process execution of `bin/nx.js` (`--version`, `--help`), dry-run CI pipeline verification, and mocked E2E runs of `getEventCommand`, `searchEventsCommand` (v1 and v3 structures), and `doctorCommand`. |
 
 #### Key CLI Test Specifications:
 - **Argument Parsing (`parseArgs`)**: Positional command/subcommand extraction, short flags (`-h`, `-v`, `-i`, `-q`, `-y`, `-k`, `-l`, `-c`), and `--key=value` vs `--key value` forms.
 - **Environment Diagnostics (`checkEnv`)**: Node.js version support (`>= 18`), OS platform detection, `pnpm` package manager detection, Git availability, and `SKIDDLE_API_KEY` presence.
 - **Conventional Commit Generator (`git.js`)**: `git status --porcelain` line parsing (`M`, `??`, `R`), workspace categorization (`cli`, `php`, `js`, `docs`), and automatic conventional commit title/body generation.
-- **E2E Command Execution**: Spawns `node ./packages/cli/bin/nx.js` via `execFileSync` to verify binary entrypoints, tests `runTest()` across all 6 modes (`ci`, `unit`, `e2e`, `php`, `lint`, `build`) in `dryRun` mode, and verifies `doctorCommand` against mocked API v3 and v1 endpoints.
+- **E2E Command Execution**: Spawns `node ./packages/cli/bin/nx.js` via `execFileSync` to verify binary entrypoints, tests `runTest()` across all 6 modes (`ci`, `unit`, `e2e`, `php`, `lint`, `build`) in `dryRun` mode, verifies `searchEventsCommand` with both legacy and API v3 response structures (`data` array and `meta.totalresults`), and verifies `doctorCommand` against mocked API v3 and v1 endpoints.
 
 ---
 
@@ -116,6 +116,10 @@ All test, lint, and typecheck tasks in `turbo.json` declare `"dependsOn": ["^bui
 | File | Command | Tests | Responsibilities |
 | :--- | :--- | :---: | :--- |
 | `tests/unit/actions.test.ts` | `pnpm --filter web test:unit` | **7** | Server Actions (`checkServerConfig`, `executeSkiddleQuery`), blank condition pruning, API key fallback, resource routing, and HTTP status error mapping. |
+| `tests/unit/api-routes.test.ts` | `pnpm --filter web test:unit` | **8** | Route handlers (`/api/events`, `/api/events/[id]`), API key presence check, query parameter sanitization, limit clamping, and `SkiddleException` HTTP status mapping. |
+| `tests/unit/event-detail-page.test.tsx` | `pnpm --filter web test:unit` | **4** | Server Component `EventDetailPage` and `generateMetadata`: API key fallback screen, error state recovery, and successful `EventDetailClient` rendering. |
+| `tests/unit/event-search.test.tsx` | `pnpm --filter web test:unit` | **11** | Component rendering, `HighlightText` regex safety, `stripHtml` tag stripping, `CATEGORIES` validation, and `normalizeEvent` transformation of v1/v3 shapes. |
+| `tests/unit/footer.test.tsx` | `pnpm --filter web test:unit` | **1** | Global `Footer` component: developer resources (`/sdk`, Promotion Centre, API docs, GitHub repo), navigation, and copyright. |
 | `tests/e2e/web-e2e.test.ts` | `pnpm --filter web test:e2e` | **3** | PWA Web App Manifest contract, RootLayout metadata/viewport validation, and full E2E Server Action → `@skiddle/sdk` → `toEFlyerPromotionData` pipeline. |
 
 #### Key Web Application Test Specifications:
@@ -125,6 +129,13 @@ All test, lint, and typecheck tasks in `turbo.json` declare `"dependsOn": ["^bui
   - Strips whitespace-only condition values before invoking `@skiddle/sdk`.
   - Routes `'events'`, `'event-single'` (with default fallback ID `'42616476'`), `'venues'`, and `'artists'` to their respective SDK methods.
   - Catches `SkiddleException` and returns `{ success: false, error, errorCode }` with masked debug telemetry (`apiKey=xxxxxxxxxxxxxxxxxx`).
+- **Next.js 15 Route Handlers (`/api/events` & `/api/events/[id]`)**:
+  - Enforces API key presence on server side; returns 500 JSON when missing.
+  - Automatically translates query params into SDK conditions, translating `limit` into API v3 `page[size]` and clamping to $[1, 50]$.
+  - Handles `SkiddleException` (e.g. 401 or 404) with exact HTTP status codes and detailed JSON payload.
+- **Server Components & ViewModels**:
+  - `EventDetailPage` renders graceful fallbacks for missing keys and missing listings.
+  - `normalizeEvent` extracts event name, venue name/town, date, image URL, ticket availability, and genres across heterogeneous v1/v3 shapes.
 - **PWA & Layout Contracts**: Verifies `manifest()` icons, standalone display mode, `#080f19`/`#0b0f19` theme colors, and Next.js `metadata`/`viewport` exports.
 
 ---
@@ -135,7 +146,7 @@ All test, lint, and typecheck tasks in `turbo.json` declare `"dependsOn": ["^bui
 | :--- | :--- | :---: | :--- |
 | `php/tests/SkiddleSessionTest.php` | `pnpm test:php` | **3** | Explicit `api_key` initialization, `SKIDDLE_API_KEY` `getenv()` fallback, and `SkiddleException` when missing. |
 | `php/tests/SkiddleRequestTest.php` | `pnpm test:php` | **2** | API version getter/setter (`v1`/`v3`) and `transformRequestKeys()` pagination/parameter translation parity with TypeScript. |
-| `php/tests/EventsTest.php` | `pnpm test:php` | **3** | Fluent condition management (`addCond`, `delCond`, `getConditions`, `clearConditions`), array-to-CSV conversion, missing condition exception, and entity session binding. |
+| `php/tests/EventsTest.php` | `pnpm test:php` | **4** | Fluent condition management (`addCond`, `delCond`, `getConditions`, `clearConditions`), array-to-CSV conversion, missing condition exception, entity session binding, and `Artists`/`Venues` fluent parity. |
 
 The PHP test suite uses a standalone zero-dependency test runner (`php/tests/run.php`) with a built-in `PHPUnit_Framework_TestCase` polyfill so tests can run immediately on any PHP CLI (`php php/tests/run.php`) without requiring Composer vendor downloads, while remaining 100% compatible with PHPUnit (`phpunit php/tests`).
 
