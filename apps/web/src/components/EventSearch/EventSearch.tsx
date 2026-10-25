@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './EventSearch.module.css';
 import { HighlightText } from './HighlightText';
-import { Calendar, MapPin, ArrowRight, Search } from 'lucide-react';
+import { Calendar, MapPin, Search } from 'lucide-react';
 
 export interface EventListItem {
   id: string | number;
@@ -65,6 +65,32 @@ export function formatDateDisplay(d: Date): string {
     month: 'short',
     year: 'numeric',
   });
+}
+
+export function formatBritishDate(dateStr?: string): string {
+  if (!dateStr || dateStr === 'Date TBA' || dateStr === 'Date TBD') return dateStr || 'Date TBD';
+  try {
+    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const year = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1;
+      const day = parseInt(match[3], 10);
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(year, month, day));
+    }
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(d);
+  } catch {
+    return dateStr;
+  }
 }
 
 export function getToday(): Date {
@@ -549,7 +575,7 @@ export function EventSearch() {
               key={event.id}
               href={`/events/${event.id}`}
               className={styles.card}
-              title={`Select ${event.eventName} to edit & promote`}
+              title={`View ${event.eventName}`}
             >
               <div className={styles.imageWrapper}>
                 {event.imageUrl ? (
@@ -575,17 +601,17 @@ export function EventSearch() {
               </div>
 
               <div className={styles.cardBody}>
-                <div className={styles.cardDate}>
-                  <Calendar size={13} style={{ flexShrink: 0 }} />
-                  <span>{event.date || 'Date TBD'}</span>
-                </div>
-
                 <h2 className={styles.cardTitle}>
                   <HighlightText
                     text={event.eventName}
                     query={debouncedKeyword}
                   />
                 </h2>
+
+                <div className={styles.cardDate}>
+                  <Calendar size={13} style={{ flexShrink: 0 }} />
+                  <span>{formatBritishDate(event.date)}</span>
+                </div>
 
                 <div className={styles.cardVenue}>
                   <MapPin size={13} style={{ flexShrink: 0 }} />
@@ -605,16 +631,6 @@ export function EventSearch() {
                     />
                   </p>
                 )}
-
-                <div className={styles.cardFooter}>
-                  <div className={styles.priceTag}>
-                    {event.price || 'Free / TBA'}
-                  </div>
-                  <span className={styles.ctaButton}>
-                    <span>Promote Event</span>
-                    <ArrowRight size={13} style={{ display: 'inline-flex', verticalAlign: 'middle', marginLeft: 4 }} />
-                  </span>
-                </div>
               </div>
             </Link>
           ))}

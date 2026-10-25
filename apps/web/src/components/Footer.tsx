@@ -42,55 +42,7 @@ export function Footer() {
           {/* Candidate */}
           <div>
             <h4 className={styles.columnTitle}>Candidate</h4>
-            <ul className={styles.linkList}>
-              <li className={styles.linkItem}>
-                <Link href="/sdk">
-                  <span className={styles.linkIcon}>
-                    <CodeIcon />
-                  </span>
-                  <span>SDK Explorer</span>
-                </Link>
-              </li>
-              <li className={styles.linkItem}>
-                <a
-                  href="https://promotioncentre.co.uk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className={styles.linkIcon}>
-                    <SparklesIcon />
-                  </span>
-                  <span>Promotion Centre</span>
-                  <ExternalIcon />
-                </a>
-              </li>
-              <li className={styles.linkItem}>
-                <a
-                  href="https://www.skiddle.com/api/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className={styles.linkIcon}>
-                    <BookIcon />
-                  </span>
-                  <span>API Documentation</span>
-                  <ExternalIcon />
-                </a>
-              </li>
-              <li className={styles.linkItem}>
-                <a
-                  href="https://github.com/listingslab/skiddle"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className={styles.linkIcon}>
-                    <TerminalIcon />
-                  </span>
-                  <span>Monorepo Source</span>
-                  <ExternalIcon />
-                </a>
-              </li>
-            </ul>
+            <ul className={styles.linkList}></ul>
           </div>
 
           {/* Skiddle */}
@@ -104,26 +56,6 @@ export function Footer() {
                   rel="noopener noreferrer"
                 >
                   <span>Skiddle.com</span>
-                  <ExternalIcon />
-                </a>
-              </li>
-              <li className={styles.linkItem}>
-                <a
-                  href="https://www.skiddle.com/whats-on/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>What&apos;s On Guide</span>
-                  <ExternalIcon />
-                </a>
-              </li>
-              <li className={styles.linkItem}>
-                <a
-                  href="https://www.skiddle.com/festivals/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>Festivals Guide</span>
                   <ExternalIcon />
                 </a>
               </li>
@@ -202,78 +134,3 @@ function ExternalIcon() {
   );
 }
 
-function CodeIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
-    </svg>
-  );
-}
-
-function SparklesIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
-    </svg>
-  );
-}
-
-function BookIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
-      <path d="M6 6h10" />
-      <path d="M6 10h10" />
-    </svg>
-  );
-}
-
-function TerminalIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="4 17 10 11 4 5" />
-      <line x1="12" y1="19" x2="20" y2="19" />
-    </svg>
-  );
-}
