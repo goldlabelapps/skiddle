@@ -2,13 +2,16 @@
   width: 100%;
   max-width: 1140px;
   margin: 0 auto;
-  padding: 32px 16px 80px;
+  padding: 48px 16px 80px;
   box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
 }
 
 .badge {
@@ -24,7 +27,7 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .badgeDot {
@@ -36,12 +39,12 @@
 }
 
 .title {
-  font-size: clamp(28px, 5vw, 42px);
-  font-weight: 800;
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 600;
   color: #0f172a;
-  letter-spacing: -0.03em;
-  margin-bottom: 12px;
-  line-height: 1.2;
+  line-height: 1.25;
+  margin: 0 0 20px 0;
+  text-align: center;
 }
 
 .subtitle {
@@ -56,9 +59,14 @@
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 24px;
+  padding: 28px 24px;
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .mainInputRow {
@@ -66,6 +74,9 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
+  width: 100%;
+  max-width: 760px;
+  justify-content: center;
 }
 
 .mainInputWrapper {
@@ -156,11 +167,67 @@
   }
 }
 
+.categorySection {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.chipsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.chip {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+  line-height: 1.3;
+}
+
+.chip:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.chipActive {
+  background: #00d26a;
+  border-color: #00d26a;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 210, 106, 0.25);
+}
+
+.chipActive:hover {
+  background: #00b85c;
+  border-color: #00b85c;
+  color: #ffffff;
+}
+
 .filterRow {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .filterGroup {
@@ -171,12 +238,195 @@
   min-width: 180px;
 }
 
+.dateSliderSection {
+  width: 100%;
+  max-width: 640px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.rangeDisplayBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 13px;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.calendarIcon {
+  color: #00d26a;
+  flex-shrink: 0;
+}
+
+.durationTag {
+  margin-left: 6px;
+  font-size: 12px;
+  color: #059669;
+  font-weight: 600;
+}
+
+.dualSliderWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  margin: 12px auto 14px;
+}
+
+.sliderTrack {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #e2e8f0;
+}
+
+.sliderHighlight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #00d26a;
+  box-shadow: 0 0 10px rgba(0, 210, 106, 0.45);
+}
+
+.rangeInput {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+.rangeInput::-webkit-slider-runnable-track {
+  height: 8px;
+  background: transparent;
+  border: none;
+}
+
+.rangeInput::-moz-range-track {
+  height: 8px;
+  background: transparent;
+  border: none;
+}
+
+.rangeInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 3px solid #00d26a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  cursor: grab;
+  margin-top: -7px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.rangeInput::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  box-shadow: 0 3px 12px rgba(0, 210, 106, 0.4);
+}
+
+.rangeInput::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.24);
+}
+
+.rangeInput::-moz-range-thumb {
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 3px solid #00d26a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  cursor: grab;
+  box-sizing: border-box;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.rangeInput::-moz-range-thumb:hover {
+  transform: scale(1.18);
+  box-shadow: 0 3px 12px rgba(0, 210, 106, 0.4);
+}
+
+.rangeInput::-moz-range-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.24);
+}
+
+.presetChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.presetChip {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.presetChip:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.presetChipActive {
+  background: #00d26a;
+  border-color: #00d26a;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 210, 106, 0.25);
+}
+
+.presetChipActive:hover {
+  background: #00b85c;
+  border-color: #00b85c;
+  color: #ffffff;
+}
+
 .filterLabel {
   font-size: 12px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-align: center;
 }
 
 .filterSelect,
@@ -189,7 +439,7 @@
   color: #0f172a;
   outline: none;
   transition: border-color 0.15s ease;
-  width: 100%;
+  width: auto;
 }
 
 .filterSelect:focus,
@@ -198,7 +448,6 @@
 }
 
 .resetButton {
-  align-self: flex-end;
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   color: #475569;

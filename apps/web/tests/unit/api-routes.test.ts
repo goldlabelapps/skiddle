@@ -71,6 +71,35 @@ describe('Web App Route Handlers (/api/events)', () => {
       expect(calledUrl.searchParams.get('page[size]')).toBe('30');
     });
 
+    it('forwards minDate and maxDate range parameters to SDK conditions', async () => {
+      process.env.SKIDDLE_API_KEY = 'mock_api_key';
+
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            error: 0,
+            totalresults: 1,
+            pagecount: 1,
+            results: [{ id: '201', eventname: 'Autumn Festival' }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+
+      const req = new NextRequest(
+        'http://localhost:3000/api/events?minDate=2026-11-01&maxDate=2026-11-15'
+      );
+      const response = await getEvents(req);
+      const json = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(json.success).toBe(true);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      const calledUrl = new URL(fetchSpy.mock.calls[0][0] as string);
+      expect(calledUrl.searchParams.get('minDate')).toBe('2026-11-01');
+      expect(calledUrl.searchParams.get('maxDate')).toBe('2026-11-15');
+    });
+
     it('clamps limit to maximum of 50 and minimum of 1, ignoring eventcode=all', async () => {
       process.env.SKIDDLE_API_KEY = 'mock_api_key';
 

@@ -6,7 +6,10 @@ export default function HomePage() {
       style={{
         flex: 1,
         width: '100%',
+        minHeight: '100vh',
         boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <EventSearch />
