@@ -69,6 +69,16 @@ export function Footer() {
                   <ExternalIcon />
                 </a>
               </li>
+              <li className={styles.linkItem}>
+                <a
+                  href="/docs/React%20Developer%20Job%20Spec%20-%20Sep%2026.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>Job Description</span>
+                  <ExternalIcon />
+                </a>
+              </li>
             </ul>
           </div>
         </div>

@@ -21,6 +21,8 @@ describe('Footer Component', () => {
     // Skiddle External Links
     expect(html).toContain('Skiddle.com');
     expect(html).toContain('Promotion Centre');
+    expect(html).toContain('Job Description');
+    expect(html).toContain('/docs/React%20Developer%20Job%20Spec%20-%20Sep%2026.pdf');
     expect(html).not.toContain("What's On Guide");
     expect(html).not.toContain('Festivals Guide');
 
