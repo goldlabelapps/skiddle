@@ -22,7 +22,7 @@ export interface EventListItem {
   raw: any;
 }
 
-const CATEGORIES = [
+export const CATEGORIES = [
   { value: 'all', label: 'All Categories' },
   { value: 'LIVE', label: 'Live Music / Gigs' },
   { value: 'CLUB', label: 'Clubbing & DJ' },
@@ -35,12 +35,12 @@ const CATEGORIES = [
   { value: 'EXHIB', label: 'Exhibitions' },
 ];
 
-function stripHtml(html?: string): string {
+export function stripHtml(html?: string): string {
   if (!html) return '';
   return html.replace(/<[^>]+>/g, '').trim();
 }
 
-function normalizeEvent(raw: any): EventListItem {
+export function normalizeEvent(raw: any): EventListItem {
   const id = raw.id || raw.listingId || raw.listingid || '';
   const eventName = raw.eventName || raw.eventname || 'Untitled Event';
   const description = stripHtml(raw.description || '');

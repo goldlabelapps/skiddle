@@ -199,3 +199,34 @@
   - `pnpm typecheck`: Monorepo type safety verified.
 - **Reference Doc:** [13-event-search-filter-and-discovery.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/13-event-search-filter-and-discovery.md)
 
+---
+
+### Step 15: Monorepo Test Suite Modernization & Full Quality Gate Hardening
+- **Date:** 2026-10-25
+- **Context & Decision:**
+  - Following the implementation of Next.js 15 route handlers, promotion detail server components, and multi-facet event filtering, modernized the entire monorepo test suite to achieve full automated coverage across all newly added runtime contracts.
+  - Ensured strict network isolation, deterministic Vitest mocking, and complete parity between the JavaScript/TypeScript and PHP SDKs.
+- **Action & Implementation:**
+  - **Next.js 15 Route Handlers (`apps/web/tests/unit/api-routes.test.ts` — 8 tests):**
+    - Tested `/api/events`: missing server API key rejection (500), query parameter sanitization (`keyword`, `eventcode`, `date`, `limit`), limit boundary clamping ($[1, 50]$), SDK v3 parameter translation (`eventCode`, `page[size]`), and `SkiddleException` HTTP status mapping.
+    - Tested `/api/events/[id]`: missing ID rejection (400), missing server key rejection (500), single event retrieval with debug telemetry, and 404 propagation.
+  - **Event Detail Server Component & Metadata (`apps/web/tests/unit/event-detail-page.test.tsx` — 4 tests):**
+    - Tested `generateMetadata` contract producing dynamic SEO and social titles for target event IDs.
+    - Tested `EventDetailPage` server rendering: API key missing screen, error recovery on missing listing/API rejection, and `EventDetailClient` rendering with lineup and pricing.
+  - **Event Search & Normalization (`apps/web/tests/unit/event-search.test.tsx` — 11 tests):**
+    - Tested `CATEGORIES` configuration, `stripHtml` tag stripping/trimming, and `normalizeEvent` transformation across legacy v1 and modern v3 response payloads.
+  - **Global Footer Navigation (`apps/web/tests/unit/footer.test.tsx` — 1 test):**
+    - Validated developer resource links (`/sdk`, Promotion Centre, API docs, GitHub repo), Skiddle navigation links, and copyright elements.
+  - **CLI Discovery Parity (`packages/cli/tests/e2e.test.js` — 7 tests):**
+    - Added test verifying `searchEventsCommand` rendering against API v3 response structures (`data` array and `meta.totalresults`).
+  - **PHP SDK Entity Parity (`php/tests/EventsTest.php` — 4 tests):**
+    - Added `testArtistsAndVenuesFluentConditions` testing PSR-4 parity for `Artists` and `Venues` fluent condition builders.
+  - **Documentation Alignment:** Updated `apps/web/README.md`, `docs/04-testing-and-verification.md`, `docs/12-tdd-testing-suite-and-ci-cd.md`, and `docs/TRANSCRIPT.md`.
+- **Verification:**
+  - `pnpm test`: 90/90 Vitest tests passed across `@skiddle/sdk` (33), `@skiddle/cli` (23), and `apps/web` (34).
+  - `php php/tests/run.php`: 9/9 PHP tests passed.
+  - `pnpm typecheck` & `pnpm lint`: Zero errors across the monorepo.
+  - Total: **99 automated tests** passing at 100% green.
+- **Reference Docs:** [04-testing-and-verification.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/04-testing-and-verification.md), [12-tdd-testing-suite-and-ci-cd.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/12-tdd-testing-suite-and-ci-cd.md)
+
+

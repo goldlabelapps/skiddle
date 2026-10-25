@@ -1,7 +1,7 @@
 # 12 — TDD Testing Suite, E2E Contracts & GitHub Actions CI/CD
 
-> **Document Version:** 2.0.0  
-> **Scope:** Exhaustive technical reference for Test-Driven Development (TDD) workflows, complete test case catalog (72 automated tests: 64 Vitest + 8 PHP across 7 test suites), custom architectural linters, and GitHub Actions / Vercel CI/CD parity.
+> **Document Version:** 2.1.0  
+> **Scope:** Exhaustive technical reference for Test-Driven Development (TDD) workflows, complete test case catalog (99 automated tests: 90 Vitest + 9 PHP across 13 test suites), custom architectural linters, and GitHub Actions / Vercel CI/CD parity.
 
 ---
 
@@ -15,7 +15,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-## 2. Complete Test Suite Catalog (72 Automated Tests)
+## 2. Complete Test Suite Catalog (99 Automated Tests)
 
 ### 2.1 `@skiddle/sdk` Unit Test Suite (`packages/sdk/tests/sdk.test.ts` — 30 Tests)
 
@@ -64,9 +64,9 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-### 2.3 `@skiddle/cli` Unit & E2E Suites (`packages/cli/tests/` — 21 Tests)
+### 2.3 `@skiddle/cli` Unit & E2E Suites (`packages/cli/tests/` — 23 Tests)
 
-#### Unit Suite (`packages/cli/tests/cli.test.js` — 15 Tests)
+#### Unit Suite (`packages/cli/tests/cli.test.js` — 16 Tests)
 - **`CLI Main Menu Options`**: Verifies all 9 interactive commands (`dev`, `events`, `doctor`, `scenarios`, `benchmark`, `test`, `git`, `env`, `help`), confirms `dev` is the top menu item, verifies non-empty descriptions, and tests `devCommand({ dryRun: true, quiet: true })`.
 - **`CLI Argument Parser (parseArgs)`**: Verifies positional command/subcommand parsing, short boolean flags (`-h`, `-v`, `-i`, `-q`, `-y`, `--dev`, `--dry-run`), key-value flags (`-k`, `-l`, `-c`, `--requests=50`, `--concurrency=10`), and empty argument defaults.
 - **`CLI Environment Diagnostics (checkEnv)`**: Verifies Node.js version (`>= 18`), OS detection, preferred package manager (`pnpm`), Git installation check, and `SKIDDLE_API_KEY` status.
@@ -74,19 +74,20 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 - **`Classic Scenarios Parity`**: Confirms all 10 classic Skiddle scenarios (`id: 1..10`) are defined in `SCENARIO_DEFS`.
 - **`Git Auto Commit Message Generator`**: Tests `parseFileLine()` (`M`, `??`, `R`), `categorizeFile()` (`cli`, `php`, `js`, `docs`), and `generateCommitMessage()` conventional commit formatting (`feat(cli)`, `docs`, `test(js)`, `feat(sdk)`, `chore`).
 
-#### E2E Execution Suite (`packages/cli/tests/e2e.test.js` — 6 Tests)
+#### E2E Execution Suite (`packages/cli/tests/e2e.test.js` — 7 Tests)
 - **`executes nx --version binary and outputs valid version string`**: Spawns `node bin/nx.js --version` in a child process and matches `/v\d+\.\d+\.\d+/`.
 - **`executes nx --help binary and renders command reference`**: Spawns `node bin/nx.js --help` and verifies command documentation output.
 - **`executes runTest in dry-run mode across all CI pipeline stages and submodes`**: Exercises `runTest()` for `'ci'`, `'unit'`, `'e2e'`, `'php'`, `'lint'`, and `'build'` with `{ dryRun: true, quiet: true }`.
 - **`executes getEventCommand end-to-end with mocked SDK transport`**: Verifies `nx events get 42616476` end-to-end through `@skiddle/sdk`.
 - **`executes searchEventsCommand end-to-end with mocked SDK transport`**: Verifies `nx events Warehouse` end-to-end through `@skiddle/sdk`.
 - **`executes doctorCommand end-to-end verifying both API v3 and v1 health checks`**: Mocks the 3 sequential health probes performed by `nx doctor` (API v3 search, API v3 validation, API v1 single event lookup) and asserts a healthy `true` return.
+- **`executes searchEventsCommand with API v3 response structure (data array & meta totalresults)`**: Verifies CLI discovery rendering with API v3 `{ meta: { totalresults }, data: [...] }` payload structure, camelCase `eventName`, and `entryPrice`.
 
 ---
 
-### 2.4 `apps/web` Next.js 15 Unit & E2E Suites (`apps/web/tests/` — 10 Tests)
+### 2.4 `apps/web` Next.js 15 Unit & E2E Suites (`apps/web/tests/` — 34 Tests across 6 Suites)
 
-#### Unit Suite (`apps/web/tests/unit/actions.test.ts` — 7 Tests)
+#### Server Actions Suite (`apps/web/tests/unit/actions.test.ts` — 7 Tests)
 - **`checkServerConfig reports whether SKIDDLE_API_KEY is configured in environment`**: Toggles `process.env.SKIDDLE_API_KEY` and verifies `{ hasServerApiKey: false }` vs `{ hasServerApiKey: true }`.
 - **`returns 401 error result when neither custom apiKey nor SKIDDLE_API_KEY is provided`**: Verifies `executeSkiddleQuery()` returns `{ success: false, errorCode: 401 }` without making network calls.
 - **`executes events query, filters blank conditions, and returns debug telemetry`**: Verifies whitespace-only conditions (`emptyField: '   '`) are stripped, `conditionsSent` is recorded, and `debugInfo` masks the API key.
@@ -95,6 +96,35 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 - **`catches SkiddleException and returns structured error payload with HTTP status code`**: Verifies upstream `403 Invalid API key provided` errors return `{ success: false, errorCode: 403, error: 'Invalid API key provided' }`.
 - **`rejects unsupported resource types gracefully`**: Returns `{ success: false, error: 'Unsupported resource: ...' }`.
 
+#### API Route Handlers Suite (`apps/web/tests/unit/api-routes.test.ts` — 8 Tests)
+- **`GET /api/events`**:
+  - Rejects with 500 JSON when server API key is unconfigured.
+  - Parses search params (`keyword`, `eventcode`, `date`, `limit`) and maps them to SDK conditions.
+  - Translates `limit` to API v3 `page[size]` and enforces bounds ($1 \le \text{limit} \le 50$), ignoring `eventcode=all`.
+  - Translates SDK `SkiddleException` (e.g. 401) to proper HTTP status code and structured JSON response.
+- **`GET /api/events/[id]`**:
+  - Returns 400 when event ID parameter is empty.
+  - Returns 500 when server API key is unconfigured.
+  - Returns single event listing, raw payload, and debug traces on success.
+  - Translates SDK `SkiddleException` (e.g. 404) to HTTP 404 response.
+
+#### Event Detail Page Suite (`apps/web/tests/unit/event-detail-page.test.tsx` — 4 Tests)
+- **`generateMetadata`**: Validates title format (`Promote Event #<id> | Skiddle`) and dynamic description.
+- **`EventDetailPage`**:
+  - Renders "API Key Missing" alert screen when `SKIDDLE_API_KEY` is not present.
+  - Renders error recovery screen when listing is not found or API rejects.
+  - Renders full `EventDetailClient` with structured pricing, lineup, venue, and JSON inspection on success.
+
+#### Event Search & Helpers Suite (`apps/web/tests/unit/event-search.test.tsx` — 11 Tests)
+- **`HighlightText`**: Empty query pass-through, case-insensitive match mark wrapping, regex safe escaping, and null handling.
+- **`CATEGORIES`**: Validates category array configuration (`all`, `LIVE`, `CLUB`, `FEST`, `COMEDY`, `THEATRE`, `SPORT`, etc.).
+- **`stripHtml`**: HTML tag stripping and whitespace trimming.
+- **`normalizeEvent`**: Normalizes legacy API v1 shapes (`results`, `eventname`, `entryprice`) and API v3 shapes (`data`, `eventName`, `entryPrice`, `meta.totalresults`) into unified `EventListItem`.
+- **`EventSearch Initial State`**: Validates clean initial landing render without empty-state flash or premature search spinners.
+
+#### Footer Component Suite (`apps/web/tests/unit/footer.test.tsx` — 1 Test)
+- **`Footer`**: Validates brand description, developer resource links (`/sdk`, Promotion Centre, API docs, GitHub repo), Skiddle navigation links, back-to-top button, and copyright notice.
+
 #### E2E & Integration Suite (`apps/web/tests/e2e/web-e2e.test.ts` — 3 Tests)
 - **`validates PWA Web App Manifest contract and icon definitions`**: Tests `src/app/manifest.ts` for `name`, `short_name`, `start_url`, `display: 'standalone'`, `theme_color: '#0b0f19'`, and `>= 5` icon definitions.
 - **`validates RootLayout metadata and viewport contracts`**: Tests `src/app/layout.tsx` exports (`viewport.themeColor`, `metadata.title`, `metadata.manifest`).
@@ -102,7 +132,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-### 2.5 Polyglot PHP SDK Unit & Parity Suite (`php/tests/` — 8 Tests)
+### 2.5 Polyglot PHP SDK Unit & Parity Suite (`php/tests/` — 9 Tests across 3 Suites)
 
 Executed via `pnpm test:php` (`php php/tests/run.php`):
 
@@ -116,6 +146,7 @@ Executed via `pnpm test:php` (`php php/tests/run.php`):
 | **`EventsTest`** | `testFluentConditionsManagementParity` | Verifies `addCond()`, array-to-comma string conversion (`['house', 'techno']` → `'house,techno'`), `getConditions()`, `delCond()`, and `clearConditions()`. |
 | **`EventsTest`** | `testDelCondThrowsOnMissingCondition` | Throws `SkiddleSDK\SkiddleException` (`'Trying to delete condition missing_key, but condition not found'`). |
 | **`EventsTest`** | `testEntitiesBindSessionCorrectly` | Confirms `Events`, `Artists`, and `Venues` bind `SkiddleSession`, propagate `dev_mode`, and define `/events/instant-search/`, `/artists/`, and `/venues/` endpoints. |
+| **`EventsTest`** | `testArtistsAndVenuesFluentConditions` | Confirms `Artists` and `Venues` entities inherit fluent condition methods (`addCond`, `delCond`, `getConditions`) with PSR-4 parity. |
 
 ---
 

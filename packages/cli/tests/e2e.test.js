@@ -128,4 +128,33 @@ describe('CLI End-to-End (E2E) Execution Suite', () => {
     const healthy = await doctorCommand({ key: 'mock_doctor_key_12345678', quiet: true });
     expect(healthy).toBe(true);
   });
+
+  it('executes searchEventsCommand with API v3 response structure (data array & meta totalresults)', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          error: 0,
+          meta: { totalresults: 42 },
+          data: [
+            {
+              id: '202',
+              eventName: 'Teletech Festival',
+              date: '2026-08-01',
+              entryPrice: '45.00',
+              venue: { name: 'Bowlers Exhibition Centre', town: 'Manchester' },
+            },
+          ],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      )
+    );
+
+    const ok = await searchEventsCommand('Teletech', {
+      key: 'mock_cli_key',
+      limit: '5',
+      quiet: true,
+      interactive: false,
+    });
+    expect(ok).toBe(true);
+  });
 });
