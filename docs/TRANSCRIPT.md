@@ -150,7 +150,7 @@
 - **Verification:** Verified with `pnpm --filter web typecheck` and `pnpm --filter web build`.
 - **Reference Doc:** [10-interactive-api-testing-component.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/10-interactive-api-testing-component.md)
 
-### Step 11: Event Detail Schema & eFlyer Promotion Model Definition
+### Step 12: Event Detail Schema & eFlyer Promotion Model Definition
 - **Date:** 2026-10-16
 - **Context & Decision:**
   - Standardized the single event data shape (`/api/v1/events/{id}/`) required for generating eFlyer promotional campaigns, marketing emails, and rich event previews.
@@ -161,3 +161,41 @@
   - **SDK Method Typing (`packages/sdk/src/events.ts`):** Enhanced `Events.getListing<T = SkiddleEventDetail>()` to default to `SkiddleEventDetail`.
 - **Verification:** Tested with Vitest unit tests in `packages/sdk/tests/sdk.test.ts` and monorepo typecheck via `pnpm typecheck`.
 - **Reference Doc:** [11-event-detail-and-eflyer-schema.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/11-event-detail-and-eflyer-schema.md)
+
+---
+
+### Step 13: Interview Strategy Crystallization & Interactive Event Selection
+- **Date:** 2026-10-25
+- **Context & Decision:**
+  - Crystallized the core engineering philosophy for the upcoming Skiddle developer interview (candidate 6/6): *"A person is a good fit if their code is a good fit."*
+  - Addressed the AI stigma head-on: establishing that this is **Agentic AI Engineering under Strict Human-Architected Guardrails**, not undisciplined "vibe coding".
+  - Elevated the Day-0 Developer Experience CLI (`pnpm install && pnpm cli`) as the primary zero-onboarding entry point for any developer.
+- **Action & Implementation:**
+  - **Interactive Event Selection in Web UI:** Updated `ApiTester.tsx` and `ApiTester.module.css` so that selecting any live event in the search cards immediately transitions to single-event inspection (`/api/v1/events/{id}/`), rendering deep-dive venue addresses, door opening times, age restrictions, and promotional metadata with seamless back-navigation.
+  - **Landing Showcase:** Created a modern showcase hero on `apps/web/src/app/page.tsx` introducing the monorepo architecture, Day-0 CLI quickstart, zero-dependency SDK benefits, and live API exploration.
+  - **Comprehensive Interview Defense Guide:** Overhauled `docs/06-interview-discussion-guide.md` with targeted architectural defense strategies for Adam Chandler (Frontend) and Chris Seaton (Backend), the 4-stage walkthrough script, and the counter-narrative to "vibe coding".
+  - **Documentation Alignment:** Synchronized `README.md`, `packages/cli/README.md`, and `AGENTS.md` to reinforce the Day-0 DX ethos and guardrails philosophy.
+- **Verification:**
+  - `pnpm --filter web typecheck` and `pnpm --filter web test`: 10/10 tests passed cleanly.
+  - `pnpm run ci`: Full repository quality gate passed.
+- **Reference Doc:** [06-interview-discussion-guide.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/06-interview-discussion-guide.md)
+
+---
+
+### Step 14: Real-Time Event Search, Multi-Facet Filtering & Discovery Architecture
+- **Date:** 2026-10-25
+- **Context & Decision:**
+  - Transitioned the Next.js web application from diagnostic API testing (`ApiTester`) into a full-fledged marketing discovery and promotion portal (`EventSearch`).
+  - Addressed client-side performance, race conditions during fast keystrokes, secure credential handling, and regex safety.
+- **Action & Implementation:**
+  - **`EventSearch` Component (`apps/web/src/components/EventSearch/EventSearch.tsx`):** Built interactive search with 350ms debouncing, React 19 `startTransition`, native `AbortController` cancellation for in-flight requests, and initial state suppression (no empty states/spinners before user input).
+  - **Multi-Facet Query Composition:** Supported real-time filtering across keyword, event category (`eventcode` mapping: LIVE, CLUB, FEST, COMEDY, etc.), and event date (`bdate`).
+  - **Regex-Safe Text Highlighting (`HighlightText.tsx`):** Created a sanitizing text highlighter escaping special regex characters (`[`, `]`, `(`, `)`, `*`, `+`) with high-contrast `<mark>` styling.
+  - **Server REST Route Handlers (`apps/web/src/app/api/events/route.ts` & `apps/web/src/app/api/events/[id]/route.ts`):** Next.js 15 App Router endpoints initializing `@skiddle/sdk` on the server using `process.env.SKIDDLE_API_KEY`, eliminating CORS restrictions and client credential exposure.
+  - **Promote Event Workflow Integration:** Connected search cards directly to `/events/[id]` for single event detail inspection and eFlyer promotion configuration.
+  - **Unit Testing Suite (`apps/web/tests/unit/event-search.test.tsx`):** Authored 5 Vitest tests covering substring matching, case-insensitivity, regex token safety, null handling, and mount state isolation.
+- **Verification:**
+  - `pnpm --filter web test`: 15/15 unit and E2E tests passing.
+  - `pnpm typecheck`: Monorepo type safety verified.
+- **Reference Doc:** [13-event-search-filter-and-discovery.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/13-event-search-filter-and-discovery.md)
+

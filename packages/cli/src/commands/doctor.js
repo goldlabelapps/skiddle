@@ -52,7 +52,7 @@ export async function doctorCommand(options = {}) {
     events.clearConditions();
     events.addCond('limit', 1);
     const sampleRes = await events.getListings();
-    const sampleId = sampleRes.results?.[0]?.id;
+    const sampleId = sampleRes.data?.[0]?.id || sampleRes.results?.[0]?.id;
     if (sampleId) {
       const v1Res = await events.getListing(sampleId);
       const v1Time = Date.now() - t1;

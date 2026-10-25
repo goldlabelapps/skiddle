@@ -30,13 +30,12 @@ export function Footer() {
                 />
               </div>
               <div className={styles.brandTitleGroup}>
-                <span className={styles.brandTitle}>Skiddle Developer Platform</span>
-                <span className={styles.brandSubtitle}>Polyglot SDK &bull; Next.js 15</span>
+                <span className={styles.brandTitle}>Skiddle Promo SDK</span>
+                <span className={styles.brandSubtitle}>Polyglot SDKs &bull; Live API Ready</span>
               </div>
             </div>
             <p className={styles.brandDescription}>
-              Modern developer toolkit and zero-dependency polyglot SDKs (TypeScript &amp; PHP)
-              for the Skiddle What&apos;s On API, events platform, and ticket ecosystem.
+              Modern TypeScript, live Skiddle event discovery, Promo pages, and zero-onboarding developer workflows via the NX&deg; CLI.
             </p>
           </div>
 
@@ -94,9 +93,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Skiddle Platform */}
+          {/* Skiddle */}
           <div>
-            <h4 className={styles.columnTitle}>Skiddle Platform</h4>
+            <h4 className={styles.columnTitle}>Skiddle</h4>
             <ul className={styles.linkList}>
               <li className={styles.linkItem}>
                 <a
@@ -130,11 +129,11 @@ export function Footer() {
               </li>
               <li className={styles.linkItem}>
                 <a
-                  href="https://www.skiddle.com/clubs/"
+                  href="https://promotioncentre.co.uk"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span>Clubs &amp; Venues</span>
+                  <span>Promotion Centre</span>
                   <ExternalIcon />
                 </a>
               </li>
@@ -145,7 +144,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
           <Link href="/" className={styles.copyright}>
-            &copy; 2026 Skiddle Ltd &bull; All rights reserved
+            &copy; 2026 Goldlabel &bull; All rights reserved
           </Link>
 
           <button

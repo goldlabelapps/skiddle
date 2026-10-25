@@ -62,19 +62,6 @@ export function Header() {
             SDK
           </Link>
           <a
-            href="https://promotioncentre.co.uk"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: '#ffffff',
-              fontSize: 14,
-              textDecoration: 'none',
-              transition: 'opacity 0.2s',
-            }}
-          >
-            Promotion Centre ↗
-          </a>
-          <a
             href="https://www.skiddle.com"
             target="_blank"
             rel="noopener noreferrer"

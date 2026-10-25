@@ -1,7 +1,23 @@
 # NX° Developer Experience CLI (`@skiddle/cli`)
 
-> **Developer Tooling & Diagnostics for the Skiddle API**  
-> Built as an interactive CLI to inspect API health, benchmark latency, explore event endpoints, and execute classic Skiddle test scenarios.
+> **Day-0 Developer Experience & Diagnostics for the Skiddle Platform**  
+> *How is it used? It's used always, from the very start: `pnpm install && pnpm cli`.*  
+> Eliminates developer onboarding friction entirely. An interactive, self-documenting terminal utility to diagnose environments, explore live event endpoints, benchmark latency, and execute legacy test scenarios.
+
+---
+
+## ⚡ Day-0 Developer Onboarding
+
+In modern engineering teams, onboarding friction kills momentum. The NX° CLI solves this immediately:
+```bash
+# Clone the repository
+git clone <repo-url> && cd skiddle
+
+# Install and launch the interactive CLI
+pnpm install
+pnpm cli
+```
+Within 30 seconds, any engineer—regardless of familiarity with the repo—can verify API credentials with `doctor`, query live events, run latency benchmarks, and replay test suites with zero manual configuration.
 
 ---
 
@@ -9,10 +25,13 @@
 
 ### Inside this Monorepo
 ```bash
-# Run via root alias
+# Interactive menu (recommended entry point)
+pnpm cli
+
+# Direct command execution via root alias
 pnpm cli [command]
 
-# Or targeted via package filter
+# Targeted execution via package filter
 pnpm --filter @skiddle/cli start [command]
 ```
 
