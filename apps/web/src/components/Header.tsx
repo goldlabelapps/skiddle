@@ -50,6 +50,17 @@ export function Header() {
         </Link>
 
         <nav style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <Link
+            href="/sdk"
+            style={{
+              color: '#ffffff',
+              fontSize: 14,
+              textDecoration: 'none',
+              transition: 'opacity 0.2s',
+            }}
+          >
+            SDK
+          </Link>
           <a
             href="https://promotioncentre.co.uk"
             target="_blank"
