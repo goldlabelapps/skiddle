@@ -14,16 +14,15 @@ describe('Footer Component', () => {
     // Candidate column
     expect(html).toContain('Candidate');
     expect(html).not.toContain('Developer Resources');
-    expect(html).toContain('href="/sdk"');
-    expect(html).toContain('SDK Explorer');
-    expect(html).toContain('href="https://promotioncentre.co.uk"');
-    expect(html).toContain('Promotion Centre');
-    expect(html).toContain('API Documentation');
-    expect(html).toContain('Monorepo Source');
+    expect(html).not.toContain('SDK Explorer');
+    expect(html).not.toContain('API Documentation');
+    expect(html).not.toContain('Monorepo Source');
 
     // Skiddle External Links
     expect(html).toContain('Skiddle.com');
-    expect(html).toContain('Festivals Guide');
+    expect(html).toContain('Promotion Centre');
+    expect(html).not.toContain("What's On Guide");
+    expect(html).not.toContain('Festivals Guide');
 
     // Copyright notice & back to top
     expect(html).toContain('Goldlabel');

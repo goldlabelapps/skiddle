@@ -9,6 +9,7 @@ import {
   normalizeEvent,
   addDays,
   formatDateIso,
+  formatBritishDate,
   TOTAL_SLIDER_DAYS,
   DATE_PRESETS,
 } from '../../src/components/EventSearch/EventSearch';
@@ -63,6 +64,23 @@ describe('EventSearch Component & Helpers', () => {
       const base = new Date(2026, 9, 25); // 2026-10-25
       const future = addDays(base, 14);
       expect(formatDateIso(future)).toBe('2026-11-08');
+    });
+  });
+
+  describe('formatBritishDate Helper', () => {
+    it('formats ISO YYYY-MM-DD date into British standard (day Month year)', () => {
+      expect(formatBritishDate('2027-04-15')).toBe('15 April 2027');
+      expect(formatBritishDate('2026-11-20')).toBe('20 November 2026');
+    });
+
+    it('formats ISO date with timestamp correctly into British standard', () => {
+      expect(formatBritishDate('2026-08-05T20:00:00')).toBe('5 August 2026');
+    });
+
+    it('gracefully handles missing, empty, or fallback date strings', () => {
+      expect(formatBritishDate('')).toBe('Date TBD');
+      expect(formatBritishDate(undefined)).toBe('Date TBD');
+      expect(formatBritishDate('Date TBA')).toBe('Date TBA');
     });
   });
 
