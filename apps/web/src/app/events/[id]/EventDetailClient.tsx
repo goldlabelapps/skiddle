@@ -17,8 +17,7 @@ export function EventDetailClient({
   rawResponse,
   executionTimeMs,
 }: EventDetailClientProps) {
-  const [activeTab, setActiveTab] = useState<'structured' | 'raw' | 'eflyer'>('structured');
-  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'structured' | 'raw' | 'eflyer' | null>(null);
 
   const eventName = event?.eventname || event?.eventName || `Event #${id}`;
   const imageUrl = event?.largeimageurl || event?.imageurl || event?.largeImageUrl || event?.imageUrl || '';
@@ -29,16 +28,6 @@ export function EventDetailClient({
   const entryPrice = event?.entryprice || event?.entryPrice || 'Not specified';
   const minAge = event?.MinAge || event?.minage || 'All ages';
   const ticketsAvailable = Boolean(event?.tickets);
-
-  const handleCopyJson = async () => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(rawResponse, null, 2));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback
-    }
-  };
 
   return (
     <div
@@ -75,23 +64,6 @@ export function EventDetailClient({
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              background: '#ecfdf5',
-              color: '#065f46',
-              border: '1px solid #a7f3d0',
-              padding: '4px 12px',
-              borderRadius: 9999,
-              fontSize: 12,
-              fontWeight: 600,
-            }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
-            Ready to Promote
-          </span>
           <span
             style={{
               background: '#f1f5f9',
@@ -226,11 +198,11 @@ export function EventDetailClient({
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             type="button"
-            onClick={() => setActiveTab('structured')}
+            onClick={() => setActiveTab(activeTab === 'structured' ? null : 'structured')}
             style={{
               padding: '8px 18px',
               borderRadius: 8,
-              border: 'none',
+              border: activeTab === 'structured' ? '1px solid #0f172a' : '1px solid #e2e8f0',
               fontSize: 14,
               fontWeight: 600,
               cursor: 'pointer',
@@ -244,11 +216,11 @@ export function EventDetailClient({
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('raw')}
+            onClick={() => setActiveTab(activeTab === 'raw' ? null : 'raw')}
             style={{
               padding: '8px 18px',
               borderRadius: 8,
-              border: 'none',
+              border: activeTab === 'raw' ? '1px solid #0f172a' : '1px solid #e2e8f0',
               fontSize: 14,
               fontWeight: 600,
               cursor: 'pointer',
@@ -261,27 +233,6 @@ export function EventDetailClient({
             Raw API Response (JSON)
           </button>
         </div>
-
-        <button
-          type="button"
-          onClick={handleCopyJson}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '8px 16px',
-            borderRadius: 8,
-            backgroundColor: copied ? '#00d26a' : '#ffffff',
-            color: copied ? '#ffffff' : '#0f172a',
-            border: '1px solid #cbd5e1',
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
-          }}
-        >
-          <span>{copied ? '✓ Copied to Clipboard!' : '📋 Copy JSON'}</span>
-        </button>
       </div>
 
       {/* Tab 1: Structured Overview */}
