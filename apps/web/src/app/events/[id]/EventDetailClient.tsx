@@ -3,12 +3,47 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Calendar,
+  MapPin,
+  Clock,
+  Music,
+  ExternalLink,
+} from 'lucide-react';
 
 interface EventDetailClientProps {
   id: string;
   event: any;
   rawResponse: any;
   executionTimeMs?: number;
+}
+
+function formatBritishDate(dateStr?: string): string {
+  if (!dateStr || dateStr === 'Date TBA') return dateStr || 'Date TBA';
+  try {
+    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const year = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1;
+      const day = parseInt(match[3], 10);
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(year, month, day));
+    }
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(d);
+  } catch {
+    return dateStr;
+  }
 }
 
 export function EventDetailClient({
@@ -24,10 +59,12 @@ export function EventDetailClient({
   const venue = event?.venue || {};
   const venueName = venue.name || 'Venue TBA';
   const venueAddress = [venue.address, venue.town || venue.cityname, venue.postcode].filter(Boolean).join(', ');
-  const date = event?.date || event?.startdate || 'Date TBA';
+  const rawDate = event?.date || event?.startdate || 'Date TBA';
+  const date = formatBritishDate(rawDate);
   const entryPrice = event?.entryprice || event?.entryPrice || 'Not specified';
   const minAge = event?.MinAge || event?.minage || 'All ages';
-  const ticketsAvailable = Boolean(event?.tickets);
+  const description = (event?.description || '').replace(/<[^>]+>/g, '').trim();
+  const skiddleUrl = event?.link || `https://www.skiddle.com/e/${id}/`;
 
   return (
     <div
@@ -59,23 +96,32 @@ export function EventDetailClient({
             transition: 'all 0.15s ease',
           }}
         >
-          <span>&larr;</span>
-          <span>Back to Event Search</span>
+          <ArrowLeft size={16} />
+          <span>Back</span>
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span
+          <a
+            href={skiddleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               background: '#f1f5f9',
               color: '#475569',
-              padding: '4px 10px',
+              padding: '6px 12px',
               borderRadius: 6,
               fontSize: 12,
               fontFamily: 'monospace',
+              textDecoration: 'none',
+              transition: 'all 0.15s ease',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            ID: {id}
-          </span>
+            <span>Skiddle event ID: {id}</span>
+            <ExternalLink size={12} style={{ opacity: 0.7 }} />
+          </a>
         </div>
       </div>
 
@@ -116,49 +162,43 @@ export function EventDetailClient({
           )}
 
           <div style={{ padding: '28px 24px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, flexWrap: 'wrap' }}>
-              <span
-                style={{
-                  background: '#0284c7',
-                  color: '#ffffff',
-                  fontSize: 11,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  padding: '3px 8px',
-                  borderRadius: 4,
-                  letterSpacing: 0.5,
-                }}
-              >
-                Selected Event
-              </span>
-              <span style={{ fontSize: 13, color: '#0284c7', fontWeight: 600 }}>
-                📅 {date}
-              </span>
-              {ticketsAvailable ? (
-                <span style={{ background: '#ecfdf5', color: '#065f46', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4 }}>
-                  🎟 Tickets On Sale
-                </span>
-              ) : (
-                <span style={{ background: '#fef3c7', color: '#92400e', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4 }}>
-                  Off Sale / Sold Out
-                </span>
-              )}
-            </div>
-
             <h1
               style={{
                 fontSize: 'clamp(22px, 4vw, 32px)',
-                fontWeight: 800,
+                fontWeight: 500,
                 color: '#0f172a',
                 lineHeight: 1.25,
-                marginBottom: 12,
+                marginBottom: 8,
               }}
             >
               {eventName}
             </h1>
 
-            <div style={{ fontSize: 14, color: '#64748b', marginBottom: 16 }}>
-              📍 <strong>{venueName}</strong> {venueAddress && `— ${venueAddress}`}
+            {description && (
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: '#475569',
+                  marginBottom: 12,
+                }}
+              >
+                {description}
+              </p>
+            )}
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#0284c7', fontWeight: 600 }}>
+                <Calendar size={15} />
+                <span>{date}</span>
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, color: '#64748b', marginBottom: 16 }}>
+              <MapPin size={15} style={{ flexShrink: 0, color: '#64748b' }} />
+              <span>
+                <strong>{venueName}</strong> {venueAddress && `— ${venueAddress}`}
+              </span>
             </div>
 
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: '#334155' }}>
@@ -167,75 +207,101 @@ export function EventDetailClient({
               {event?.openingtimes?.doorsopen && (
                 <div><strong>Doors:</strong> {event.openingtimes.doorsopen}</div>
               )}
-              {event?.link && (
-                <div>
-                  <a
-                    href={event.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: '#0284c7', textDecoration: 'none', fontWeight: 600 }}
-                  >
-                    View on Skiddle.com &nearr;
-                  </a>
-                </div>
-              )}
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                marginTop: 20,
+                paddingTop: 16,
+                borderTop: '1px solid #f1f5f9',
+                flexWrap: 'wrap',
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setActiveTab(activeTab === 'structured' ? null : 'structured')}
+                style={{
+                  height: 48,
+                  padding: '0 20px',
+                  borderRadius: 12,
+                  border: activeTab === 'structured' ? '1px solid #0f172a' : '1px solid #e2e8f0',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease',
+                  backgroundColor: activeTab === 'structured' ? '#0f172a' : '#ffffff',
+                  color: activeTab === 'structured' ? '#ffffff' : '#64748b',
+                  boxShadow: activeTab === 'structured' ? '0 2px 8px rgba(15, 23, 42, 0.2)' : 'none',
+                  boxSizing: 'border-box',
+                }}
+              >
+                API Data
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab(activeTab === 'raw' ? null : 'raw')}
+                style={{
+                  height: 48,
+                  padding: '0 20px',
+                  borderRadius: 12,
+                  border: activeTab === 'raw' ? '1px solid #0f172a' : '1px solid #e2e8f0',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease',
+                  backgroundColor: activeTab === 'raw' ? '#0f172a' : '#ffffff',
+                  color: activeTab === 'raw' ? '#ffffff' : '#64748b',
+                  boxShadow: activeTab === 'raw' ? '0 2px 8px rgba(15, 23, 42, 0.2)' : 'none',
+                  boxSizing: 'border-box',
+                }}
+              >
+                API JSON
+              </button>
+              <Link
+                href={`/events/${id}/edit`}
+                style={{
+                  flex: 1,
+                  minWidth: 180,
+                  height: 48,
+                  padding: '0 24px',
+                  borderRadius: 12,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  backgroundColor: '#00d26a',
+                  color: '#ffffff',
+                  textDecoration: 'none',
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(0, 210, 106, 0.25)',
+                  transition: 'background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  whiteSpace: 'nowrap',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <span>Promote this event</span>
+                <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs & Actions Bar */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 16,
-          flexWrap: 'wrap',
-          gap: 12,
-        }}
-      >
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button
-            type="button"
-            onClick={() => setActiveTab(activeTab === 'structured' ? null : 'structured')}
-            style={{
-              padding: '8px 18px',
-              borderRadius: 8,
-              border: activeTab === 'structured' ? '1px solid #0f172a' : '1px solid #e2e8f0',
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              backgroundColor: activeTab === 'structured' ? '#0f172a' : '#ffffff',
-              color: activeTab === 'structured' ? '#ffffff' : '#64748b',
-              boxShadow: activeTab === 'structured' ? '0 2px 8px rgba(15, 23, 42, 0.2)' : 'none',
-            }}
-          >
-            Structured Overview
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab(activeTab === 'raw' ? null : 'raw')}
-            style={{
-              padding: '8px 18px',
-              borderRadius: 8,
-              border: activeTab === 'raw' ? '1px solid #0f172a' : '1px solid #e2e8f0',
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              backgroundColor: activeTab === 'raw' ? '#0f172a' : '#ffffff',
-              color: activeTab === 'raw' ? '#ffffff' : '#64748b',
-              boxShadow: activeTab === 'raw' ? '0 2px 8px rgba(15, 23, 42, 0.2)' : 'none',
-            }}
-          >
-            Raw API Response (JSON)
-          </button>
-        </div>
-      </div>
-
-      {/* Tab 1: Structured Overview */}
+      {/* Tab 1: API Data */}
       {activeTab === 'structured' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Section: Description */}
@@ -286,8 +352,9 @@ export function EventDetailClient({
                 padding: '20px',
               }}
             >
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a' }}>
-                📍 Venue & Location
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <MapPin size={18} style={{ color: '#0284c7' }} />
+                <span>Venue & Location</span>
               </h3>
               <dl style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px 12px', fontSize: 13 }}>
                 <dt style={{ color: '#64748b' }}>Venue Name:</dt>
@@ -319,8 +386,9 @@ export function EventDetailClient({
                 padding: '20px',
               }}
             >
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a' }}>
-                ⏰ Timings & Tickets
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Clock size={18} style={{ color: '#0284c7' }} />
+                <span>Timings & Tickets</span>
               </h3>
               <dl style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px 12px', fontSize: 13 }}>
                 <dt style={{ color: '#64748b' }}>Event Date:</dt>
@@ -352,8 +420,9 @@ export function EventDetailClient({
                 padding: '20px',
               }}
             >
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a' }}>
-                🎵 Lineup & Genres
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Music size={18} style={{ color: '#0284c7' }} />
+                <span>Lineup & Genres</span>
               </h3>
               <div style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', marginBottom: 6 }}>
@@ -400,7 +469,7 @@ export function EventDetailClient({
         </div>
       )}
 
-      {/* Tab 2: Complete Raw API Response */}
+      {/* Tab 2: API JSON */}
       {activeTab === 'raw' && (
         <div
           style={{

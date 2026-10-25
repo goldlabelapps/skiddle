@@ -88,9 +88,17 @@ describe('EventDetailPage Component & Metadata', () => {
       const html = renderToStaticMarkup(element);
 
       expect(html).toContain('Mozart, Made in Manchester');
+      expect(html).toContain('Live performance by Manchester Camerata.');
       expect(html).toContain('The Stoller Hall');
-      expect(html).toContain('ID: 42616476');
-      expect(html).toContain('Back to Event Search');
+      expect(html).toContain('Skiddle event ID: 42616476');
+      expect(html).toContain('href="https://www.skiddle.com/e/42616476/"');
+      expect(html).toContain('Back');
+      expect(html).toContain('15 April 2027');
+      expect(html).toContain('Promote this event');
+      expect(html).toContain('href="/events/42616476/edit"');
+      expect(html).not.toContain('Selected Event');
+      expect(html).not.toContain('Tickets On Sale');
+      expect(html).not.toContain('View on Skiddle');
     });
   });
 });

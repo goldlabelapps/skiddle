@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './EventSearch.module.css';
 import { HighlightText } from './HighlightText';
+import { Calendar, MapPin, ArrowRight, Search } from 'lucide-react';
 
 export interface EventListItem {
   id: string | number;
@@ -224,7 +225,7 @@ export function EventSearch() {
       <section className={styles.hero}>
         <div className={styles.badge}>
           <span className={styles.badgeDot} />
-          <span>Skiddle Event Promotion</span>
+          <span>Skiddle Promos</span>
         </div>
         <h1 className={styles.title}>Find an Event to Promote</h1>
         <p className={styles.subtitle}>
@@ -436,7 +437,7 @@ export function EventSearch() {
 
               <div className={styles.cardBody}>
                 <div className={styles.cardDate}>
-                  <span>📅</span>
+                  <Calendar size={13} style={{ flexShrink: 0 }} />
                   <span>{event.date || 'Date TBD'}</span>
                 </div>
 
@@ -448,7 +449,7 @@ export function EventSearch() {
                 </h2>
 
                 <div className={styles.cardVenue}>
-                  <span>📍</span>
+                  <MapPin size={13} style={{ flexShrink: 0 }} />
                   <span>
                     <HighlightText
                       text={`${event.venueName}${event.venueTown ? ` (${event.venueTown})` : ''}`}
@@ -471,7 +472,8 @@ export function EventSearch() {
                     {event.price || 'Free / TBA'}
                   </div>
                   <span className={styles.ctaButton}>
-                    Promote Event &rarr;
+                    <span>Promote Event</span>
+                    <ArrowRight size={13} style={{ display: 'inline-flex', verticalAlign: 'middle', marginLeft: 4 }} />
                   </span>
                 </div>
               </div>
@@ -481,7 +483,9 @@ export function EventSearch() {
       ) : (
         !loading && (
           <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>🔍</div>
+            <div className={styles.emptyIcon}>
+              <Search size={32} />
+            </div>
             <h3 className={styles.emptyTitle}>No events found</h3>
             <p className={styles.emptyText}>
               {debouncedKeyword

@@ -30,7 +30,7 @@ export function Footer() {
                 />
               </div>
               <div className={styles.brandTitleGroup}>
-                <span className={styles.brandTitle}>Skiddle Promo SDK</span>
+                <span className={styles.brandTitle}>Skiddle Promos</span>
                 <span className={styles.brandSubtitle}>Polyglot SDKs &bull; Live API Ready</span>
               </div>
             </div>
@@ -39,9 +39,9 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Developer Resources */}
+          {/* Candidate */}
           <div>
-            <h4 className={styles.columnTitle}>Developer Resources</h4>
+            <h4 className={styles.columnTitle}>Candidate</h4>
             <ul className={styles.linkList}>
               <li className={styles.linkItem}>
                 <Link href="/sdk">
@@ -144,7 +144,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
           <Link href="/" className={styles.copyright}>
-            &copy; 2026 Goldlabel &bull; All rights reserved
+            &copy; 2026 Goldlabel
           </Link>
 
           <button

@@ -7,11 +7,13 @@ describe('Footer Component', () => {
   it('renders footer brand, description, and navigation links', () => {
     const html = renderToStaticMarkup(<Footer />);
 
-    expect(html).toContain('Skiddle Promo SDK');
+    expect(html).toContain('Skiddle Promos');
     expect(html).toContain('Polyglot SDKs');
     expect(html).toContain('Modern TypeScript, live Skiddle event discovery');
 
-    // Developer resources
+    // Candidate column
+    expect(html).toContain('Candidate');
+    expect(html).not.toContain('Developer Resources');
     expect(html).toContain('href="/sdk"');
     expect(html).toContain('SDK Explorer');
     expect(html).toContain('href="https://promotioncentre.co.uk"');
@@ -25,6 +27,7 @@ describe('Footer Component', () => {
 
     // Copyright notice & back to top
     expect(html).toContain('Goldlabel');
+    expect(html).not.toContain('All rights reserved');
     expect(html).toContain('Back to top');
   });
 });
