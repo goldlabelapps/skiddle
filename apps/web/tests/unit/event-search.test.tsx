@@ -7,6 +7,10 @@ import {
   CATEGORIES,
   stripHtml,
   normalizeEvent,
+  addDays,
+  formatDateIso,
+  TOTAL_SLIDER_DAYS,
+  DATE_PRESETS,
 } from '../../src/components/EventSearch/EventSearch';
 
 describe('EventSearch Component & Helpers', () => {
@@ -44,6 +48,21 @@ describe('EventSearch Component & Helpers', () => {
       expect(values).toContain('COMEDY');
       expect(values).toContain('THEATRE');
       expect(values).toContain('SPORT');
+    });
+  });
+
+  describe('Date Slider Configuration and Helpers', () => {
+    it('has a 365-day (1 year) range and standard quick presets', () => {
+      expect(TOTAL_SLIDER_DAYS).toBe(365);
+      expect(DATE_PRESETS.length).toBeGreaterThanOrEqual(4);
+      expect(DATE_PRESETS.map((p) => p.label)).toContain('Next 7 Days');
+      expect(DATE_PRESETS.map((p) => p.label)).toContain('Full Year');
+    });
+
+    it('correctly calculates future dates and formats ISO YYYY-MM-DD strings', () => {
+      const base = new Date(2026, 9, 25); // 2026-10-25
+      const future = addDays(base, 14);
+      expect(formatDateIso(future)).toBe('2026-11-08');
     });
   });
 
@@ -136,17 +155,42 @@ describe('EventSearch Component & Helpers', () => {
   describe('EventSearch Initial State', () => {
     it('does not render any events or results row before user interaction', () => {
       const html = renderToStaticMarkup(<EventSearch />);
-      // Should render the hero and search box card
-      expect(html).toContain('Find an Event to Promote');
+      // Should render the hero badge and search box card
+      expect(html).toContain('Skiddle Promos');
+      expect(html).toContain('Find an event to promote');
       expect(html).toContain('Search by event title, artist, venue, keyword, or description...');
-      expect(html).toContain('Category / Event Code');
-      expect(html).toContain('Event Date');
+      expect(html).toContain('Dates');
 
       // Should NOT render results, meta row, spinner, or empty state initially
       expect(html).not.toContain('Found');
       expect(html).not.toContain('Searching Skiddle API');
       expect(html).not.toContain('Promote Event');
       expect(html).not.toContain('No events found');
+    });
+
+    it('renders category chips for interactive filtering', () => {
+      const html = renderToStaticMarkup(<EventSearch />);
+      expect(html).toContain('All Categories');
+      expect(html).toContain('Live Music / Gigs');
+      expect(html).toContain('Clubbing &amp; DJ');
+      expect(html).toContain('Festivals');
+      expect(html).toContain('aria-pressed="true"'); // "All Categories" is initially selected
+    });
+
+    it('renders date range slider with 1-year timeline and From/To controls', () => {
+      const html = renderToStaticMarkup(<EventSearch />);
+      expect(html).toContain('Dates');
+      expect(html).toContain('From');
+      expect(html).toContain('to');
+      expect(html).toContain('id="min-date-slider"');
+      expect(html).toContain('id="max-date-slider"');
+      expect(html).toContain('type="range"');
+      expect(html).toContain('Next 7 Days');
+      expect(html).toContain('Next 30 Days');
+      expect(html).toContain('Full Year');
+      // Scale labels underneath the slider are removed
+      expect(html).not.toContain('+3 Months');
+      expect(html).not.toContain('+6 Months');
     });
   });
 });

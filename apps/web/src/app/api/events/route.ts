@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
   const keyword = searchParams.get('keyword') || '';
   const eventcode = searchParams.get('eventcode') || '';
   const date = searchParams.get('date') || '';
+  const minDate = searchParams.get('minDate') || '';
+  const maxDate = searchParams.get('maxDate') || '';
   const limitParam = searchParams.get('limit');
   const limit = limitParam ? Math.min(Math.max(parseInt(limitParam, 10) || 24, 1), 50) : 24;
 
@@ -27,7 +29,13 @@ export async function GET(request: NextRequest) {
     if (eventcode && eventcode !== 'all') {
       client.events.addCond('eventcode', eventcode);
     }
-    if (date.trim()) {
+    if (minDate.trim()) {
+      client.events.addCond('minDate', minDate.trim());
+    }
+    if (maxDate.trim()) {
+      client.events.addCond('maxDate', maxDate.trim());
+    }
+    if (date.trim() && !minDate.trim() && !maxDate.trim()) {
       client.events.addCond('bdate', date.trim());
     }
     client.events.addCond('limit', limit);

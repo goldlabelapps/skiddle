@@ -36,6 +36,42 @@ export const CATEGORIES = [
   { value: 'EXHIB', label: 'Exhibitions' },
 ];
 
+export const TOTAL_SLIDER_DAYS = 365;
+
+export const DATE_PRESETS = [
+  { label: 'Next 7 Days', days: 7 },
+  { label: 'Next 14 Days', days: 14 },
+  { label: 'Next 30 Days', days: 30 },
+  { label: 'Next 3 Months', days: 90 },
+  { label: 'Full Year', days: 365 },
+];
+
+export function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function formatDateIso(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function formatDateDisplay(d: Date): string {
+  return d.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+export function getToday(): Date {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
 export function stripHtml(html?: string): string {
   if (!html) return '';
   return html.replace(/<[^>]+>/g, '').trim();
@@ -83,7 +119,12 @@ export function EventSearch() {
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
   const [category, setCategory] = useState('all');
-  const [date, setDate] = useState('');
+  const [startDays, setStartDays] = useState(0);
+  const [endDays, setEndDays] = useState(TOTAL_SLIDER_DAYS);
+  const [isDateFilterActive, setIsDateFilterActive] = useState(false);
+  const [activeThumb, setActiveThumb] = useState<'min' | 'max'>('min');
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
   const [hasInteracted, setHasInteracted] = useState(false);
   const [events, setEvents] = useState<EventListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -113,6 +154,26 @@ export function EventSearch() {
     return () => clearTimeout(handler);
   }, [keyword, hasInteracted]);
 
+  // Debounce date slider range changes by 250ms before triggering API fetch
+  useEffect(() => {
+    if (!hasInteracted) return;
+
+    const handler = setTimeout(() => {
+      startTransition(() => {
+        if (isDateFilterActive) {
+          const today = getToday();
+          setMinDate(formatDateIso(addDays(today, startDays)));
+          setMaxDate(formatDateIso(addDays(today, endDays)));
+        } else {
+          setMinDate('');
+          setMaxDate('');
+        }
+      });
+    }, 250);
+
+    return () => clearTimeout(handler);
+  }, [hasInteracted, isDateFilterActive, startDays, endDays]);
+
   // RESTful lookup effect (only fires after interaction)
   useEffect(() => {
     if (!hasInteracted) {
@@ -139,8 +200,11 @@ export function EventSearch() {
         if (category && category !== 'all') {
           params.set('eventcode', category);
         }
-        if (date) {
-          params.set('date', date);
+        if (minDate) {
+          params.set('minDate', minDate);
+        }
+        if (maxDate) {
+          params.set('maxDate', maxDate);
         }
         params.set('limit', '24');
 
@@ -178,7 +242,7 @@ export function EventSearch() {
     return () => {
       controller.abort();
     };
-  }, [hasInteracted, debouncedKeyword, category, date]);
+  }, [hasInteracted, debouncedKeyword, category, minDate, maxDate]);
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) {
@@ -195,14 +259,30 @@ export function EventSearch() {
     }
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategorySelect = (catValue: string) => {
     setHasInteracted(true);
-    setCategory(e.target.value);
+    setCategory((prev) => (prev === catValue && catValue !== 'all' ? 'all' : catValue));
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleStartDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Math.min(Number(e.target.value), endDays - 1);
+    setStartDays(val);
+    setIsDateFilterActive(true);
     setHasInteracted(true);
-    setDate(e.target.value);
+  };
+
+  const handleEndDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Math.max(Number(e.target.value), startDays + 1);
+    setEndDays(val);
+    setIsDateFilterActive(true);
+    setHasInteracted(true);
+  };
+
+  const handlePresetClick = (days: number) => {
+    setStartDays(0);
+    setEndDays(days);
+    setIsDateFilterActive(true);
+    setHasInteracted(true);
   };
 
   const handleClear = () => {
@@ -214,10 +294,20 @@ export function EventSearch() {
     setKeyword('');
     setDebouncedKeyword('');
     setCategory('all');
-    setDate('');
+    setStartDays(0);
+    setEndDays(TOTAL_SLIDER_DAYS);
+    setIsDateFilterActive(false);
+    setMinDate('');
+    setMaxDate('');
   };
 
-  const hasActiveFilters = Boolean(keyword || (category && category !== 'all') || date);
+  const hasActiveFilters = Boolean(
+    keyword || (category && category !== 'all') || isDateFilterActive || minDate || maxDate
+  );
+
+  const today = getToday();
+  const startDate = addDays(today, startDays);
+  const endDate = addDays(today, endDays);
 
   return (
     <div className={styles.container}>
@@ -227,14 +317,11 @@ export function EventSearch() {
           <span className={styles.badgeDot} />
           <span>Skiddle Promos</span>
         </div>
-        <h1 className={styles.title}>Find an Event to Promote</h1>
-        <p className={styles.subtitle}>
-          Search across titles, descriptions, categories, venues, and dates. Select any event to review its complete API data and launch promotions.
-        </p>
       </section>
 
       {/* RESTful Search Bar & Filters */}
       <form className={styles.searchBoxCard} onSubmit={handleSearchSubmit}>
+        <h1 className={styles.title}>Find an event to promote</h1>
         <div className={styles.mainInputRow}>
           <div className={styles.mainInputWrapper}>
             <svg
@@ -281,36 +368,88 @@ export function EventSearch() {
           </button>
         </div>
 
-        <div className={styles.filterRow}>
-          <div className={styles.filterGroup}>
-            <label htmlFor="category-select" className={styles.filterLabel}>
-              Category / Event Code
-            </label>
-            <select
-              id="category-select"
-              className={styles.filterSelect}
-              value={category}
-              onChange={handleCategoryChange}
-            >
-              {CATEGORIES.map((cat) => (
-                <option key={cat.value} value={cat.value}>
+        <div className={styles.categorySection}>
+          <div className={styles.chipsContainer} role="group" aria-label="Filter by category">
+            {CATEGORIES.map((cat) => {
+              const isSelected = category === cat.value;
+              return (
+                <button
+                  key={cat.value}
+                  type="button"
+                  className={`${styles.chip}${isSelected ? ` ${styles.chipActive}` : ''}`}
+                  onClick={() => handleCategorySelect(cat.value)}
+                  aria-pressed={isSelected}
+                >
                   {cat.label}
-                </option>
-              ))}
-            </select>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className={styles.dateSliderSection}>
+          <span className={styles.filterLabel}>Dates</span>
+
+          <div className={styles.rangeDisplayBadge}>
+            <Calendar size={15} className={styles.calendarIcon} />
+            <span>
+              From <strong>{isDateFilterActive && startDays === 0 ? 'Today' : formatDateDisplay(startDate)}</strong> to{' '}
+              <strong>{formatDateDisplay(endDate)}</strong>
+              <span className={styles.durationTag}>
+                ({endDays - startDays === TOTAL_SLIDER_DAYS ? '1 Year' : `${endDays - startDays} days`})
+              </span>
+            </span>
           </div>
 
-          <div className={styles.filterGroup}>
-            <label htmlFor="date-select" className={styles.filterLabel}>
-              Event Date
-            </label>
-            <input
-              id="date-select"
-              type="date"
-              className={styles.filterDate}
-              value={date}
-              onChange={handleDateChange}
+          <div className={styles.dualSliderWrapper}>
+            <div className={styles.sliderTrack} />
+            <div
+              className={styles.sliderHighlight}
+              style={{
+                left: `calc(${(startDays / TOTAL_SLIDER_DAYS) * 100}% + ${(0.5 - startDays / TOTAL_SLIDER_DAYS) * 22}px)`,
+                right: `calc(${(1 - endDays / TOTAL_SLIDER_DAYS) * 100}% + ${(endDays / TOTAL_SLIDER_DAYS - 0.5) * 22}px)`,
+              }}
             />
+            <input
+              id="min-date-slider"
+              type="range"
+              min={0}
+              max={TOTAL_SLIDER_DAYS}
+              value={startDays}
+              onChange={handleStartDaysChange}
+              className={`${styles.rangeInput} ${styles.rangeInputMin}`}
+              style={{ zIndex: activeThumb === 'min' || startDays > TOTAL_SLIDER_DAYS - 20 ? 5 : 3 }}
+              onPointerDown={() => setActiveThumb('min')}
+              aria-label="Start date slider"
+            />
+            <input
+              id="max-date-slider"
+              type="range"
+              min={0}
+              max={TOTAL_SLIDER_DAYS}
+              value={endDays}
+              onChange={handleEndDaysChange}
+              className={`${styles.rangeInput} ${styles.rangeInputMax}`}
+              style={{ zIndex: activeThumb === 'max' ? 5 : 4 }}
+              onPointerDown={() => setActiveThumb('max')}
+              aria-label="End date slider"
+            />
+          </div>
+
+          <div className={styles.presetChips} role="group" aria-label="Quick date presets">
+            {DATE_PRESETS.map((p) => {
+              const isActive = isDateFilterActive && startDays === 0 && endDays === p.days;
+              return (
+                <button
+                  key={p.label}
+                  type="button"
+                  className={`${styles.presetChip}${isActive ? ` ${styles.presetChipActive}` : ''}`}
+                  onClick={() => handlePresetClick(p.days)}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
           </div>
 
           {hasActiveFilters && (
