@@ -327,3 +327,16 @@
 - **Verification & Documentation:**
   - Authored comprehensive report: [`docs/16-performance-audit-and-comparison.md`](./16-performance-audit-and-comparison.md).
   - Updated monorepo documentation index and time investment audit.
+
+---
+
+### Step 20: Promo Route AppShell Chrome Isolation & White Canvas Styling
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - For the interactive promo experience route (`/promo/[id]`, e.g., `http://localhost:3000/promo/43032215`), global navigation elements (Header and Footer) cluttered the canvas.
+  - Implemented an `AppShell` component that dynamically detects promo routes using `usePathname()` and omits `<Header />` and `<Footer />` while preserving full chrome across all standard routes (`/`, `/events/...`, `/sdk`).
+  - Switched the promo page background color to clean white (`#ffffff` / `bg-white`) ensuring optimal contrast for the floating 3D iPhone chassis and back-navigation badge.
+- **Verification & Testing:**
+  - Authored `apps/web/tests/unit/app-shell.test.tsx` verifying route chrome exclusion.
+  - Updated `apps/web/tests/unit/promote-page.test.tsx` asserting white background styles.
+  - 100% test pass rate across 126 monorepo tests (117 Vitest, 9 PHPUnit).

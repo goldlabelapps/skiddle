@@ -39,6 +39,8 @@ describe('PromoPage 3D Venue Experience', () => {
       expect(html).toContain('Back to Event Details');
       expect(html).toContain('href="/events/42616476"');
       expect(html).toContain('Hare And Hounds Kings Heath');
+      expect(html).toContain('bg-white');
+      expect(html).toContain('background-color:#ffffff');
     });
 
     it('renders event venue coordinates in embed iframe when API resolves successfully', async () => {

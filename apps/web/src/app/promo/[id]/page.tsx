@@ -72,7 +72,7 @@ export default async function PromoPage({
 
   return (
     <main
-      className="w-full h-[100dvh] min-h-screen flex items-center justify-center p-0 md:p-4 bg-slate-950 overflow-hidden relative"
+      className="w-full h-[100dvh] min-h-screen flex items-center justify-center p-0 md:p-4 bg-white overflow-hidden relative"
       style={{
         position: 'relative',
         width: '100%',
@@ -81,7 +81,7 @@ export default async function PromoPage({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#020617',
+        backgroundColor: '#ffffff',
         overflow: 'hidden',
       }}
     >
