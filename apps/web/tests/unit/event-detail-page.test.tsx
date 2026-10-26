@@ -95,7 +95,7 @@ describe('EventDetailPage Component & Metadata', () => {
       expect(html).toContain('Back');
       expect(html).toContain('15 April 2027');
       expect(html).toContain('Promote this event');
-      expect(html).toContain('href="/events/42616476/edit"');
+      expect(html).toContain('href="/promo/42616476"');
       expect(html).not.toContain('Selected Event');
       expect(html).not.toContain('Tickets On Sale');
       expect(html).not.toContain('View on Skiddle');

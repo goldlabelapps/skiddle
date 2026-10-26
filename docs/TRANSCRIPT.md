@@ -279,3 +279,28 @@
 
 
 
+
+---
+
+### Step 18: GpxRoute 3D Skiddle Venue Port & Promo Route Refactor
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Ported the responsive GpxRoute 3D venue showcase (`/gpxroute/skiddle-venue`) from `listingslab` into the Skiddle project.
+  - Refactored the promotional Flash movie experience route from `/events/[id]/edit` to a clean dedicated top-level route `/promo/[id]`, while maintaining backwards-compatible re-exports at `/events/[id]/edit` and `/events/[id]/promote`.
+- **Action & Implementation:**
+  - **SkiddleVenue & 3D Web Component Engine (`apps/web/src/components/SkiddleVenue/`):**
+    - Implemented `SkiddleVenue` React component, Web Component custom elements (`<skiddle-venue>`, `<gpx-route>`), iframe postMessage bridge, URL constructors, and dimension formatting.
+    - Implemented high-fidelity `IPhoneFrame` chassis with Dynamic Island, iOS status bar, hardware side buttons, and CSS module styling with responsive desktop aspect ratios.
+  - **GpxRoute Venue Subpage (`/gpxroute/skiddle-venue`):**
+    - Deployed route at `apps/web/src/app/gpxroute/skiddle-venue/page.tsx` rendering Hare and Hounds Kings Heath 3D Cesium orbit scene.
+  - **Promo Route Refactor (`/promo/[id]`):**
+    - Created `apps/web/src/app/promo/[id]/page.tsx` as the canonical promotional Flash studio route.
+    - Updated `EventDetailClient.tsx` to link to `/promo/${id}`.
+    - Maintained backwards-compatible aliases at `apps/web/src/app/events/[id]/edit/page.tsx` and `/events/[id]/promote/page.tsx`.
+  - **Automated Testing & Path Aliases:**
+    - Configured `@/` path alias in `apps/web/vitest.config.ts`.
+    - Added unit test suite `apps/web/tests/unit/gpxroute-venue-page.test.tsx` (6 tests).
+    - Updated `promote-page.test.tsx` and `event-detail-page.test.tsx`.
+- **Verification:**
+  - Monorepo automated test suite: **117 total tests** passing (108 Vitest, 9 PHPUnit) across 100% green suites.
+  - `pnpm typecheck`: Clean compilation with zero TypeScript errors.

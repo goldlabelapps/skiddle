@@ -1,4 +1,4 @@
-import PromoteEventPage, { generateMetadata } from '../edit/page';
+import PromoteEventPage, { generateMetadata, dynamic } from '../../../promo/[id]/page';
 
-export { generateMetadata };
+export { generateMetadata, dynamic };
 export default PromoteEventPage;
