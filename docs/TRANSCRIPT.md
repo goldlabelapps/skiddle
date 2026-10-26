@@ -374,3 +374,38 @@
 - **Verification & Testing:**
   - Verified `apps/web/tests/unit/promote-page.test.tsx` and full web test suite (64 tests passing).
   - 100% test pass rate across 129 monorepo tests (120 Vitest, 9 PHPUnit) and clean TypeScript typecheck.
+
+---
+
+### Step 23: Cross-Package Linking & `corkscrew` ActionScript Implementation
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Configured parallel development between `@goldlabelapps/flash` (in `nx-private/packages/flash`) and `skiddle/apps/web` using the `link:` protocol in `package.json` (`"@goldlabelapps/flash": "link:../../../nx-private/packages/flash"`) and Next.js `transpilePackages`.
+  - Added watch build script (`"dev": "tsc -p tsconfig.build.json --watch"`) in `packages/flash/package.json`.
+  - Authored `corkscrewActionScript`, `corkScrew`, and `asMovieClip` in `@goldlabelapps/flash`:
+    - Simulates the screw-like silhouette of the Skiddle logo threading in ("in") or unscrewing out ("out").
+    - Drives 720° (2 full rotations) along the Z-axis paired with exponential scale and autoAlpha easing via GSAP.
+    - Exposes classic ActionScript method chaining via `asMovieClip(target).corkScrew("in" | "out")`.
+  - Consumed directly inside Skiddle's `PromoFlash` component:
+    - Auto-plays `moviName.corkScrew("in")` on mount.
+    - Provides interactive click/tap toggling between "in" and "out".
+- **Verification & Testing:**
+  - Built `packages/flash` with TypeScript declaration and bundle generation.
+  - Verified `skiddle/apps/web` typecheck and unit test suite (10 test files, 61 tests passing).
+  - Monorepo test suite remains 100% green.
+
+---
+
+### Step 24: Dynamic SEO, OpenGraph & Twitter Card Metadata for `/promo/[id]`
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Implemented dynamic `generateMetadata` on the Promo page (`/promo/[id]`):
+    - Document title dynamically displays event title (`eventname`).
+    - Meta description renders cleaned plain text from the event description.
+    - OpenGraph (`og:image`) and Twitter card (`twitter:image`, `card: 'summary_large_image'`) feature the event's high-resolution `largeimageurl` (with fallback to `imageurl`).
+  - Utilized React `cache()` for request-level memoization of `getEvent(id)` to prevent duplicate network calls between `generateMetadata` and `PromoPage`.
+  - Added unit test cases in `apps/web/tests/unit/promote-page.test.tsx` verifying fallback and successful metadata generation.
+- **Verification & Testing:**
+  - `pnpm --filter web test tests/unit/promote-page.test.tsx` (5/5 tests passing).
+  - `pnpm --filter web typecheck` (0 errors).
+  - Full test suite verified green.

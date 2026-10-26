@@ -10,9 +10,9 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~18.5 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~22.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~2.75 Days** | Standard 8-hour senior engineering days |
+| **Active Engineering Time** | **~19.1 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~22.6 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~2.82 Days** | Standard 8-hour senior engineering days |
 | **Modernization Commits** | **30 Commits** | Authored by DriveByAbuser across 4 active dates |
 | **Total Monorepo Tests** | **129 Tests (100% Pass)** | 120 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
@@ -99,7 +99,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Synchronizing `AGENTS.md` and repository transcripts.
   - *Estimated Effort:* **1.5h**
 
-### Day 4 — Monday, October 26, 2026 (~2.5 Hours)
+### Day 4 — Monday, October 26, 2026 (~3.1 Hours)
 - **Session 9 (10:40 – 12:10 BST):**
   - GpxRoute 3D Skiddle venue showcase port into Next.js 15 web app (`/gpxroute/skiddle-venue`).
   - Web Component custom elements, iframe postMessage bridge, and responsive `IPhoneFrame` chassis.
@@ -112,6 +112,11 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Authored Guide 16 (`docs/16-performance-audit-and-comparison.md`) detailing interview war stories (input debouncing, `useTransition`, `AbortController` cancellation, Redis lock drift, CLS fixes) and actionable recommendations.
   - Synchronized repository transcript and living time estimate.
   - *Estimated Effort:* **1.5h**
+- **Session 11 (13:54 – 14:10 BST):**
+  - Cross-repository parallel development setup linking `@goldlabelapps/flash` via `link:` protocol and Next.js `transpilePackages`.
+  - Authored `corkscrewActionScript`, `corkScrew`, and `asMovieClip` in `@goldlabelapps/flash` (GSAP timeline modeling a screw threading in/out with 720° rotation, scale and opacity easing).
+  - Integrated `asMovieClip(logoRef.current).corkScrew("in" | "out")` directly into Skiddle `PromoFlash`.
+  - *Estimated Effort:* **0.6h**
 
 ---
 

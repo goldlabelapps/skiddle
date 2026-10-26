@@ -1,9 +1,10 @@
 import { gsap } from 'gsap';
+import { corkscrewActionScript } from '@goldlabelapps/flash';
 import type { PromoActionScriptOptions } from '../types';
 
 /**
  * promoActionScript - ActionScript timeline animating the Skiddle logo
- * to be centered vertically and horizontally with smooth easing.
+ * to be centered vertically and horizontally with a corkscrew motion from @goldlabelapps/flash.
  */
 export function promoActionScript({
   target,
@@ -15,36 +16,24 @@ export function promoActionScript({
 }: PromoActionScriptOptions) {
   if (!target) return null;
 
-  const tl = gsap.timeline({
-    repeat: loop ? -1 : 0,
-    onComplete,
-  });
-
-  tl.timeScale(speed);
-
-  // Initial state: centered coordinates, scaled down and transparent
+  // Center coordinates on the stage
   gsap.set(target, {
     position: 'absolute',
     left: '50%',
     top: '50%',
     xPercent: -50,
     yPercent: -50,
-    autoAlpha: 0,
-    scale: 0.3,
-    rotation: -12,
   });
 
-  // Animate in to centered scale 1 with smooth bounce ease
-  tl.to(target, {
-    autoAlpha: 1,
-    scale: 1,
-    rotation: 0,
+  return corkscrewActionScript({
+    target,
+    direction: 'in',
     duration,
     delay,
-    ease: 'back.out(1.7)',
+    onComplete,
+    loop,
+    speed,
   });
-
-  return tl;
 }
 
 export default promoActionScript;

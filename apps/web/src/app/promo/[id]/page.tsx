@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { cache } from 'react';
 import type { Metadata } from 'next';
 import { createClient } from '@skiddle/sdk';
+import type { SkiddleEventDetail } from '@skiddle/sdk';
 import { IPhoneFrame } from '../../../components/SkiddleVenue';
 import { PromoFlash } from '../../../components/PromoFlash';
 
 export const dynamic = 'force-dynamic';
 
-const defaultVenue = {
-  id: '38952',
-  name: 'Hare And Hounds Kings Heath',
-  address: '106 High Street, Kings Heath',
-  town: 'Birmingham',
-  postcode: 'B14 7JZ',
-  countrycode: 'GB',
-  cityname: 'Birmingham',
-  phone: '0121 444 2081',
-  latitude: '52.43462200',
-  longitude: '-1.89298000',
-  link: 'https://www.skiddle.com/whats-on/Birmingham/Hare-And-Hounds-Kings-Heath/',
-};
+function cleanDescription(desc?: string): string {
+  if (!desc) return '';
+  return desc.replace(/<[^>]*>?/gm, '').trim();
+}
+
+const getEvent = cache(async (id: string): Promise<SkiddleEventDetail | null> => {
+  const apiKey = process.env.SKIDDLE_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const client = createClient({ apiKey, devMode: false });
+    const response = await client.events.getListing(id);
+    return (response?.results as SkiddleEventDetail) ?? null;
+  } catch {
+    return null;
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -26,9 +31,37 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
+  const event = await getEvent(id);
+
+  const title = event?.eventname || `Event #${id} | Skiddle Promo`;
+  const description =
+    cleanDescription(event?.description) ||
+    `Interactive Promo Experience for Skiddle Event #${id}.`;
+  const largeImage = event?.largeimageurl || event?.imageurl;
+
   return {
-    title: `Event #${id} | Skiddle Promo`,
-    description: `Interactive Promo Experience for Skiddle Event #${id}.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      ...(largeImage
+        ? {
+            images: [
+              {
+                url: largeImage,
+                alt: title,
+              },
+            ],
+          }
+        : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      ...(largeImage ? { images: [largeImage] } : {}),
+    },
   };
 }
 
@@ -38,20 +71,7 @@ export default async function PromoPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const apiKey = process.env.SKIDDLE_API_KEY;
-
-  let eventData: any = null;
-
-  if (apiKey) {
-    try {
-      const client = createClient({ apiKey, devMode: false });
-      const response = await client.events.getListing(id);
-      eventData = response?.results;
-    } catch {
-      // Fallback gracefully if API fails
-      eventData = null;
-    }
-  }
+  const eventData = await getEvent(id);
 
   return (
     <main
