@@ -1,4 +1,16 @@
 export { PromoFlash, default } from './PromoFlash';
-export { SkiddleLogoMC } from './MovieClips/SkiddleLogoMC';
-export { promoActionScript } from './ActionScript/promoActionScript';
+export {
+  SkiddleLogoMC,
+  PromoActionsMC,
+  FacebookIcon,
+  TwitterXIcon,
+  MailIcon,
+  SearchIcon,
+  getDefaultPromoActions,
+} from './MovieClips';
+export {
+  promoActionScript,
+  separatePromoActionScript,
+  promoActionsActionScript,
+} from './ActionScript';
 export * from './types';

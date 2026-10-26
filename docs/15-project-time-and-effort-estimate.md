@@ -10,11 +10,11 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~20.5 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~24.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.00 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **60 Commits** | Authored by DriveByAbuser across 4 active dates |
-| **Total Monorepo Tests** | **133 Tests (100% Pass)** | 124 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~21.5 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~25.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.12 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **62 Commits** | Authored by DriveByAbuser across 4 active dates |
+| **Total Monorepo Tests** | **138 Tests (100% Pass)** | 129 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
 | **Code Additions** | **+24,500 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
@@ -31,9 +31,9 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2. **Commit Volume & Line Diff Metrics:**
    - Analysis of `git diff --stat a058060..HEAD` indicates 140 files created or modified with 21,800+ net insertions.
 3. **Automated Test Pyramid Depth:**
-   - 111 automated tests authored across 4 distinct test runners/configurations (`@skiddle/sdk`, `@skiddle/cli`, `apps/web`, and `php/tests`).
+   - 138 automated tests authored across 4 distinct test runners/configurations (`@skiddle/sdk`, `@skiddle/cli`, `apps/web`, and `php/tests`).
 4. **Architectural Documentation Footprint:**
-   - 15 standalone technical architecture decision records totaling over 2,500 lines of markdown plus a 230+ line chronological migration transcript.
+   - 16 standalone technical architecture decision records totaling over 2,800 lines of markdown plus an extensive chronological migration transcript.
 
 ---
 
@@ -43,7 +43,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2026-10-15  [==========]  Session 1-3: Legacy Isolation, TypeScript SDK, CLI (4.0h)
 2026-10-16  [=========]   Session 4: Turborepo, Next.js 15, Single Event Schema (3.6h)
 2026-10-25  [==============] Session 5-8: Event Search, Flash Creative Studio, Docs (7.6h)
-2026-10-26  [===========]  Session 9-18: GpxRoute 3D, PromoFlash, Performance & Docs (4.5h)
+2026-10-26  [===========]  Session 9-21: GpxRoute 3D, PromoFlash, Actions, Performance & Docs (5.2h)
 ```
 
 ### Day 1 — Thursday, October 15, 2026 (~4.0 Hours)
@@ -156,27 +156,52 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Streamlined the image card to exclusively feature the high-resolution flyer image (`largeimageurl`), removing the redundant thumbnail image.
   - Enhanced preview frame height to 380px for improved flyer legibility and updated unit tests.
   - *Estimated Effort:* **0.1h**
+- **Session 19 (14:55 – 15:05 BST):**
+  - Updated `PromoFlash` to prioritize high-resolution `largeimageurl` / `largeimage` for `ImageMC`.
+  - Authored `separatePromoActionScript` coordinating synchronized counter-motion:
+    - Moves `CleverText` headline up (`y: -130`, `ease: 'power3.inOut'`).
+    - Unfolds `ImageMC` down (`y: 110`, scale `0.88` to `1.0`, fade `0` to `1.0`, `ease: 'power3.out'`).
+    - Perfectly separates elements on the stage with balanced breathing space.
+  - Expanded unit test suite to 67 unit tests in `apps/web` (135 total across monorepo).
+  - *Estimated Effort:* **0.3h**
+- **Session 20 (15:05 – 15:25 BST):**
+  - Designed and authored modular Action Buttons MovieClip (`PromoActionsMC`) and animation sequence timeline (`promoActionsActionScript`) positioned at the bottom of the Promo page.
+  - Implemented 1-by-1 sequential entrance animation:
+    - Slides in from bottom along horizontal center axis, popping up just slightly above its resting row position (`scale: 1.35`, `z-index: 1000`).
+    - Reading description pill (`z-index: 10001`) fades in directly above the popped-up icon, holds, and cleanly fades out.
+    - Button shrinks down (`scale: 1.0`) into its slot in the auto-spaced bottom row.
+    - Cycles smoothly through all configured action buttons (Facebook, Twitter/X, Email, Search/More Events).
+  - Added unit tests in `apps/web/tests/unit/promo-flash.test.tsx` verifying `PromoActionsMC` buttons, custom actions, and `promoActionsActionScript` timeline. Web unit tests expanded to 70 tests.
+  - *Estimated Effort:* **0.4h**
+- **Session 21 (15:25 – 15:35 BST):**
+  - Standardized large artwork and flyer display to 1:1 square:
+    - Updated `ImageMC` default `aspectRatio` from `4/3` to `1/1` in `@goldlabelapps/flash`.
+    - Rebuilt `@goldlabelapps/flash` package distributions.
+    - Updated `PromoFlash.tsx` with explicit `aspectRatio="1/1"` property.
+    - Refactored `EventDetail.module.css` (`.imagePreview` and `.noImagePlaceholder`) to `aspect-ratio: 1 / 1; max-width: 440px`.
+  - Added unit test asserting `aspect-ratio:1/1`. Monorepo test suite stands at 138 total automated tests (100% pass).
+  - *Estimated Effort:* **0.2h**
 
 ---
 
 ## 🏛 4. Effort Distribution by Technical Pillar
 
 ```
-Next.js 15 Web Application & Flash Studio : 8.8h (39%) ███████████████
-Architecture, ADRs & Transcripts (16 docs): 4.8h (21%) ████████
-Automated Testing & CI (133 tests)        : 4.0h (18%) ███████
+Next.js 15 Web Application & Flash Studio : 9.7h (41%) ███████████████
+Architecture, ADRs & Transcripts (16 docs): 4.8h (20%) ████████
+Automated Testing & CI (138 tests)        : 4.0h (17%) ███████
 Core TypeScript SDK (@skiddle/sdk)        : 2.5h (11%) ████
 NX° Developer CLI (@skiddle/cli)          : 2.5h (11%) ████
 ```
 
 | Pillar | Components / Files | Est. Hours | % of Total |
 | :--- | :--- | :--- | :--- |
-| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoteFlashMovie`, `SdkAccordion`, `SkiddleVenue`, `IPhoneFrame`, routes | **8.8h** | 39% |
-| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **4.8h** | 21% |
-| **Automated Testing & CI** | 124 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.0h** | 18% |
+| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoteFlashMovie`, `SdkAccordion`, `SkiddleVenue`, `IPhoneFrame`, routes | **9.7h** | 41% |
+| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **4.8h** | 20% |
+| **Automated Testing & CI** | 129 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.0h** | 17% |
 | **Core TypeScript SDK** | Zero-dependency client, API v1/v3 routing, fluent builder, eFlyer ViewModel | **2.5h** | 11% |
 | **NX° Developer CLI** | Native terminal UI, `doctor`, `events`, `benchmark`, `scenarios` | **2.5h** | 11% |
-| **Total** | | **22.6h** | **100%** |
+| **Total** | | **23.5h** | **100%** |
 
 ---
 

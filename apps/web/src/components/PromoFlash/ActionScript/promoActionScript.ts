@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { corkscrewActionScript } from '@goldlabelapps/flash';
-import type { PromoActionScriptOptions } from '../types';
+import type { PromoActionScriptOptions, SeparatePromoActionScriptOptions } from '../types';
 
 /**
  * promoActionScript - ActionScript timeline animating the Skiddle logo
@@ -34,6 +34,59 @@ export function promoActionScript({
     loop,
     speed,
   });
+}
+
+/**
+ * separatePromoActionScript - ActionScript timeline animating CleverText and ImageMC
+ * moving up and down respectively until they are nicely separated.
+ */
+export function separatePromoActionScript({
+  textTarget,
+  imageTarget,
+  textY = -130,
+  imageY = 110,
+  duration = 1.0,
+  delay = 0.4,
+  ease = 'power3.inOut',
+  imageEase = 'power3.out',
+  onComplete,
+}: SeparatePromoActionScriptOptions): gsap.core.Timeline | null {
+  if (!textTarget) return null;
+
+  const tl = gsap.timeline({ onComplete });
+
+  // Move CleverText / title up
+  tl.to(
+    textTarget,
+    {
+      y: textY,
+      duration,
+      ease,
+    },
+    `+=${delay}`,
+  );
+
+  // Animate the large image MovieClip moving down to separate nicely
+  if (imageTarget) {
+    tl.fromTo(
+      imageTarget,
+      {
+        autoAlpha: 0,
+        scale: 0.88,
+        y: 0,
+      },
+      {
+        autoAlpha: 1,
+        scale: 1,
+        y: imageY,
+        duration,
+        ease: imageEase,
+      },
+      '<',
+    );
+  }
+
+  return tl;
 }
 
 export default promoActionScript;

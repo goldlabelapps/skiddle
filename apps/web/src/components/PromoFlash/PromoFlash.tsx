@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { Stage, CleverText, ImageMC, corkScrew } from '@goldlabelapps/flash';
-import { SkiddleLogoMC } from './MovieClips/SkiddleLogoMC';
+import { SkiddleLogoMC, PromoActionsMC, getDefaultPromoActions } from './MovieClips';
+import { separatePromoActionScript, promoActionsActionScript } from './ActionScript';
 import styles from './PromoFlash.module.css';
 import type { PromoFlashProps } from './types';
 
@@ -14,22 +15,40 @@ import type { PromoFlashProps } from './types';
  * 2. Pauses for 1 second.
  * 3. Skiddle logo fades out.
  * 4. CleverText MovieClip activates, typing the event title with responsive multi-line wrapping.
+ * 5. CleverText moves up and the large image MovieClip animates in moving down until nicely separated.
+ * 6. Action buttons slide up 1-by-1 from offscreen bottom, pop up centered with top z-index,
+ *    display their text description fading in and out, and shrink down into the auto-spaced bottom row.
  */
 export function PromoFlash({
   id,
   event,
+  actions: customActions,
   className,
   style,
   onAnimationComplete,
 }: PromoFlashProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<(HTMLElement | null)[]>([]);
+  const labelRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [typingActive, setTypingActive] = useState(false);
 
-  // Use event.imageurl for the visual MovieClip component
-  const cardImageUrl = event?.imageurl || event?.largeimageurl;
+  const defaultActions = useMemo(
+    () => getDefaultPromoActions({ id, event }),
+    [id, event]
+  );
+  const actions = customActions || defaultActions;
+
+  // Prioritize high-resolution large image for the visual MovieClip component
+  const cardImageUrl =
+    event?.largeimageurl ||
+    event?.largeImageUrl ||
+    event?.largeimage ||
+    event?.imageurl ||
+    event?.imageUrl;
 
   const titleText =
     event?.eventname ||
@@ -67,8 +86,22 @@ export function PromoFlash({
     timelineRef.current = tl;
 
     // Reset initial states
-    gsap.set(titleRef.current, { autoAlpha: 0, scale: 0.95 });
-    if (imageRef.current) gsap.set(imageRef.current, { autoAlpha: 0, scale: 0.9 });
+    gsap.set(titleRef.current, {
+      autoAlpha: 0,
+      scale: 0.95,
+      xPercent: -50,
+      yPercent: -50,
+      y: 0,
+    });
+    if (imageRef.current) {
+      gsap.set(imageRef.current, {
+        autoAlpha: 0,
+        scale: 0.88,
+        xPercent: -50,
+        yPercent: -50,
+        y: 0,
+      });
+    }
 
     // 1. Logo corkscrews in
     const inTl = corkScrew(logoRef.current, 'in', { duration: 1.0 });
@@ -99,7 +132,31 @@ export function PromoFlash({
       },
       '-=0.1',
     );
-  }, [onAnimationComplete]);
+
+    // 4. Animate CleverText and large image MovieClips separating up and down respectively
+    if (imageRef.current) {
+      const sepTl = separatePromoActionScript({
+        textTarget: titleRef.current,
+        imageTarget: imageRef.current,
+        textY: -130,
+        imageY: 110,
+        duration: 1.0,
+        delay: 0.4,
+      });
+      if (sepTl) tl.add(sepTl);
+    }
+
+    // 5. Present action buttons 1 by 1 from bottom offscreen to centered pop up, then shrink to row
+    const actionsTl = promoActionsActionScript({
+      container: containerRef.current,
+      buttons: buttonRefs.current,
+      labelTarget: labelRef.current,
+      actions,
+    });
+    if (actionsTl) {
+      tl.add(actionsTl, '+=0.2');
+    }
+  }, [actions, onAnimationComplete]);
 
   useEffect(() => {
     playSequence();
@@ -111,6 +168,7 @@ export function PromoFlash({
 
   return (
     <div
+      ref={containerRef}
       data-testid="promo-flash"
       className={`${styles.container} ${className || ''}`}
       style={style}
@@ -164,7 +222,6 @@ export function PromoFlash({
                 fontWeight: 800,
                 color: '#000000',
               }}
-              onFinish={onAnimationComplete}
             />
           </div>
           {cardImageUrl && (
@@ -173,11 +230,18 @@ export function PromoFlash({
               src={cardImageUrl}
               alt={titleText}
               width={260}
-              aspectRatio="4/3"
+              aspectRatio="1/1"
             />
           )}
         </div>
       </Stage>
+
+      {/* Action Buttons MovieClip at the bottom of the Promo page */}
+      <PromoActionsMC
+        actions={actions}
+        buttonRefs={buttonRefs}
+        labelRef={labelRef}
+      />
     </div>
   );
 }

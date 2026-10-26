@@ -481,3 +481,61 @@
 - **Verification & Testing:**
   - Updated `apps/web/tests/unit/event-detail-page.test.tsx` asserting `largeimageurl` is rendered at the bottom and standard `imageurl` is omitted from that section.
   - Verified tests pass 5/5 and typecheck passes with zero errors.
+
+---
+
+### Step 30: Large Image MovieClip Animation & Separation Choreography
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Updated `PromoFlash` to prioritize the high-resolution event artwork (`largeimageurl` / `largeImageUrl` / `largeimage`) for the `ImageMC` MovieClip.
+  - Authored `separatePromoActionScript`:
+    - Synchronized timeline factory driving `CleverText` and `ImageMC` into elegant counter-motion.
+    - Translates `CleverText` up (`y: -130`, `ease: 'power3.inOut'`) to the upper promotional zone.
+    - Unfolds `ImageMC` down (`y: 110`, scaling `0.88` to `1.0`, fading `0` to `1.0`, `ease: 'power3.out'`) to the lower framing area.
+    - Preserves centered alignment with `xPercent: -50, yPercent: -50` on initial reset.
+  - Replays smoothly on user tap/click.
+- **Verification & Testing:**
+  - Added unit test in `apps/web/tests/unit/promo-flash.test.tsx` asserting `separatePromoActionScript` timeline creation and `largeimageurl` asset priority.
+  - All 67 unit tests and 3 e2e web tests passing with zero errors and clean lint.
+
+---
+
+### Step 31: Promo Action Buttons MovieClip & 1-by-1 Presentation Choreography
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Designed and authored modular Action Buttons MovieClip (`PromoActionsMC`) and animation sequence timeline (`promoActionsActionScript`) positioned at the bottom of the Promo page.
+  - Implemented 1-by-1 sequential entrance animation:
+    1. Each action button starts offscreen below the bottom of the Promo container, centered horizontally ("right in the middle horx").
+    2. Slides in along the middle horizontal axis, popping up just slightly above its resting row position (`y: -popLift` / 68px above resting) with top z-index (`z-index: 1000`) and pop-up scale (`scale: 1.35`, ease: `back.out(1.15)`).
+    3. Action description pill (`z-index: 10001`) fades in directly above the popped-up icon (`bottom: 160px`), holds for reading, and cleanly fades out.
+    4. Button shrinks down (`scale: 1.0`, ease: `power3.out`) from the center into its designated slot in the auto-spaced bottom row.
+    5. Repeats seamlessly for each successive button in the configurable action set.
+  - Implemented default action buttons:
+    - Button 1: **Facebook** (`#1877F2`, standard white Facebook "f" icon) with description text *"Share to Facebook"*, opening the Facebook share dialog.
+    - Button 2: **Twitter (X)** (`#000000`, crisp white geometric X icon) with description text *"Share to X"*, opening the X tweet intent dialog with pre-filled event title.
+    - Button 3: **Email** (`#ea4335`, clean white envelope icon) with description text *"Share via Email"*, triggering native `mailto:` with formatted subject and body.
+    - Button 4: **Search** (`#111827`, clean white magnifying glass icon) with description text *"More events"*, navigating to event search (`/`).
+  - Added support for arbitrary extensible action configurations (`PromoActionButton[]`) with auto-spaced flexbox distribution across the bottom row.
+- **Verification & Testing:**
+  - Authored unit tests in `apps/web/tests/unit/promo-flash.test.tsx` asserting:
+    - Rendering of `PromoActionsMC` with Facebook and Search buttons and aria labels.
+    - Rendering of custom action buttons (e.g. WhatsApp) in auto-spaced layout.
+    - Initialization and execution of `promoActionsActionScript` GSAP timeline.
+  - Web unit tests passing 70/70 tests across 10 test files; production build passing clean.
+
+---
+
+### Step 32: Standardized Large Flyer Artwork to 1:1 Square Aspect Ratio
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Standardized all large image displays and MovieClips after confirming Skiddle high-resolution artwork (`largeimageurl`) is 1:1 square.
+  - In `@goldlabelapps/flash`:
+    - Updated `ImageMC` component default `aspectRatio` from `4/3` to `1/1` for square flyer rendering.
+    - Rebuilt `@goldlabelapps/flash` package (`npm run build`).
+  - In `PromoFlash`:
+    - Set `aspectRatio="1/1"` on `ImageMC` within `PromoFlash.tsx`.
+  - In `EventDetailClient`:
+    - Updated `.imagePreview` and `.noImagePlaceholder` in `EventDetail.module.css` to `aspect-ratio: 1 / 1` (with `max-width: 440px`), ensuring flyers display in their native 1:1 framing without distortion or letterboxing.
+- **Verification & Testing:**
+    - Updated `apps/web/tests/unit/promo-flash.test.tsx` asserting `aspect-ratio:1/1`.
+    - Verified all 70 unit tests in `apps/web` pass with zero regressions.

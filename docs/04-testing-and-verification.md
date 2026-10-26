@@ -35,7 +35,7 @@ flowchart TD
     subgraph Packages ["Workspace Coverage"]
         Unit --> SDK_U["packages/sdk/tests/sdk.test.ts (30 tests)"]
         Unit --> CLI_U["packages/cli/tests/cli.test.js (16 tests)"]
-        Unit --> Web_U["apps/web/tests/unit/ (5 suites: 31 tests)"]
+        Unit --> Web_U["apps/web/tests/unit/ (10 suites: 70 tests)"]
 
         E2E --> SDK_E["packages/sdk/tests/e2e.test.ts (3 tests)"]
         E2E --> CLI_E["packages/cli/tests/e2e.test.js (7 tests)"]
@@ -116,10 +116,15 @@ All test, lint, and typecheck tasks in `turbo.json` declare `"dependsOn": ["^bui
 | File | Command | Tests | Responsibilities |
 | :--- | :--- | :---: | :--- |
 | `tests/unit/actions.test.ts` | `pnpm --filter web test:unit` | **7** | Server Actions (`checkServerConfig`, `executeSkiddleQuery`), blank condition pruning, API key fallback, resource routing, and HTTP status error mapping. |
-| `tests/unit/api-routes.test.ts` | `pnpm --filter web test:unit` | **8** | Route handlers (`/api/events`, `/api/events/[id]`), API key presence check, query parameter sanitization, limit clamping, and `SkiddleException` HTTP status mapping. |
-| `tests/unit/event-detail-page.test.tsx` | `pnpm --filter web test:unit` | **4** | Server Component `EventDetailPage` and `generateMetadata`: API key fallback screen, error state recovery, and successful `EventDetailClient` rendering. |
-| `tests/unit/event-search.test.tsx` | `pnpm --filter web test:unit` | **11** | Component rendering, `HighlightText` regex safety, `stripHtml` tag stripping, `CATEGORIES` validation, and `normalizeEvent` transformation of v1/v3 shapes. |
-| `tests/unit/footer.test.tsx` | `pnpm --filter web test:unit` | **1** | Global `Footer` component: developer resources (`/sdk`, Promotion Centre, API docs, GitHub repo), navigation, and copyright. |
+| `tests/unit/api-routes.test.ts` | `pnpm --filter web test:unit` | **10** | Route handlers (`/api/events`, `/api/events/[id]`), API key presence check, query parameter sanitization, limit clamping, and `SkiddleException` HTTP status mapping. |
+| `tests/unit/app-shell.test.tsx` | `pnpm --filter web test:unit` | **2** | Global application shell, navigation bar, responsive layout, and branding. |
+| `tests/unit/event-detail-page.test.tsx` | `pnpm --filter web test:unit` | **5** | Server Component `EventDetailPage` and `generateMetadata`: API key fallback screen, error state recovery, `EventDetailClient` rendering, and image asset layout. |
+| `tests/unit/event-search.test.tsx` | `pnpm --filter web test:unit` | **23** | Component rendering, `HighlightText` regex safety, `stripHtml` tag stripping, `CATEGORIES` validation, `normalizeEvent` transformation of v1/v3 shapes, and filtering logic. |
+| `tests/unit/footer.test.tsx` | `pnpm --filter web test:unit` | **1** | Global `Footer` component: developer resources (`/sdk`, Promotion Centre, API docs, candidate CV link, GitHub repo), navigation, and copyright. |
+| `tests/unit/gpxroute-venue-page.test.tsx` | `pnpm --filter web test:unit` | **6** | GpxRoute 3D Skiddle venue showcase: Web Component custom elements, iframe postMessage bridge, and responsive `IPhoneFrame` chassis. |
+| `tests/unit/promo-flash.test.tsx` | `pnpm --filter web test:unit` | **10** | Modular `PromoFlash` component: `promoActionScript` GSAP timeline, vertical/horizontal centering, `TitleText` autoSize scaling, `CleverText` integration, `ImageMC` 1:1 flyer rendering (`largeimageurl` priority), `separatePromoActionScript` choreography, `PromoActionsMC` action buttons, and `promoActionsActionScript` 1-by-1 entrance presentation. |
+| `tests/unit/promote-page.test.tsx` | `pnpm --filter web test:unit` | **5** | Event Promotion Studio (`/events/[id]/promote` & `/promo/[id]`): fullscreen playback, Web Audio synthesis trigger, timeline controls, and audio mute toggle. |
+| `tests/unit/sdk-accordion.test.tsx` | `pnpm --filter web test:unit` | **1** | Interactive SDK method documentation accordion and code sample rendering. |
 | `tests/e2e/web-e2e.test.ts` | `pnpm --filter web test:e2e` | **3** | PWA Web App Manifest contract, RootLayout metadata/viewport validation, and full E2E Server Action → `@skiddle/sdk` → `toEFlyerPromotionData` pipeline. |
 
 #### Key Web Application Test Specifications:
