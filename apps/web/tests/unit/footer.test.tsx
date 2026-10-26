@@ -15,9 +15,11 @@ describe('Footer Component', () => {
     // Candidate column
     expect(html).toContain('Candidate');
     expect(html).toContain('https://github.com/goldlabelapps/skiddle');
-    expect(html).toContain('GitHub Repository');
+    expect(html).toContain('Code example');
+    expect(html).toContain('CV');
+    expect(html).toContain('/docs/Chris%20Dorward%20-%20CV.pdf');
     expect(html).toContain('https://goldlabel.pro/contact');
-    expect(html).toContain('Contact');
+    expect(html).toContain('Contact Chris');
     expect(html).not.toContain('Developer Resources');
     expect(html).not.toContain('SDK Explorer');
     expect(html).not.toContain('API Documentation');

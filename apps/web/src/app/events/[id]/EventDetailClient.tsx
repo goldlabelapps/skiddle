@@ -11,6 +11,7 @@ import {
   Clock,
   Music,
   ExternalLink,
+  ImageIcon,
 } from 'lucide-react';
 import styles from './EventDetail.module.css';
 
@@ -19,6 +20,7 @@ interface EventDetailClientProps {
   event: any;
   rawResponse: any;
   executionTimeMs?: number;
+  initialTab?: 'structured' | 'raw' | null;
 }
 
 function formatBritishDate(dateStr?: string): string {
@@ -52,11 +54,13 @@ export function EventDetailClient({
   event,
   rawResponse,
   executionTimeMs,
+  initialTab = null,
 }: EventDetailClientProps) {
-  const [activeTab, setActiveTab] = useState<'structured' | 'raw' | 'eflyer' | null>(null);
+  const [activeTab, setActiveTab] = useState<'structured' | 'raw' | 'eflyer' | null>(initialTab);
 
   const eventName = event?.eventname || event?.eventName || `Event #${id}`;
   const imageUrl = event?.largeimageurl || event?.imageurl || event?.largeImageUrl || event?.imageUrl || '';
+  const largeImageUrl = event?.largeimageurl || event?.largeImageUrl || '';
   const venue = event?.venue || {};
   const venueName = venue.name || 'Venue TBA';
   const venueAddress = [venue.address, venue.town || venue.cityname, venue.postcode].filter(Boolean).join(', ');
@@ -305,6 +309,58 @@ export function EventDetailClient({
                   <span style={{ fontSize: 13, color: '#94a3b8' }}>No artists listed</span>
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* Section: Event Image (Large Image only) */}
+          <div className={styles.imagesCard}>
+            <h3 className={styles.cardTitle}>
+              <ImageIcon size={18} style={{ color: '#0284c7' }} />
+              <span>Event Image</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: '#64748b' }}>
+                (largeimageurl)
+              </span>
+            </h3>
+
+            <div className={styles.imageBox}>
+              <div className={styles.imageBoxHeader}>
+                <div className={styles.imageBoxTitle}>
+                  <span className={styles.imageKeyBadge}>largeimageurl</span>
+                  <span>Large Image / Flyer</span>
+                </div>
+                {largeImageUrl && (
+                  <a
+                    href={largeImageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.imageLink}
+                    title="Open large flyer in new tab"
+                  >
+                    <span>Open</span>
+                    <ExternalLink size={12} />
+                  </a>
+                )}
+              </div>
+              {largeImageUrl ? (
+                <div className={styles.imagePreview}>
+                  <Image
+                    src={largeImageUrl}
+                    alt={`${eventName} - large flyer`}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    unoptimized
+                  />
+                </div>
+              ) : (
+                <div className={styles.noImagePlaceholder}>
+                  No large image (largeimageurl) provided
+                </div>
+              )}
+              {largeImageUrl && (
+                <div className={styles.imageBoxFooter}>
+                  <span className={styles.imageUrlText}>{largeImageUrl}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

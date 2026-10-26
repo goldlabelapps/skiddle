@@ -18,6 +18,23 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('data-testid="skiddle-logo-mc"');
     expect(html).toContain('aria-label="Skiddle Logo"');
     expect(html).toContain('viewBox="0 0 500 500"');
+    expect(html).toContain('data-testid="promo-title-container"');
+    expect(html).toContain('data-testid="clever-text"');
+    expect(html).toContain('aria-label="Test Event"');
+  });
+
+  it('renders CleverText MovieClip scaling down typography for long multi-line titles', () => {
+    const longTitle = 'Mozart, Made in Manchester - An Evening of Classical Masterpieces with Full Orchestra';
+    const html = renderToStaticMarkup(
+      <PromoFlash id="43032215" event={{ eventname: longTitle }} />
+    );
+
+    expect(html).toContain('data-testid="promo-title-container"');
+    expect(html).toContain('data-testid="clever-text"');
+    expect(html).toContain('aria-label="Mozart, Made in Manchester - An Evening of Classical Masterpieces with Full Orchestra"');
+    // Verifies dynamic autoSize scaling to 1.125rem for >60 chars
+    expect(html).toContain('font-size:1.125rem');
+    expect(html).toContain('word-break:break-word');
   });
 
   it('renders SkiddleLogoMC MovieClip with customized size and color', () => {
@@ -47,5 +64,22 @@ describe('PromoFlash Modular Component Architecture', () => {
 
     expect(tl).toBeDefined();
     expect(typeof tl?.to).toBe('function');
+  });
+
+  it('renders ImageMC MovieClip when imageurl is provided in event data', () => {
+    const html = renderToStaticMarkup(
+      <PromoFlash
+        id="43032215"
+        event={{
+          eventname: 'Manchester Warehouse Techno Rave',
+          imageurl: 'https://example.com/event-thumb.jpg',
+          largeimageurl: 'https://example.com/event-large.jpg',
+        }}
+      />
+    );
+
+    expect(html).toContain('data-testid="flash-image-mc"');
+    expect(html).toContain('src="https://example.com/event-thumb.jpg"');
+    expect(html).toContain('alt="Manchester Warehouse Techno Rave"');
   });
 });

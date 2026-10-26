@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import EventDetailPage, { generateMetadata } from '../../src/app/events/[id]/page';
+import { EventDetailClient } from '../../src/app/events/[id]/EventDetailClient';
 
 describe('EventDetailPage Component & Metadata', () => {
   const originalEnv = process.env.SKIDDLE_API_KEY;
@@ -99,6 +100,42 @@ describe('EventDetailPage Component & Metadata', () => {
       expect(html).not.toContain('Selected Event');
       expect(html).not.toContain('Tickets On Sale');
       expect(html).not.toContain('View on Skiddle');
+    });
+
+    it('renders largeimageurl and not standard imageurl at bottom of API data tab', () => {
+      const mockEvent = {
+        id: '42802127',
+        eventname: 'Alfie Brown & Friends',
+        venue: {
+          name: 'Creatures Comedy Club',
+          town: 'Manchester',
+        },
+        imageurl: 'https://d31fr2pwly4c4s.cloudfront.net/th_sample.jpg',
+        largeimageurl: 'https://d31fr2pwly4c4s.cloudfront.net/large_sample.jpg',
+      };
+
+      const element = (
+        <EventDetailClient
+          id="42802127"
+          event={mockEvent}
+          rawResponse={{ results: mockEvent }}
+          initialTab="structured"
+        />
+      );
+
+      const html = renderToStaticMarkup(element);
+
+      expect(html).toContain('Event Image');
+      expect(html).toContain('largeimageurl');
+      expect(html).toContain('Large Image / Flyer');
+      expect(html).toContain('https://d31fr2pwly4c4s.cloudfront.net/large_sample.jpg');
+      expect(html).not.toContain('Standard Image');
+      expect(html).not.toContain('https://d31fr2pwly4c4s.cloudfront.net/th_sample.jpg');
+
+      // Verify image section is placed after the venue/data section
+      const venueIndex = html.indexOf('Venue &amp; Location');
+      const imageIndex = html.indexOf('Large Image / Flyer');
+      expect(imageIndex).toBeGreaterThan(venueIndex);
     });
   });
 });

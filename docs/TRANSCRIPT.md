@@ -409,3 +409,75 @@
   - `pnpm --filter web test tests/unit/promote-page.test.tsx` (5/5 tests passing).
   - `pnpm --filter web typecheck` (0 errors).
   - Full test suite verified green.
+
+---
+
+### Step 25: TitleText MovieClip & Logo Fade Sequence
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Designed and authored the `TitleText` MovieClip component in `@goldlabelapps/flash`:
+    - Responsive multi-line typography scaling (`autoSize`) based on character length (`>60 chars` -> `1.125rem`, `>35 chars` -> `1.35rem`, `>20 chars` -> `1.5rem`, `<=20 chars` -> `1.75rem`).
+    - Hyphenation, word break, and max-width wrapping preventing canvas boundary overflows.
+    - Extended `asMovieClip` with `fadeIn` and `fadeOut` ActionScript methods.
+  - Sequenced the timeline inside `PromoFlash`:
+    - 1. Skiddle logo corkscrews in.
+    - 2. Holds for 1.0 second.
+    - 3. Skiddle logo smoothly fades out.
+    - 4. `TitleText` component smoothly fades in, centered vertically and horizontally.
+    - 5. Click/tap on stage cleanly replays the sequence.
+- **Verification & Testing:**
+  - Added test case in `apps/web/tests/unit/promo-flash.test.tsx` verifying multi-line `TitleText` rendering and dynamic font scaling.
+  - 10 test files, 63 tests passing (100% green).
+
+---
+
+### Step 26: CleverText Typewriter Title Animation & React Singleton Deduplication
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Integrated `CleverText` from `@goldlabelapps/flash` to typewrite the event title in real-time as the logo fades out.
+  - Added `active?: boolean` support to `CleverText` so typing triggers deterministically when the logo fade-out completes.
+  - Configured React singleton deduplication in `vitest.config.ts` (`resolve.dedupe: ['react', 'react-dom']` + aliases) to prevent duplicate React runtime instances across cross-repo workspace symlinks in Node SSR test runners.
+  - Styled title container with dynamic responsive typography scaling down font size and line height for long multi-line event titles.
+- **Verification & Testing:**
+  - `pnpm --filter web test:unit` passing all 63 tests across 10 test files.
+  - `pnpm --filter web build` production compilation passing with zero errors.
+
+---
+
+### Step 27: ImageMC MovieClip & API Image Routing Architecture
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Audited and established image routing rules from Skiddle API event data:
+    - `largeimageurl`: High-resolution asset designated for document OpenGraph (`og:image`) and Twitter (`twitter:image`, `card: 'summary_large_image'`) social cards.
+    - `imageurl`: Standard event thumbnail designated for the interactive `ImageMC` visual component.
+  - Authored `ImageMC` MovieClip in `@goldlabelapps/flash`:
+    - Responsive 4:3 aspect ratio containment, smooth 12px border radius, subtle ambient elevation shadow, and eager loading.
+  - Integrated `ImageMC` into `PromoFlash` with `ref={imageRef}`, ready for the upcoming movieclip animation sequence.
+- **Verification & Testing:**
+  - Added unit test in `apps/web/tests/unit/promo-flash.test.tsx` asserting `ImageMC` rendering when `imageurl` is supplied.
+  - Web unit tests passing 64/64 tests across 10 test files.
+
+---
+
+### Step 28: Public Docs Consolidation & Candidate CV Link Integration
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Removed redundant root copy of `React Developer Job Spec - Sep 26.pdf` from `docs/` in favour of the single source of truth in `apps/web/public/docs/`.
+  - Moved candidate CV (`Chris Dorward - CV.pdf`) from root `docs/` into `apps/web/public/docs/Chris Dorward - CV.pdf`.
+  - Added "CV" link to the Candidate navigation column in `Footer.tsx` (`/docs/Chris%20Dorward%20-%20CV.pdf`) opening securely in a new tab (`target="_blank"` and `rel="noopener noreferrer"`).
+  - Updated `apps/web/tests/unit/footer.test.tsx` with assertions for candidate CV link.
+- **Verification & Testing:**
+  - `pnpm --filter web test tests/unit/footer.test.tsx` passed (100% green).
+
+---
+
+### Step 29: Event Detail API Data Tab Image Reorganization
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Reorganized the `EventDetailClient` structured "API Data" tab:
+    - Moved the image card section from above the description to the very bottom, after Description and Data Grid (Venue, Timings, Artists).
+    - Refactored the image display to exclusively feature the large flyer image (`largeimageurl`), removing the standard image (`imageurl`) preview from this section.
+    - Enhanced the preview container height to 380px for optimal flyer detail and aspect ratio fidelity.
+- **Verification & Testing:**
+  - Updated `apps/web/tests/unit/event-detail-page.test.tsx` asserting `largeimageurl` is rendered at the bottom and standard `imageurl` is omitted from that section.
+  - Verified tests pass 5/5 and typecheck passes with zero errors.

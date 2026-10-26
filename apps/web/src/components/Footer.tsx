@@ -49,7 +49,17 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span>GitHub Repository</span>
+                  <span>Code example</span>
+                  <ExternalIcon />
+                </a>
+              </li>
+              <li className={styles.linkItem}>
+                <a
+                  href="/docs/Chris%20Dorward%20-%20CV.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>CV</span>
                   <ExternalIcon />
                 </a>
               </li>
@@ -59,7 +69,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span>Contact</span>
+                  <span>Contact Chris</span>
                   <ExternalIcon />
                 </a>
               </li>
