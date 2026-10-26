@@ -71,6 +71,35 @@ describe('Web App Route Handlers (/api/events)', () => {
       expect(calledUrl.searchParams.get('page[size]')).toBe('30');
     });
 
+    it('supports page parameter and parses API v3 meta.totalResults and meta.totalPages', async () => {
+      process.env.SKIDDLE_API_KEY = 'mock_api_key';
+
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            error: 0,
+            meta: { totalResults: 300, totalPages: 13 },
+            data: [{ id: '301', eventName: 'Festival Page 2' }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+
+      const req = new NextRequest('http://localhost:3000/api/events?page=2&limit=24');
+      const response = await getEvents(req);
+      const json = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(json.success).toBe(true);
+      expect(json.totalresults).toBe(300);
+      expect(json.pagecount).toBe(13);
+      expect(json.page).toBe(2);
+
+      const calledUrl = new URL(fetchSpy.mock.calls[0][0] as string);
+      expect(calledUrl.searchParams.get('page[size]')).toBe('24');
+      expect(calledUrl.searchParams.get('page[number]')).toBe('2');
+    });
+
     it('forwards minDate and maxDate range parameters to SDK conditions', async () => {
       process.env.SKIDDLE_API_KEY = 'mock_api_key';
 

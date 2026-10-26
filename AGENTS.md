@@ -85,6 +85,18 @@ Follow the narrowest possible command to verify changes:
 
 ---
 
+## ⏱️ Documentation & Time Estimate Maintenance Protocol
+
+Whenever updating documentation, transcripts, or architectural guides:
+1. Ensure `docs/TRANSCRIPT.md` reflects the latest milestones and decisions.
+2. Synchronize `README.md` document indexes and test metrics.
+3. **Always update `docs/15-project-time-and-effort-estimate.md`**:
+   - Re-evaluate git history, commit counts, session intervals, and line diffs.
+   - Update total estimated engineering hours and breakdown by pillar.
+   - Maintain the time investment audit as an active, living metric.
+
+---
+
 ## 🛠 Available Skills & Prompt Helpers
 
 - `.agents/skills/skiddle-sdk-dev/SKILL.md`: Step-by-step procedure for adding new endpoints, resources, or JS SDK internals.

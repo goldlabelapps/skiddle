@@ -123,6 +123,12 @@ pnpm build         # Generate ESM, CJS, and .d.ts declaration maps
 
 A modern Next.js 15 application utilizing React 19 and App Router, configured to consume `@skiddle/sdk` directly via workspace linking (`workspace:*`).
 
+Features:
+- **Interactive API Tester:** Live condition builder, tri-mode diagnostics (Cards, JSON, Debug Telemetry), and error simulation.
+- **Event Discovery & Search:** Real-time search with 350ms debouncing, multi-facet filtering (categories, calendar date), and regex-safe query highlighting.
+- **Event Promotion Studio:** Interactive Flash-style motion graphics movie generator powered by `@goldlabelapps/flash`, GSAP timeline sequencing, and procedural Web Audio synthesis (0 KB audio assets).
+- **React Developer Job Spec (Sep 26):** Direct PDF review and download integrated into the footer.
+
 ```bash
 # Run web app in development
 pnpm --filter web dev
@@ -216,6 +222,8 @@ Chronological engineering logs and architectural decision records:
 - [`docs/11-event-detail-and-eflyer-schema.md`](./docs/11-event-detail-and-eflyer-schema.md) - Event detail schema, eFlyer promotional data model & TypeScript contracts
 - [`docs/12-tdd-testing-suite-and-ci-cd.md`](./docs/12-tdd-testing-suite-and-ci-cd.md) - TDD testing pyramid (Unit, E2E, PHP Parity), architectural linting & GitHub Actions CI/CD
 - [`docs/13-event-search-filter-and-discovery.md`](./docs/13-event-search-filter-and-discovery.md) - Real-time event search, multi-facet filtering, regex-safe highlighting, and promotion discovery architecture
+- [`docs/14-event-promotion-and-flash-creative-studio.md`](./docs/14-event-promotion-and-flash-creative-studio.md) - Dynamic Flash motion movie generator, `@goldlabelapps/flash` + GSAP engine & procedural Web Audio API synthesis
+- [`docs/15-project-time-and-effort-estimate.md`](./docs/15-project-time-and-effort-estimate.md) - Empirical time investment audit, git history session clustering & ongoing estimate maintenance protocol
 
 
 ---

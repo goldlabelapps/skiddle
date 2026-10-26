@@ -269,7 +269,7 @@ export function EventDetailClient({
                 API JSON
               </button>
               <Link
-                href={`/events/${id}/edit`}
+                href={`/promo/${id}`}
                 style={{
                   flex: 1,
                   minWidth: 180,

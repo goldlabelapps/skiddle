@@ -17,6 +17,11 @@
   - Structured view highlighting event date, doors, tickets, pricing, venue details, and lineup.
   - Raw JSON inspection tab and one-click JSON clipboard export.
   - Dedicated direct route alias: `/events/[id]/edit`.
+- **Event Promotion & Flash Motion Studio (`/events/[id]/promote`)**:
+  - Interactive Flash-style motion graphics movie generator built with `@goldlabelapps/flash` and GSAP timeline interpolation.
+  - 4-beat dynamic narrative sequencing: electric title intro, artist lineup, venue/date, and ticket pricing CTA.
+  - Procedural Web Audio API synthesizer for zero-asset retro sound effects (sweeps, clicks, fanfares).
+  - Complete player controls (scrub, play/pause, restart, fullscreen, mute) and link sharing.
 - **SDK Explorer & Interactive API Tester (`/sdk`)**:
   - Developer workbench for testing all `@skiddle/sdk` resources (`events`, `event-single`, `venues`, `artists`).
   - Interactive condition builder mirroring SDK `addCond`, `delCond`, and `clearConditions`.
@@ -65,7 +70,7 @@ apps/web/
 │   ├── app/
 │   │   ├── api/
 │   │   │   └── events/     # Next.js 15 Route Handlers (/api/events, /api/events/[id])
-│   │   ├── events/[id]/    # Server component & EventDetailClient
+│   │   ├── events/[id]/    # Server component, EventDetailClient & /promote studio
 │   │   ├── sdk/            # SDK Explorer & API Tester page
 │   │   ├── actions.ts      # Next.js Server Actions for SDK execution
 │   │   ├── layout.tsx      # Root layout, Header & Footer
@@ -74,7 +79,8 @@ apps/web/
 │   └── components/
 │       ├── ApiTester/      # Multi-view interactive API tester
 │       ├── EventSearch/    # Real-time search, filters, cards & HighlightText
-│       ├── Footer.tsx      # Global footer with developer resources
+│       ├── PromoteFlashMovie/ # Interactive Flash movie canvas player & Web Audio
+│       ├── Footer.tsx      # Global footer with developer resources & Job Spec PDF
 │       └── Header.tsx      # Global header with navigation
 └── tests/
     ├── e2e/                # Manifest & Server Action E2E tests

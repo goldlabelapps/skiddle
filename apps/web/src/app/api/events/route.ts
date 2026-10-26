@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
   const maxDate = searchParams.get('maxDate') || '';
   const limitParam = searchParams.get('limit');
   const limit = limitParam ? Math.min(Math.max(parseInt(limitParam, 10) || 24, 1), 50) : 24;
+  const pageParam = searchParams.get('page');
+  const page = pageParam ? Math.max(parseInt(pageParam, 10) || 1, 1) : 1;
+  const offsetParam = searchParams.get('offset');
+  const offset = offsetParam !== null ? Math.max(parseInt(offsetParam, 10) || 0, 0) : (page - 1) * limit;
 
   const apiKey = process.env.SKIDDLE_API_KEY;
   if (!apiKey) {
@@ -39,17 +43,38 @@ export async function GET(request: NextRequest) {
       client.events.addCond('bdate', date.trim());
     }
     client.events.addCond('limit', limit);
+    if (offset > 0) {
+      client.events.addCond('offset', offset);
+    }
 
     const response = await client.events.getListings();
     const rawEvents = Array.isArray(response.data)
       ? response.data
       : (Array.isArray(response.results) ? response.results : []);
 
+    const meta = (response.meta || {}) as Record<string, any>;
+    const totalResults =
+      meta.totalResults ??
+      meta.totalresults ??
+      meta.totalEvents ??
+      response.totalresults ??
+      response.totalcount ??
+      rawEvents.length;
+
+    const totalPages =
+      meta.totalPages ??
+      meta.totalpages ??
+      meta.pageCount ??
+      response.pagecount ??
+      (totalResults ? Math.ceil(Number(totalResults) / limit) : 1);
+
     return NextResponse.json({
       success: true,
       events: rawEvents,
-      totalresults: response.meta?.totalresults ?? response.totalresults ?? rawEvents.length,
-      pagecount: response.pagecount ?? response.meta?.pagecount ?? 1,
+      totalresults: Number(totalResults) || rawEvents.length,
+      pagecount: Number(totalPages) || 1,
+      page,
+      limit,
     });
   } catch (err: any) {
     const isSkiddleException = err instanceof SkiddleException;

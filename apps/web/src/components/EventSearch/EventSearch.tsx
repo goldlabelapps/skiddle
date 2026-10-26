@@ -24,7 +24,7 @@ export interface EventListItem {
 }
 
 export const CATEGORIES = [
-  { value: 'all', label: 'All Categories' },
+  { value: 'all', label: 'All' },
   { value: 'LIVE', label: 'Live Music / Gigs' },
   { value: 'CLUB', label: 'Clubbing & DJ' },
   { value: 'FEST', label: 'Festivals' },
@@ -98,6 +98,22 @@ export function getToday(): Date {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
+export function getPaginationRange(currentPage: number, totalPages: number): (number | string)[] {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, '...', totalPages];
+  }
+
+  if (currentPage >= totalPages - 3) {
+    return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+}
+
 export function stripHtml(html?: string): string {
   if (!html) return '';
   return html.replace(/<[^>]+>/g, '').trim();
@@ -151,11 +167,12 @@ export function EventSearch() {
   const [activeThumb, setActiveThumb] = useState<'min' | 'max'>('min');
   const [minDate, setMinDate] = useState('');
   const [maxDate, setMaxDate] = useState('');
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [events, setEvents] = useState<EventListItem[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalResults, setTotalResults] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [latencyMs, setLatencyMs] = useState<number | null>(null);
   const [, startTransition] = useTransition();
 
@@ -163,49 +180,45 @@ export function EventSearch() {
 
   // Debounce user input by 350ms
   useEffect(() => {
-    // If not interacted and no keyword, do nothing on mount
-    if (!keyword && !hasInteracted) {
+    if (keyword === debouncedKeyword) {
       return;
     }
 
     const handler = setTimeout(() => {
       startTransition(() => {
-        if (keyword) {
-          setHasInteracted(true);
-        }
         setDebouncedKeyword(keyword);
+        setCurrentPage(1);
       });
     }, 350);
 
     return () => clearTimeout(handler);
-  }, [keyword, hasInteracted]);
+  }, [keyword, debouncedKeyword]);
 
   // Debounce date slider range changes by 250ms before triggering API fetch
   useEffect(() => {
-    if (!hasInteracted) return;
+    if (!isDateFilterActive) {
+      if (minDate || maxDate) {
+        setMinDate('');
+        setMaxDate('');
+        setCurrentPage(1);
+      }
+      return;
+    }
 
     const handler = setTimeout(() => {
       startTransition(() => {
-        if (isDateFilterActive) {
-          const today = getToday();
-          setMinDate(formatDateIso(addDays(today, startDays)));
-          setMaxDate(formatDateIso(addDays(today, endDays)));
-        } else {
-          setMinDate('');
-          setMaxDate('');
-        }
+        const today = getToday();
+        setMinDate(formatDateIso(addDays(today, startDays)));
+        setMaxDate(formatDateIso(addDays(today, endDays)));
+        setCurrentPage(1);
       });
     }, 250);
 
     return () => clearTimeout(handler);
-  }, [hasInteracted, isDateFilterActive, startDays, endDays]);
+  }, [isDateFilterActive, startDays, endDays, minDate, maxDate]);
 
-  // RESTful lookup effect (only fires after interaction)
+  // RESTful lookup effect (fires on mount and whenever filters change)
   useEffect(() => {
-    if (!hasInteracted) {
-      return;
-    }
-
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -233,6 +246,9 @@ export function EventSearch() {
           params.set('maxDate', maxDate);
         }
         params.set('limit', '24');
+        if (currentPage > 1) {
+          params.set('page', String(currentPage));
+        }
 
         const response = await fetch(`/api/events?${params.toString()}`, {
           signal: controller.signal,
@@ -250,7 +266,10 @@ export function EventSearch() {
         const normalized = (data.events || []).map(normalizeEvent);
 
         setEvents(normalized);
-        setTotalResults(data.totalresults ?? normalized.length);
+        const total = typeof data.totalresults === 'number' ? data.totalresults : normalized.length;
+        setTotalResults(total);
+        const pages = typeof data.pagecount === 'number' ? data.pagecount : Math.max(1, Math.ceil(total / 24));
+        setTotalPages(pages);
         setLatencyMs(Math.round(performance.now() - startTime));
       } catch (err: any) {
         if (err.name === 'AbortError') {
@@ -268,14 +287,14 @@ export function EventSearch() {
     return () => {
       controller.abort();
     };
-  }, [hasInteracted, debouncedKeyword, category, minDate, maxDate]);
+  }, [debouncedKeyword, category, minDate, maxDate, currentPage]);
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
     }
-    setHasInteracted(true);
     setDebouncedKeyword(keyword);
+    setCurrentPage(1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -286,34 +305,28 @@ export function EventSearch() {
   };
 
   const handleCategorySelect = (catValue: string) => {
-    setHasInteracted(true);
     setCategory((prev) => (prev === catValue && catValue !== 'all' ? 'all' : catValue));
+    setCurrentPage(1);
   };
 
   const handleStartDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = Math.min(Number(e.target.value), endDays - 1);
     setStartDays(val);
     setIsDateFilterActive(true);
-    setHasInteracted(true);
+    setCurrentPage(1);
   };
 
   const handleEndDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = Math.max(Number(e.target.value), startDays + 1);
     setEndDays(val);
     setIsDateFilterActive(true);
-    setHasInteracted(true);
-  };
-
-  const handlePresetClick = (days: number) => {
-    setStartDays(0);
-    setEndDays(days);
-    setIsDateFilterActive(true);
-    setHasInteracted(true);
+    setCurrentPage(1);
   };
 
   const handleClear = () => {
     setKeyword('');
     setDebouncedKeyword('');
+    setCurrentPage(1);
   };
 
   const handleResetFilters = () => {
@@ -325,6 +338,18 @@ export function EventSearch() {
     setIsDateFilterActive(false);
     setMinDate('');
     setMaxDate('');
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages || newPage === currentPage) return;
+    setCurrentPage(newPage);
+    if (typeof window !== 'undefined') {
+      const resultsEl = document.getElementById('search-results');
+      if (resultsEl) {
+        resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   };
 
   const hasActiveFilters = Boolean(
@@ -337,17 +362,11 @@ export function EventSearch() {
 
   return (
     <div className={styles.container}>
-      {/* Hero Header */}
-      <section className={styles.hero}>
-        <div className={styles.badge}>
-          <span className={styles.badgeDot} />
-          <span>Skiddle Promos</span>
-        </div>
-      </section>
-
       {/* RESTful Search Bar & Filters */}
       <form className={styles.searchBoxCard} onSubmit={handleSearchSubmit}>
-        <h1 className={styles.title}>Find an event to promote</h1>
+        <h1 className={styles.title}>
+          Select a real event from Skiddle&apos;s production API
+        </h1>
         <div className={styles.mainInputRow}>
           <div className={styles.mainInputWrapper}>
             <svg
@@ -414,68 +433,51 @@ export function EventSearch() {
         </div>
 
         <div className={styles.dateSliderSection}>
-          <span className={styles.filterLabel}>Dates</span>
+          <div className={styles.sliderRow}>
+            <div className={styles.sliderDateLabel}>
+              <span className={styles.sliderDatePrefix}>From</span>
+              <strong>{isDateFilterActive && startDays === 0 ? 'Today' : formatDateDisplay(startDate)}</strong>
+            </div>
 
-          <div className={styles.rangeDisplayBadge}>
-            <Calendar size={15} className={styles.calendarIcon} />
-            <span>
-              From <strong>{isDateFilterActive && startDays === 0 ? 'Today' : formatDateDisplay(startDate)}</strong> to{' '}
+            <div className={styles.dualSliderWrapper}>
+              <div className={styles.sliderTrack} />
+              <div
+                className={styles.sliderHighlight}
+                style={{
+                  left: `calc(${(startDays / TOTAL_SLIDER_DAYS) * 100}% + ${(0.5 - startDays / TOTAL_SLIDER_DAYS) * 22}px)`,
+                  right: `calc(${(1 - endDays / TOTAL_SLIDER_DAYS) * 100}% + ${(endDays / TOTAL_SLIDER_DAYS - 0.5) * 22}px)`,
+                }}
+              />
+              <input
+                id="min-date-slider"
+                type="range"
+                min={0}
+                max={TOTAL_SLIDER_DAYS}
+                value={startDays}
+                onChange={handleStartDaysChange}
+                className={`${styles.rangeInput} ${styles.rangeInputMin}`}
+                style={{ zIndex: activeThumb === 'min' || startDays > TOTAL_SLIDER_DAYS - 20 ? 5 : 3 }}
+                onPointerDown={() => setActiveThumb('min')}
+                aria-label="Start date slider"
+              />
+              <input
+                id="max-date-slider"
+                type="range"
+                min={0}
+                max={TOTAL_SLIDER_DAYS}
+                value={endDays}
+                onChange={handleEndDaysChange}
+                className={`${styles.rangeInput} ${styles.rangeInputMax}`}
+                style={{ zIndex: activeThumb === 'max' ? 5 : 4 }}
+                onPointerDown={() => setActiveThumb('max')}
+                aria-label="End date slider"
+              />
+            </div>
+
+            <div className={styles.sliderDateLabel}>
+              <span className={styles.sliderDatePrefix}>To</span>
               <strong>{formatDateDisplay(endDate)}</strong>
-              <span className={styles.durationTag}>
-                ({endDays - startDays === TOTAL_SLIDER_DAYS ? '1 Year' : `${endDays - startDays} days`})
-              </span>
-            </span>
-          </div>
-
-          <div className={styles.dualSliderWrapper}>
-            <div className={styles.sliderTrack} />
-            <div
-              className={styles.sliderHighlight}
-              style={{
-                left: `calc(${(startDays / TOTAL_SLIDER_DAYS) * 100}% + ${(0.5 - startDays / TOTAL_SLIDER_DAYS) * 22}px)`,
-                right: `calc(${(1 - endDays / TOTAL_SLIDER_DAYS) * 100}% + ${(endDays / TOTAL_SLIDER_DAYS - 0.5) * 22}px)`,
-              }}
-            />
-            <input
-              id="min-date-slider"
-              type="range"
-              min={0}
-              max={TOTAL_SLIDER_DAYS}
-              value={startDays}
-              onChange={handleStartDaysChange}
-              className={`${styles.rangeInput} ${styles.rangeInputMin}`}
-              style={{ zIndex: activeThumb === 'min' || startDays > TOTAL_SLIDER_DAYS - 20 ? 5 : 3 }}
-              onPointerDown={() => setActiveThumb('min')}
-              aria-label="Start date slider"
-            />
-            <input
-              id="max-date-slider"
-              type="range"
-              min={0}
-              max={TOTAL_SLIDER_DAYS}
-              value={endDays}
-              onChange={handleEndDaysChange}
-              className={`${styles.rangeInput} ${styles.rangeInputMax}`}
-              style={{ zIndex: activeThumb === 'max' ? 5 : 4 }}
-              onPointerDown={() => setActiveThumb('max')}
-              aria-label="End date slider"
-            />
-          </div>
-
-          <div className={styles.presetChips} role="group" aria-label="Quick date presets">
-            {DATE_PRESETS.map((p) => {
-              const isActive = isDateFilterActive && startDays === 0 && endDays === p.days;
-              return (
-                <button
-                  key={p.label}
-                  type="button"
-                  className={`${styles.presetChip}${isActive ? ` ${styles.presetChipActive}` : ''}`}
-                  onClick={() => handlePresetClick(p.days)}
-                >
-                  {p.label}
-                </button>
-              );
-            })}
+            </div>
           </div>
 
           {hasActiveFilters && (
@@ -490,11 +492,9 @@ export function EventSearch() {
         </div>
       </form>
 
-      {/* Results, Loading State & Latency (only rendered once user interacts) */}
-      {hasInteracted && (
-        <>
-          {/* Status & Latency Row */}
-          <div className={styles.metaRow}>
+      {/* Results, Loading State & Latency */}
+      {/* Status & Latency Row */}
+      <div className={styles.metaRow} id="search-results">
             <div className={styles.resultsCount}>
               {loading ? (
                 <span className={styles.loadingIndicator}>
@@ -503,12 +503,14 @@ export function EventSearch() {
                 </span>
               ) : (
                 <span>
-                  Found <strong>{events.length}</strong> event{events.length === 1 ? '' : 's'}
-                  {totalResults > events.length && ` (of ${totalResults.toLocaleString()} total)`}
+                  Found <strong>{(totalResults > 0 ? totalResults : events.length).toLocaleString()}</strong> event{(totalResults > 0 ? totalResults : events.length) === 1 ? '' : 's'}
                   {debouncedKeyword && (
                     <>
                       {' '}for &ldquo;<strong>{debouncedKeyword}</strong>&rdquo;
                     </>
+                  )}
+                  {totalPages > 1 && (
+                    <> (page {currentPage} of {totalPages.toLocaleString()})</>
                   )}
                   {latencyMs !== null && ` in ${latencyMs}ms`}
                 </span>
@@ -569,72 +571,122 @@ export function EventSearch() {
           ))}
         </div>
       ) : events.length > 0 ? (
-        <div className={styles.grid}>
-          {events.map((event) => (
-            <Link
-              key={event.id}
-              href={`/events/${event.id}`}
-              className={styles.card}
-              title={`View ${event.eventName}`}
-            >
-              <div className={styles.imageWrapper}>
-                {event.imageUrl ? (
-                  <Image
-                    src={event.imageUrl}
-                    alt={event.eventName}
-                    className={styles.cardImage}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    unoptimized
-                  />
-                ) : (
-                  <div className={styles.cardImageFallback}>
-                    <span>No Image Available</span>
+        <>
+          <div className={styles.grid}>
+            {events.map((event) => (
+              <Link
+                key={event.id}
+                href={`/events/${event.id}`}
+                className={styles.card}
+                title={`View ${event.eventName}`}
+              >
+                <div className={styles.imageWrapper}>
+                  {event.imageUrl ? (
+                    <Image
+                      src={event.imageUrl}
+                      alt={event.eventName}
+                      className={styles.cardImage}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className={styles.cardImageFallback}>
+                      <span>No Image Available</span>
+                    </div>
+                  )}
+                  <span className={styles.categoryPill}>{event.eventCode}</span>
+                  {event.tickets ? (
+                    <span className={styles.ticketPill}>Tickets On Sale</span>
+                  ) : (
+                    <span className={styles.ticketPillOffSale}>Off Sale</span>
+                  )}
+                </div>
+
+                <div className={styles.cardBody}>
+                  <h2 className={styles.cardTitle}>
+                    <HighlightText
+                      text={event.eventName}
+                      query={debouncedKeyword}
+                    />
+                  </h2>
+
+                  <div className={styles.cardDate}>
+                    <Calendar size={13} style={{ flexShrink: 0 }} />
+                    <span>{formatBritishDate(event.date)}</span>
                   </div>
-                )}
-                <span className={styles.categoryPill}>{event.eventCode}</span>
-                {event.tickets ? (
-                  <span className={styles.ticketPill}>Tickets On Sale</span>
-                ) : (
-                  <span className={styles.ticketPillOffSale}>Off Sale</span>
+
+                  <div className={styles.cardVenue}>
+                    <MapPin size={13} style={{ flexShrink: 0 }} />
+                    <span>
+                      <HighlightText
+                        text={`${event.venueName}${event.venueTown ? ` (${event.venueTown})` : ''}`}
+                        query={debouncedKeyword}
+                      />
+                    </span>
+                  </div>
+
+                  {event.description && (
+                    <p className={styles.cardDescription}>
+                      <HighlightText
+                        text={event.description}
+                        query={debouncedKeyword}
+                      />
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <nav className={styles.pagination} aria-label="Event search pagination">
+              <button
+                type="button"
+                className={styles.pageButton}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 1 || loading}
+                aria-label="Previous page"
+              >
+                &larr; Previous
+              </button>
+
+              <div className={styles.pageNumbers}>
+                {getPaginationRange(currentPage, totalPages).map((p, idx) =>
+                  typeof p === 'number' ? (
+                    <button
+                      key={p}
+                      type="button"
+                      className={`${styles.pageNumberButton} ${
+                        p === currentPage ? styles.pageNumberActive : ''
+                      }`}
+                      onClick={() => handlePageChange(p)}
+                      disabled={loading}
+                      aria-current={p === currentPage ? 'page' : undefined}
+                    >
+                      {p}
+                    </button>
+                  ) : (
+                    <span key={`ellipsis-${idx}`} className={styles.paginationEllipsis}>
+                      &hellip;
+                    </span>
+                  )
                 )}
               </div>
 
-              <div className={styles.cardBody}>
-                <h2 className={styles.cardTitle}>
-                  <HighlightText
-                    text={event.eventName}
-                    query={debouncedKeyword}
-                  />
-                </h2>
-
-                <div className={styles.cardDate}>
-                  <Calendar size={13} style={{ flexShrink: 0 }} />
-                  <span>{formatBritishDate(event.date)}</span>
-                </div>
-
-                <div className={styles.cardVenue}>
-                  <MapPin size={13} style={{ flexShrink: 0 }} />
-                  <span>
-                    <HighlightText
-                      text={`${event.venueName}${event.venueTown ? ` (${event.venueTown})` : ''}`}
-                      query={debouncedKeyword}
-                    />
-                  </span>
-                </div>
-
-                {event.description && (
-                  <p className={styles.cardDescription}>
-                    <HighlightText
-                      text={event.description}
-                      query={debouncedKeyword}
-                    />
-                  </p>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
+              <button
+                type="button"
+                className={styles.pageButton}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage >= totalPages || loading}
+                aria-label="Next page"
+              >
+                Next &rarr;
+              </button>
+            </nav>
+          )}
+        </>
       ) : (
         !loading && (
           <div className={styles.emptyState}>
@@ -658,8 +710,6 @@ export function EventSearch() {
             )}
           </div>
         )
-      )}
-        </>
       )}
     </div>
   );

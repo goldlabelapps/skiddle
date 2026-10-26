@@ -12,6 +12,7 @@ import {
   formatBritishDate,
   TOTAL_SLIDER_DAYS,
   DATE_PRESETS,
+  getPaginationRange,
 } from '../../src/components/EventSearch/EventSearch';
 
 describe('EventSearch Component & Helpers', () => {
@@ -64,6 +65,26 @@ describe('EventSearch Component & Helpers', () => {
       const base = new Date(2026, 9, 25); // 2026-10-25
       const future = addDays(base, 14);
       expect(formatDateIso(future)).toBe('2026-11-08');
+    });
+  });
+
+  describe('getPaginationRange Helper', () => {
+    it('returns all page numbers when totalPages is 7 or fewer', () => {
+      expect(getPaginationRange(1, 5)).toEqual([1, 2, 3, 4, 5]);
+      expect(getPaginationRange(3, 7)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    });
+
+    it('returns start-anchored range with trailing ellipsis when currentPage is near the start', () => {
+      expect(getPaginationRange(2, 20)).toEqual([1, 2, 3, 4, 5, '...', 20]);
+      expect(getPaginationRange(4, 20)).toEqual([1, 2, 3, 4, 5, '...', 20]);
+    });
+
+    it('returns end-anchored range with leading ellipsis when currentPage is near the end', () => {
+      expect(getPaginationRange(18, 20)).toEqual([1, '...', 16, 17, 18, 19, 20]);
+    });
+
+    it('returns middle window with both ellipses when currentPage is in the middle', () => {
+      expect(getPaginationRange(10, 20)).toEqual([1, '...', 9, 10, 11, '...', 20]);
     });
   });
 
@@ -171,41 +192,38 @@ describe('EventSearch Component & Helpers', () => {
   });
 
   describe('EventSearch Initial State', () => {
-    it('does not render any events or results row before user interaction', () => {
+    it('renders search controls, initial loading state, and skeletons on mount', () => {
       const html = renderToStaticMarkup(<EventSearch />);
-      // Should render the hero badge and search box card
-      expect(html).toContain('Skiddle Promos');
-      expect(html).toContain('Find an event to promote');
+      // Should render the search box card
+      expect(html).toContain("Select a real event from Skiddle&#x27;s production API");
       expect(html).toContain('Search by event title, artist, venue, keyword, or description...');
-      expect(html).toContain('Dates');
+      expect(html).toContain('From');
+      expect(html).toContain('To');
 
-      // Should NOT render results, meta row, spinner, or empty state initially
-      expect(html).not.toContain('Found');
-      expect(html).not.toContain('Searching Skiddle API');
-      expect(html).not.toContain('Promote Event');
+      // Should render initial loading state and skeletons while fetching default results
+      expect(html).toContain('Searching Skiddle API');
       expect(html).not.toContain('No events found');
     });
 
     it('renders category chips for interactive filtering', () => {
       const html = renderToStaticMarkup(<EventSearch />);
-      expect(html).toContain('All Categories');
+      expect(html).toContain('All');
       expect(html).toContain('Live Music / Gigs');
       expect(html).toContain('Clubbing &amp; DJ');
       expect(html).toContain('Festivals');
-      expect(html).toContain('aria-pressed="true"'); // "All Categories" is initially selected
+      expect(html).toContain('aria-pressed="true"'); // "All" is initially selected
     });
 
     it('renders date range slider with 1-year timeline and From/To controls', () => {
       const html = renderToStaticMarkup(<EventSearch />);
-      expect(html).toContain('Dates');
       expect(html).toContain('From');
-      expect(html).toContain('to');
+      expect(html).toContain('To');
       expect(html).toContain('id="min-date-slider"');
       expect(html).toContain('id="max-date-slider"');
       expect(html).toContain('type="range"');
-      expect(html).toContain('Next 7 Days');
-      expect(html).toContain('Next 30 Days');
-      expect(html).toContain('Full Year');
+      // Dates header and Next pill buttons are removed to reduce hero height
+      expect(html).not.toContain('Quick date presets');
+      expect(html).not.toContain('Next 7 Days');
       // Scale labels underneath the slider are removed
       expect(html).not.toContain('+3 Months');
       expect(html).not.toContain('+6 Months');

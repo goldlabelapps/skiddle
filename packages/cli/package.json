@@ -1,6 +1,6 @@
 {
   "name": "@skiddle/cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "NX° Developer Experience CLI for Skiddle API",
   "type": "module",
   "bin": {

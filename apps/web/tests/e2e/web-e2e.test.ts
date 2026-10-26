@@ -11,8 +11,8 @@ describe('Web App End-to-End (E2E) & Integration Suite', () => {
 
   it('validates PWA Web App Manifest contract and icon definitions', () => {
     const webManifest = manifest();
-    expect(webManifest.name).toBe('Skiddle Promotion Centre');
-    expect(webManifest.short_name).toBe('Skiddle');
+    expect(webManifest.name).toBe('Skiddle Promo');
+    expect(webManifest.short_name).toBe('Skiddle Promo');
     expect(webManifest.start_url).toBe('/');
     expect(webManifest.display).toBe('standalone');
     expect(webManifest.theme_color).toBe('#0b0f19');
@@ -21,7 +21,7 @@ describe('Web App End-to-End (E2E) & Integration Suite', () => {
 
   it('validates RootLayout metadata and viewport contracts', () => {
     expect(viewport.themeColor).toBe('#0b0f19');
-    expect(metadata.title).toBe('Skiddle Monorepo | Next.js App');
+    expect(metadata.title).toBe('Skiddle Promo');
     expect(metadata.manifest).toBe('/manifest.webmanifest');
   });
 

@@ -1,0 +1,212 @@
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100dvh;
+  background-color: #000000;
+  transition: all 0.3s ease;
+  overflow: visible;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .frame {
+    height: calc(100dvh - 32px);
+    max-height: calc(100vh - 32px);
+    aspect-ratio: 9 / 19.5;
+    width: auto;
+    max-width: calc(100vw - 32px);
+    border-radius: 50px;
+    border: 11px solid #0f172a;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      0 0 0 2px #334155,
+      0 25px 60px -15px rgba(0, 0, 0, 0.85),
+      0 0 50px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Side Hardware Buttons (Desktop only) */
+.btnAction {
+  display: none;
+  position: absolute;
+  left: -14.5px;
+  top: 11%;
+  width: 3.5px;
+  height: 30px;
+  background-color: rgba(51, 65, 85, 0.9);
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.btnVolUp {
+  display: none;
+  position: absolute;
+  left: -14.5px;
+  top: 17%;
+  width: 3.5px;
+  height: 56px;
+  background-color: rgba(51, 65, 85, 0.9);
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.btnVolDown {
+  display: none;
+  position: absolute;
+  left: -14.5px;
+  top: 26%;
+  width: 3.5px;
+  height: 56px;
+  background-color: rgba(51, 65, 85, 0.9);
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.btnPower {
+  display: none;
+  position: absolute;
+  right: -14.5px;
+  top: 19%;
+  width: 3.5px;
+  height: 72px;
+  background-color: rgba(51, 65, 85, 0.9);
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .btnAction,
+  .btnVolUp,
+  .btnVolDown,
+  .btnPower {
+    display: block;
+  }
+}
+
+/* Screen container */
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .screen {
+    border-radius: 39px;
+  }
+}
+
+/* Status Bar */
+.statusBar {
+  display: none;
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  padding: 0 28px;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 30;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .statusBar {
+    display: flex;
+  }
+}
+
+/* Dynamic Island */
+.dynamicIsland {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 28px;
+  background-color: #000000;
+  border-radius: 9999px;
+  z-index: 30;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px;
+  gap: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+  .dynamicIsland {
+    display: flex;
+  }
+}
+
+.islandSensor {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #0a0a0a;
+}
+
+.islandCamera {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #111111;
+  box-shadow: 0 0 0 1px rgba(30, 41, 59, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cameraLens {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(23, 37, 84, 0.7);
+}
+
+/* App content container */
+.appContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Home indicator */
+.homeIndicator {
+  display: none;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .homeIndicator {
+    display: block;
+  }
+}
