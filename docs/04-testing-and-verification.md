@@ -192,7 +192,7 @@ Always call `vi.restoreAllMocks()` in `afterEach()` to guarantee test isolation.
 In addition to automated Vitest and PHP unit/E2E suites, the repository provides four interactive testing tools for live API verification and benchmarking:
 
 1. **Web Interactive API Testing Component (`apps/web/src/components/ApiTester/`)**:
-   - Start with `pnpm dev` and open `http://localhost:3000`.
+   - Start with `pnpm dev` and open `http://localhost:3002`.
    - Provides visual preset buttons, dynamic condition chips (`addCond`/`delCond`), custom API key override, eFlyer promotional preview cards, raw JSON inspector, and masked HTTP debug traces.
    - Documented in detail in [`docs/10-interactive-api-testing-component.md`](./10-interactive-api-testing-component.md).
 2. **NX° CLI Quality Gate Runner (`pnpm cli test`)**:

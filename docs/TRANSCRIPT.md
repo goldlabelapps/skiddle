@@ -229,4 +229,53 @@
   - Total: **99 automated tests** passing at 100% green.
 - **Reference Docs:** [04-testing-and-verification.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/04-testing-and-verification.md), [12-tdd-testing-suite-and-ci-cd.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/12-tdd-testing-suite-and-ci-cd.md)
 
+---
+
+### Step 16: Event Promotion Studio, Flash Creative Engine & Job Spec Integration
+- **Date:** 2026-10-25
+- **Context & Decision:**
+  - Standard event ticketing cards are functional, but promotional campaigns require high-energy, dynamic visual assets.
+  - Created a dedicated promotional studio generating nostalgic, interactive Flash-style motion graphics powered by `@goldlabelapps/flash` and GSAP without bundling heavy video/audio media files.
+- **Action & Implementation:**
+  - **Flash Motion Graphics Studio (`PromoteFlashMovieClient.tsx`):**
+    - Built interactive canvas engine using `@goldlabelapps/flash` (`Stage`, `CleverText`, `LightningBolt`) and GSAP timeline interpolation.
+    - 4-beat narrative sequence: Intro electric burst $\rightarrow$ Artist lineup $\rightarrow$ Venue & British date $\rightarrow$ Pricing & Ticket CTA.
+    - Zero-asset Web Audio API procedural synthesizer producing realtime retro sound effects (sawtooth sweeps, UI clicks, fanfares) on user gesture.
+    - Complete player controls: timeline scrubber, play/pause, restart, fullscreen toggle, audio mute, and 1-click clipboard link sharing.
+  - **Server Route & Page (`/events/[id]/promote`):**
+    - Server Component fetching event metadata and passing typed payload into the client canvas studio.
+  - **Event Detail Client Enhancements (`EventDetailClient.tsx`):**
+    - Added direct links to promotional studio (`/events/[id]/promote`), richer ticket breakdown, artist lineups, and venue metadata.
+  - **React Developer Job Spec (Sep 26) Integration:**
+    - Placed official PDF in `apps/web/public/React Developer Job Spec - Sep 26.pdf` and `docs/`.
+    - Added persistent footer access link and verified with unit testing in `footer.test.tsx`.
+- **Verification:**
+  - `pnpm --filter web test tests/unit/promote-page.test.tsx`: 4/4 tests passed cleanly.
+  - Monorepo automated test count increased to **111 total tests** (102 Vitest, 9 PHPUnit).
+- **Reference Doc:** [14-event-promotion-and-flash-creative-studio.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/14-event-promotion-and-flash-creative-studio.md)
+
+---
+
+### Step 17: Release v1.2.0, Documentation Sync & Project Time Estimation Audit
+- **Date:** 2026-10-25
+- **Context & Decision:**
+  - Bumped monorepo release version to `1.2.0` across workspace packages following the delivery of the discovery search and promotional motion studio.
+  - Performed an empirical time investment audit across git history and codebase cues, establishing an ongoing protocol to update the estimate whenever docs are modified.
+- **Action & Implementation:**
+  - **Version Bumping:**
+    - Monorepo root `package.json`: `1.1.0` $\rightarrow$ `1.2.0`.
+    - `apps/web/package.json`: `0.1.0` $\rightarrow$ `0.2.0`.
+    - `packages/sdk/package.json`: `1.0.0` $\rightarrow$ `1.1.0`.
+    - `packages/cli/package.json`: `1.0.0` $\rightarrow$ `1.1.0`.
+  - **Time Investment Audit (`docs/15-project-time-and-effort-estimate.md`):**
+    - Grouped 25 modernization commits into 8 distinct work sessions.
+    - Calculated total active engineering time (~15.2h) and total investment including architecture and testing (~18.0h / 2.25 dev days).
+    - Documented pillar breakdown: Web App & Studio (33%), Testing & CI (19%), Documentation & Transcripts (19%), SDK (14%), CLI (14%).
+  - **Maintenance Protocol Enforcement:**
+    - Added mandatory rule to `AGENTS.md` requiring time estimate updates alongside any future doc revisions.
+- **Verification:**
+  - Monorepo test suite: 111/111 passing tests.
+- **Reference Doc:** [15-project-time-and-effort-estimate.md](file:///Users/milky/My%20Drive/GitHub/skiddle/docs/15-project-time-and-effort-estimate.md)
+
+
 
