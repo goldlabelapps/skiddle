@@ -10,13 +10,13 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~17.8 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~21.3 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~2.66 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **28 Commits** | Authored by DriveByAbuser across 4 active dates |
-| **Total Monorepo Tests** | **126 Tests (100% Pass)** | 117 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~18.2 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~21.7 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~2.71 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **29 Commits** | Authored by DriveByAbuser across 4 active dates |
+| **Total Monorepo Tests** | **129 Tests (100% Pass)** | 120 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
-| **Code Additions** | **+23,700 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
+| **Code Additions** | **+23,900 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
 
 ---

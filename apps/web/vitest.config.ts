@@ -5,6 +5,9 @@ export default defineConfig({
   test: {
     environment: 'node',
   },
+  ssr: {
+    noExternal: ['@goldlabelapps/flash'],
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

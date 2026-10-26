@@ -340,3 +340,20 @@
   - Authored `apps/web/tests/unit/app-shell.test.tsx` verifying route chrome exclusion.
   - Updated `apps/web/tests/unit/promote-page.test.tsx` asserting white background styles.
   - 100% test pass rate across 126 monorepo tests (117 Vitest, 9 PHPUnit).
+
+---
+
+### Step 21: Modular PromoFlash Architecture & SkiddleLogoMC Animation
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Transitioned the promo screen inside the iPhone view area from the raw GPX route component to a dedicated, modular Flash motion graphic engine named `PromoFlash`.
+  - Removed the back-navigation button to make `PromoFlash` the sole component rendered in the phone screen view area.
+  - Structured `PromoFlash` as a modular folder adhering to classic Flash architecture:
+    - `MovieClips/SkiddleLogoMC`: Vector MovieClip faithfully constructed from `/skiddle-logo-dark.svg`.
+    - `ActionScript/promoActionScript`: GSAP timeline animating the Skiddle logo smoothly into perfect vertical and horizontal center (`v & h`).
+    - Barrel exports (`index.ts`) for clean re-exports of components and ActionScript timelines.
+  - Set up `PromoFlash` on the `@goldlabelapps/flash` `Stage`.
+- **Verification & Testing:**
+  - Authored `apps/web/tests/unit/promo-flash.test.tsx` (3 tests) covering `PromoFlash`, `SkiddleLogoMC`, and `promoActionScript`.
+  - Updated `apps/web/tests/unit/promote-page.test.tsx` verifying `PromoFlash` presence and back button removal.
+  - Monorepo tests: 129 total tests passing (120 Vitest, 9 PHPUnit) across 100% green suites.

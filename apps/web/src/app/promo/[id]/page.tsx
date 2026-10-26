@@ -1,8 +1,8 @@
 import React from 'react';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { createClient } from '@skiddle/sdk';
-import { SkiddleVenue, IPhoneFrame } from '../../../components/SkiddleVenue';
+import { IPhoneFrame } from '../../../components/SkiddleVenue';
+import { PromoFlash } from '../../../components/PromoFlash';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,8 +27,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   return {
-    title: `Event #${id} | Skiddle Venue 3D`,
-    description: `Interactive 3D venue view for Skiddle Event #${id}.`,
+    title: `Event #${id} | Skiddle Promo`,
+    description: `Interactive Promo Experience for Skiddle Event #${id}.`,
   };
 }
 
@@ -39,34 +39,17 @@ export default async function PromoPage({
 }) {
   const { id } = await params;
   const apiKey = process.env.SKIDDLE_API_KEY;
-  const host = process.env.NEXT_PUBLIC_GPXROUTE_HOST || 'http://localhost:3001';
 
-  let venue = defaultVenue;
+  let eventData: any = null;
 
   if (apiKey) {
     try {
       const client = createClient({ apiKey, devMode: false });
       const response = await client.events.getListing(id);
-      const eventData = response?.results;
-
-      if (eventData?.venue && (eventData.venue.latitude || eventData.venue.longitude)) {
-        venue = {
-          id: String(eventData.venue.id || eventData.venueid || id),
-          name: eventData.venue.name || eventData.eventname || defaultVenue.name,
-          address: eventData.venue.address || defaultVenue.address,
-          town: eventData.venue.town || eventData.venue.cityname || defaultVenue.town,
-          postcode: eventData.venue.postcode || defaultVenue.postcode,
-          countrycode: eventData.venue.countrycode || defaultVenue.countrycode,
-          cityname: eventData.venue.cityname || eventData.venue.town || defaultVenue.cityname,
-          phone: eventData.venue.phone || defaultVenue.phone,
-          latitude: String(eventData.venue.latitude || defaultVenue.latitude),
-          longitude: String(eventData.venue.longitude || defaultVenue.longitude),
-          link: eventData.venue.link || eventData.link || defaultVenue.link,
-        };
-      }
+      eventData = response?.results;
     } catch {
-      // Fallback gracefully to default venue
-      venue = defaultVenue;
+      // Fallback gracefully if API fails
+      eventData = null;
     }
   }
 
@@ -85,39 +68,8 @@ export default async function PromoPage({
         overflow: 'hidden',
       }}
     >
-      <Link
-        href={`/events/${id}`}
-        style={{
-          position: 'absolute',
-          top: 16,
-          left: 16,
-          zIndex: 50,
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '8px 14px',
-          borderRadius: 8,
-          backgroundColor: 'rgba(15, 23, 42, 0.85)',
-          color: '#ffffff',
-          textDecoration: 'none',
-          fontSize: 13,
-          fontWeight: 600,
-          backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          transition: 'all 0.15s ease',
-        }}
-      >
-        &larr; Back to Event Details
-      </Link>
-
       <IPhoneFrame>
-        <SkiddleVenue
-          host={host}
-          venue={venue}
-          width="100%"
-          height="100%"
-          borderRadius={0}
-        />
+        <PromoFlash id={id} event={eventData} />
       </IPhoneFrame>
     </main>
   );
