@@ -7,12 +7,17 @@ describe('Footer Component', () => {
   it('renders footer brand, description, and navigation links', () => {
     const html = renderToStaticMarkup(<Footer />);
 
-    expect(html).toContain('Skiddle Promos');
-    expect(html).toContain('Polyglot SDKs');
-    expect(html).toContain('Modern TypeScript, live Skiddle event discovery');
+    expect(html).toContain('Skiddle Promo');
+    expect(html).toContain('NextJS event microsites from production API');
+    expect(html).toContain('Select a real event from Skiddle');
+    expect(html).toContain('create a promo page demonstrating modern front-end techniques');
 
     // Candidate column
     expect(html).toContain('Candidate');
+    expect(html).toContain('https://github.com/goldlabelapps/skiddle');
+    expect(html).toContain('GitHub Repository');
+    expect(html).toContain('https://goldlabel.pro/contact');
+    expect(html).toContain('Contact');
     expect(html).not.toContain('Developer Resources');
     expect(html).not.toContain('SDK Explorer');
     expect(html).not.toContain('API Documentation');

@@ -30,19 +30,40 @@ export function Footer() {
                 />
               </div>
               <div className={styles.brandTitleGroup}>
-                <span className={styles.brandTitle}>Skiddle Promos</span>
-                <span className={styles.brandSubtitle}>Polyglot SDKs &bull; Live API Ready</span>
+                <span className={styles.brandTitle}>Skiddle Promo</span>
+                <span className={styles.brandSubtitle}>NextJS event microsites from production API</span>
               </div>
             </div>
             <p className={styles.brandDescription}>
-              Modern TypeScript, live Skiddle event discovery, Promo pages, and zero-onboarding developer workflows via the NX&deg; CLI.
+              Select a real event from Skiddle&apos;s production API and create a promo page demonstrating modern front-end techniques.
             </p>
           </div>
 
           {/* Candidate */}
           <div>
             <h4 className={styles.columnTitle}>Candidate</h4>
-            <ul className={styles.linkList}></ul>
+            <ul className={styles.linkList}>
+              <li className={styles.linkItem}>
+                <a
+                  href="https://github.com/goldlabelapps/skiddle"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>GitHub Repository</span>
+                  <ExternalIcon />
+                </a>
+              </li>
+              <li className={styles.linkItem}>
+                <a
+                  href="https://goldlabel.pro/contact"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>Contact</span>
+                  <ExternalIcon />
+                </a>
+              </li>
+            </ul>
           </div>
 
           {/* Skiddle */}

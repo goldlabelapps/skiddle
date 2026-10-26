@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Skiddle Promotion Centre',
-    short_name: 'Skiddle',
+    name: 'Skiddle Promo',
+    short_name: 'Skiddle Promo',
     description: 'Sell Tickets with Skiddle - Create your Event in a Few Easy Steps',
     start_url: '/',
     display: 'standalone',

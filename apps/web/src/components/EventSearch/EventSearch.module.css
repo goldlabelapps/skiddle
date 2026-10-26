@@ -61,9 +61,8 @@
   border-radius: 16px;
   padding: 28px 24px;
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
-  margin: 0 auto 32px;
+  margin-bottom: 32px;
   width: 100%;
-  max-width: 860px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -165,6 +164,20 @@
     width: 100%;
     justify-content: center;
   }
+
+  .sliderRow {
+    gap: 8px;
+  }
+
+  .sliderDateLabel {
+    padding: 5px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .sliderDatePrefix {
+    font-size: 10px;
+  }
 }
 
 .categorySection {
@@ -240,47 +253,55 @@
 
 .dateSliderSection {
   width: 100%;
-  max-width: 640px;
-  margin-top: 14px;
+  max-width: 680px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
-.rangeDisplayBadge {
+.sliderRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sliderDateLabel {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
-  padding: 8px 18px;
+  padding: 6px 14px;
   border-radius: 9999px;
   font-size: 13px;
   color: #1e293b;
+  white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.calendarIcon {
-  color: #00d26a;
   flex-shrink: 0;
 }
 
-.durationTag {
-  margin-left: 6px;
+.sliderDatePrefix {
+  color: #64748b;
   font-size: 12px;
-  color: #059669;
-  font-weight: 600;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .dualSliderWrapper {
   position: relative;
   width: 100%;
-  max-width: 520px;
+  flex: 1;
+  max-width: 440px;
+  min-width: 120px;
   height: 36px;
   display: flex;
   align-items: center;
-  margin: 12px auto 14px;
+  margin: 0;
 }
 
 .sliderTrack {
@@ -380,46 +401,6 @@
   transform: scale(1.24);
 }
 
-.presetChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 4px;
-}
-
-.presetChip {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #64748b;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.presetChip:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-  border-color: #94a3b8;
-}
-
-.presetChipActive {
-  background: #00d26a;
-  border-color: #00d26a;
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0, 210, 106, 0.25);
-}
-
-.presetChipActive:hover {
-  background: #00b85c;
-  border-color: #00b85c;
-  color: #ffffff;
-}
-
 .filterLabel {
   font-size: 12px;
   font-weight: 600;
@@ -468,16 +449,18 @@
 
 .metaRow {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 12px;
+  text-align: center;
 }
 
 .resultsCount {
   font-size: 15px;
   color: #475569;
+  text-align: center;
 }
 
 .resultsCount strong {
@@ -714,4 +697,80 @@
   50% {
     opacity: 0.5;
   }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 36px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.pageButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pageButton:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.pageButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pageNumberButton {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageNumberButton:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.pageNumberActive {
+  background: #00d26a !important;
+  color: #ffffff !important;
+  border-color: #00d26a !important;
+}
+
+.paginationEllipsis {
+  padding: 0 6px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
 }

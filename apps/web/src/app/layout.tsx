@@ -8,7 +8,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Skiddle Monorepo | Next.js App',
+  title: 'Skiddle Promo',
   description: 'Next.js application integrated with @skiddle/sdk',
   manifest: '/manifest.webmanifest',
   icons: {
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Skiddle',
+    title: 'Skiddle Promo',
   },
 };
 
