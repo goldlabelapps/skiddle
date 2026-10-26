@@ -140,8 +140,8 @@ The main client component manages the interactive search experience with the fol
   | Category Option | Skiddle `eventcode` | Description |
   | :--- | :--- | :--- |
   | All Categories | `all` | Global event catalog |
-  | Live Music / Gigs | `LIVE` | Concerts, acoustic sets, indie/rock gigs |
-  | Clubbing & DJ | `CLUB` | Electronic dance music, DJ nights, club events |
+  | Live Music | `LIVE` | Concerts, acoustic sets, indie/rock gigs |
+  | Clubbing | `CLUB` | Electronic dance music, DJ nights, club events |
   | Festivals | `FEST` | Multi-day outdoor and indoor music festivals |
   | Comedy | `COMEDY` | Stand-up shows and comedic performances |
   | Theatre & Arts | `THEATRE` | Plays, musicals, cabaret, and dance |

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './EventSearch.module.css';
 import { HighlightText } from './HighlightText';
-import { Calendar, MapPin, Search } from 'lucide-react';
+import { Calendar, Check, ChevronDown, MapPin, Search } from 'lucide-react';
 
 export interface EventListItem {
   id: string | number;
@@ -23,18 +23,28 @@ export interface EventListItem {
   raw: any;
 }
 
-export const CATEGORIES = [
+export const PRIMARY_CATEGORIES = [
   { value: 'all', label: 'All' },
-  { value: 'LIVE', label: 'Live Music / Gigs' },
-  { value: 'CLUB', label: 'Clubbing & DJ' },
-  { value: 'FEST', label: 'Festivals' },
+  { value: 'LIVE', label: 'Live Music' },
+  { value: 'CLUB', label: 'Clubbing' },
   { value: 'COMEDY', label: 'Comedy' },
+];
+
+export const MORE_CATEGORIES = [
+  { value: 'FEST', label: 'Festivals' },
   { value: 'THEATRE', label: 'Theatre & Arts' },
   { value: 'SEASONAL', label: 'Seasonal & Family' },
   { value: 'CONF', label: 'Conferences & Talks' },
   { value: 'SPORT', label: 'Sports & Fitness' },
   { value: 'EXHIB', label: 'Exhibitions' },
 ];
+
+export const CATEGORIES = [
+  ...PRIMARY_CATEGORIES,
+  ...MORE_CATEGORIES,
+];
+
+export const DEFAULT_CATEGORY = 'COMEDY';
 
 export const TOTAL_SLIDER_DAYS = 365;
 
@@ -160,7 +170,8 @@ export function normalizeEvent(raw: any): EventListItem {
 export function EventSearch() {
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState(DEFAULT_CATEGORY);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [startDays, setStartDays] = useState(0);
   const [endDays, setEndDays] = useState(TOTAL_SLIDER_DAYS);
   const [isDateFilterActive, setIsDateFilterActive] = useState(false);
@@ -177,6 +188,29 @@ export function EventSearch() {
   const [, startTransition] = useTransition();
 
   const abortControllerRef = useRef<AbortController | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Close More dropdown on outside click or Escape key
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsMoreOpen(false);
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsMoreOpen(false);
+      }
+    }
+    if (isMoreOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMoreOpen]);
 
   // Debounce user input by 350ms
   useEffect(() => {
@@ -332,7 +366,8 @@ export function EventSearch() {
   const handleResetFilters = () => {
     setKeyword('');
     setDebouncedKeyword('');
-    setCategory('all');
+    setCategory(DEFAULT_CATEGORY);
+    setIsMoreOpen(false);
     setStartDays(0);
     setEndDays(TOTAL_SLIDER_DAYS);
     setIsDateFilterActive(false);
@@ -353,11 +388,13 @@ export function EventSearch() {
   };
 
   const hasActiveFilters = Boolean(
-    keyword || (category && category !== 'all') || isDateFilterActive || minDate || maxDate
+    keyword || (category && category !== DEFAULT_CATEGORY) || isDateFilterActive || minDate || maxDate
   );
 
   const selectedCategory = CATEGORIES.find((c) => c.value === category);
   const categoryLabel = selectedCategory && selectedCategory.value !== 'all' ? selectedCategory.label : '';
+  const isMoreActive = MORE_CATEGORIES.some((c) => c.value === category);
+  const selectedMoreCat = MORE_CATEGORIES.find((c) => c.value === category);
 
   const today = getToday();
   const startDate = addDays(today, startDays);
@@ -418,20 +455,67 @@ export function EventSearch() {
 
         <div className={styles.categorySection}>
           <div className={styles.chipsContainer} role="group" aria-label="Filter by category">
-            {CATEGORIES.map((cat) => {
+            {PRIMARY_CATEGORIES.map((cat) => {
               const isSelected = category === cat.value;
               return (
                 <button
                   key={cat.value}
                   type="button"
                   className={`${styles.chip}${isSelected ? ` ${styles.chipActive}` : ''}`}
-                  onClick={() => handleCategorySelect(cat.value)}
+                  onClick={() => {
+                    handleCategorySelect(cat.value);
+                    setIsMoreOpen(false);
+                  }}
                   aria-pressed={isSelected}
                 >
                   {cat.label}
                 </button>
               );
             })}
+
+            <div className={styles.dropdownContainer} ref={dropdownRef}>
+              <button
+                type="button"
+                className={`${styles.chip} ${styles.moreChip}${isMoreActive ? ` ${styles.chipActive}` : ''}${isMoreOpen ? ` ${styles.moreChipOpen}` : ''}`}
+                onClick={() => setIsMoreOpen((prev) => !prev)}
+                aria-haspopup="menu"
+                aria-expanded={isMoreOpen}
+                aria-label="More categories"
+              >
+                <span>{selectedMoreCat ? `More: ${selectedMoreCat.label}` : 'More'}</span>
+                <ChevronDown
+                  className={`${styles.dropdownChevron}${isMoreOpen ? ` ${styles.dropdownChevronOpen}` : ''}`}
+                  size={14}
+                  aria-hidden="true"
+                />
+              </button>
+
+              <div
+                className={`${styles.dropdownMenu}${isMoreOpen ? ` ${styles.dropdownMenuOpen}` : ''}`}
+                role="menu"
+                aria-label="More categories"
+              >
+                {MORE_CATEGORIES.map((cat) => {
+                  const isSelected = category === cat.value;
+                  return (
+                    <button
+                      key={cat.value}
+                      type="button"
+                      role="menuitem"
+                      className={`${styles.dropdownItem}${isSelected ? ` ${styles.dropdownItemActive}` : ''}`}
+                      onClick={() => {
+                        handleCategorySelect(cat.value);
+                        setIsMoreOpen(false);
+                      }}
+                      aria-pressed={isSelected}
+                    >
+                      <span>{cat.label}</span>
+                      {isSelected && <Check size={14} className={styles.dropdownCheckIcon} aria-hidden="true" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -482,16 +566,6 @@ export function EventSearch() {
               <strong>{formatDateDisplay(endDate)}</strong>
             </div>
           </div>
-
-          {hasActiveFilters && (
-            <button
-              type="button"
-              className={styles.resetButton}
-              onClick={handleResetFilters}
-            >
-              Reset Filters
-            </button>
-          )}
         </div>
       </form>
 

@@ -12,6 +12,7 @@ import {
   Music,
   ExternalLink,
 } from 'lucide-react';
+import styles from './EventDetail.module.css';
 
 interface EventDetailClientProps {
   id: string;
@@ -67,34 +68,12 @@ export function EventDetailClient({
   const skiddleUrl = event?.link || `https://www.skiddle.com/e/${id}/`;
 
   return (
-    <div
-      style={{
-        maxWidth: 1100,
-        margin: '0 auto',
-        padding: '32px 16px 80px',
-        color: '#0f172a',
-        boxSizing: 'border-box',
-        width: '100%',
-      }}
-    >
+    <div className={styles.container}>
       {/* Top Navigation */}
-      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+      <div className={styles.topNav}>
         <Link
           href="/"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            color: '#475569',
-            textDecoration: 'none',
-            fontSize: 14,
-            fontWeight: 600,
-            padding: '8px 14px',
-            borderRadius: 8,
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            transition: 'all 0.15s ease',
-          }}
+          className={styles.backLink}
         >
           <ArrowLeft size={16} />
           <span>Back</span>
@@ -105,19 +84,7 @@ export function EventDetailClient({
             href={skiddleUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              background: '#f1f5f9',
-              color: '#475569',
-              padding: '6px 12px',
-              borderRadius: 6,
-              fontSize: 12,
-              fontFamily: 'monospace',
-              textDecoration: 'none',
-              transition: 'all 0.15s ease',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
+            className={styles.idBadge}
           >
             <span>Skiddle event ID: {id}</span>
             <ExternalLink size={12} style={{ opacity: 0.7 }} />
@@ -126,31 +93,10 @@ export function EventDetailClient({
       </div>
 
       {/* Hero Event Banner */}
-      <div
-        style={{
-          background: '#ffffff',
-          border: '1px solid #e2e8f0',
-          borderRadius: 16,
-          overflow: 'hidden',
-          marginBottom: 32,
-          boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-        }}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: imageUrl ? 'minmax(280px, 360px) 1fr' : '1fr',
-            gap: 0,
-          }}
-        >
+      <div className={styles.heroCard}>
+        <div className={imageUrl ? styles.heroGrid : styles.heroGridNoImage}>
           {imageUrl && (
-            <div
-              style={{
-                position: 'relative',
-                minHeight: 260,
-                background: '#0f172a',
-              }}
-            >
+            <div className={styles.imageWrapper}>
               <Image
                 src={imageUrl}
                 alt={eventName}
@@ -161,47 +107,32 @@ export function EventDetailClient({
             </div>
           )}
 
-          <div style={{ padding: '28px 24px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <h1
-              style={{
-                fontSize: 'clamp(22px, 4vw, 32px)',
-                fontWeight: 500,
-                color: '#0f172a',
-                lineHeight: 1.25,
-                marginBottom: 8,
-              }}
-            >
+          <div className={styles.heroContent}>
+            <h1 className={styles.title}>
               {eventName}
             </h1>
 
             {description && (
-              <p
-                style={{
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                  color: '#475569',
-                  marginBottom: 12,
-                }}
-              >
+              <p className={styles.description}>
                 {description}
               </p>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#0284c7', fontWeight: 600 }}>
+            <div className={styles.metaRow}>
+              <span className={styles.dateBadge}>
                 <Calendar size={15} />
                 <span>{date}</span>
               </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, color: '#64748b', marginBottom: 16 }}>
-              <MapPin size={15} style={{ flexShrink: 0, color: '#64748b' }} />
+            <div className={styles.venueRow}>
+              <MapPin size={15} style={{ flexShrink: 0, marginTop: 2, color: '#64748b' }} />
               <span>
                 <strong>{venueName}</strong> {venueAddress && `— ${venueAddress}`}
               </span>
             </div>
 
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: '#334155' }}>
+            <div className={styles.pillGroup}>
               <div><strong>Entry Price:</strong> {entryPrice}</div>
               <div><strong>Age Policy:</strong> {minAge}</div>
               {event?.openingtimes?.doorsopen && (
@@ -209,91 +140,28 @@ export function EventDetailClient({
               )}
             </div>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                marginTop: 20,
-                paddingTop: 16,
-                borderTop: '1px solid #f1f5f9',
-                flexWrap: 'wrap',
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setActiveTab(activeTab === 'structured' ? null : 'structured')}
-                style={{
-                  height: 48,
-                  padding: '0 20px',
-                  borderRadius: 12,
-                  border: activeTab === 'structured' ? '1px solid #0f172a' : '1px solid #e2e8f0',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.15s ease',
-                  backgroundColor: activeTab === 'structured' ? '#0f172a' : '#ffffff',
-                  color: activeTab === 'structured' ? '#ffffff' : '#64748b',
-                  boxShadow: activeTab === 'structured' ? '0 2px 8px rgba(15, 23, 42, 0.2)' : 'none',
-                  boxSizing: 'border-box',
-                }}
-              >
-                API Data
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab(activeTab === 'raw' ? null : 'raw')}
-                style={{
-                  height: 48,
-                  padding: '0 20px',
-                  borderRadius: 12,
-                  border: activeTab === 'raw' ? '1px solid #0f172a' : '1px solid #e2e8f0',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.15s ease',
-                  backgroundColor: activeTab === 'raw' ? '#0f172a' : '#ffffff',
-                  color: activeTab === 'raw' ? '#ffffff' : '#64748b',
-                  boxShadow: activeTab === 'raw' ? '0 2px 8px rgba(15, 23, 42, 0.2)' : 'none',
-                  boxSizing: 'border-box',
-                }}
-              >
-                API JSON
-              </button>
+            <div className={styles.actionsRow}>
+              <div className={styles.tabButtonGroup}>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(activeTab === 'structured' ? null : 'structured')}
+                  className={`${styles.tabButton} ${activeTab === 'structured' ? styles.tabButtonActive : ''}`}
+                >
+                  API Data
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(activeTab === 'raw' ? null : 'raw')}
+                  className={`${styles.tabButton} ${activeTab === 'raw' ? styles.tabButtonActive : ''}`}
+                >
+                  API JSON
+                </button>
+              </div>
               <Link
                 href={`/promo/${id}`}
-                style={{
-                  flex: 1,
-                  minWidth: 180,
-                  height: 48,
-                  padding: '0 24px',
-                  borderRadius: 12,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  backgroundColor: '#00d26a',
-                  color: '#ffffff',
-                  textDecoration: 'none',
-                  border: 'none',
-                  boxShadow: '0 4px 12px rgba(0, 210, 106, 0.25)',
-                  transition: 'background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  whiteSpace: 'nowrap',
-                  boxSizing: 'border-box',
-                }}
+                className={styles.promoButton}
               >
-                <span>Promote this event</span>
+                <span>Create Promo</span>
                 <ArrowRight size={16} />
               </Link>
             </div>
@@ -336,27 +204,14 @@ export function EventDetailClient({
           </div>
 
           {/* Section: Data Grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: 20,
-            }}
-          >
+          <div className={styles.dataGrid}>
             {/* Venue & Location Box */}
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: 14,
-                padding: '20px',
-              }}
-            >
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
                 <MapPin size={18} style={{ color: '#0284c7' }} />
                 <span>Venue & Location</span>
               </h3>
-              <dl style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px 12px', fontSize: 13 }}>
+              <dl className={styles.dlGrid}>
                 <dt style={{ color: '#64748b' }}>Venue Name:</dt>
                 <dd style={{ fontWeight: 600 }}>{venue.name || 'N/A'}</dd>
 
@@ -378,19 +233,12 @@ export function EventDetailClient({
             </div>
 
             {/* Timings & Ticketing Box */}
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: 14,
-                padding: '20px',
-              }}
-            >
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
                 <Clock size={18} style={{ color: '#0284c7' }} />
                 <span>Timings & Tickets</span>
               </h3>
-              <dl style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px 12px', fontSize: 13 }}>
+              <dl className={styles.dlGrid}>
                 <dt style={{ color: '#64748b' }}>Event Date:</dt>
                 <dd style={{ fontWeight: 600 }}>{date}</dd>
 
@@ -412,15 +260,8 @@ export function EventDetailClient({
             </div>
 
             {/* Artists & Genres Box */}
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: 14,
-                padding: '20px',
-              }}
-            >
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>
                 <Music size={18} style={{ color: '#0284c7' }} />
                 <span>Lineup & Genres</span>
               </h3>

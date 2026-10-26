@@ -5,6 +5,9 @@ import { HighlightText } from '../../src/components/EventSearch/HighlightText';
 import {
   EventSearch,
   CATEGORIES,
+  PRIMARY_CATEGORIES,
+  MORE_CATEGORIES,
+  DEFAULT_CATEGORY,
   stripHtml,
   normalizeEvent,
   addDays,
@@ -50,6 +53,18 @@ describe('EventSearch Component & Helpers', () => {
       expect(values).toContain('COMEDY');
       expect(values).toContain('THEATRE');
       expect(values).toContain('SPORT');
+
+      const liveCat = CATEGORIES.find((c) => c.value === 'LIVE');
+      expect(liveCat?.label).toBe('Live Music');
+
+      expect(PRIMARY_CATEGORIES.map((c) => c.label)).toEqual([
+        'All',
+        'Live Music',
+        'Clubbing',
+        'Comedy',
+      ]);
+      expect(DEFAULT_CATEGORY).toBe('COMEDY');
+      expect(MORE_CATEGORIES.length).toBeGreaterThanOrEqual(6);
     });
   });
 
@@ -205,13 +220,25 @@ describe('EventSearch Component & Helpers', () => {
       expect(html).not.toContain('No events found');
     });
 
-    it('renders category chips for interactive filtering', () => {
+    it('renders 4 category pill buttons, initial Comedy selection, and More dropdown menu', () => {
       const html = renderToStaticMarkup(<EventSearch />);
+      // 4 primary pill buttons
       expect(html).toContain('All');
-      expect(html).toContain('Live Music / Gigs');
-      expect(html).toContain('Clubbing &amp; DJ');
+      expect(html).toContain('Live Music');
+      expect(html).toContain('Clubbing');
+      expect(html).toContain('Comedy');
+
+      // Comedy is initially selected
+      expect(html).toContain('aria-pressed="true">Comedy</button>');
+
+      // More button and dropdown categories
+      expect(html).toContain('More');
       expect(html).toContain('Festivals');
-      expect(html).toContain('aria-pressed="true"'); // "All" is initially selected
+      expect(html).toContain('Theatre &amp; Arts');
+      expect(html).toContain('Seasonal &amp; Family');
+      expect(html).toContain('Conferences &amp; Talks');
+      expect(html).toContain('Sports &amp; Fitness');
+      expect(html).toContain('Exhibitions');
     });
 
     it('resolves category label properly from CATEGORIES config', () => {
