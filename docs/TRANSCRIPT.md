@@ -304,3 +304,26 @@
 - **Verification:**
   - Monorepo automated test suite: **117 total tests** passing (108 Vitest, 9 PHPUnit) across 100% green suites.
   - `pnpm typecheck`: Clean compilation with zero TypeScript errors.
+
+---
+
+### Step 19: Performance Audit & Benchmarking (Skiddle vs Demo Explorer)
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - Prepared empirical performance research for Skiddle engineering interview with Adam Chandler (Front-End) and Chris Seaton (Back-End Team Leader).
+  - Executed side-by-side technical audit between the official event listings interface (`https://www.skiddle.com/whats-on/`) and the modern Next.js 15 demo explorer (`https://skiddle.goldlabel.pro/`).
+- **Action & Implementation:**
+  - **Empirical Scorecard & Network Telemetry:**
+    - HTML Document Size: 20.5 KB (demo) vs 503.9 KB (Skiddle) — 96% smaller payload (24.5x reduction).
+    - Initial DOM Nodes: 187 (demo) vs 5,557 (Skiddle) — 96.6% fewer DOM elements.
+    - Server TTFB: 140–180ms (demo on Cloudflare Edge) vs 520–1,610ms (Skiddle origin SSR behind CloudFront `no-store`).
+    - Total JavaScript: 505.7 KB (demo chunked ESM) vs 1,546.8 KB (Skiddle monolithic + 3rd-party ad/tracking/bot scripts).
+    - Total CSS: 15.6 KB (demo modular) vs 243.6 KB (Skiddle multi-sheet legacy styles).
+    - Third-party script burden: 0 trackers (demo) vs 9 major tracking/analytics/WAF scripts on Skiddle (AWS WAF challenge, GTM, Meta Pixel, Sentry, Hotjar, jQuery, Moment.js).
+  - **Interview Battle Stories & Debugging Methodologies:**
+    - Documented real-world debugging case studies: search input latency/jank resolved via 350ms debouncing and React 19 `useTransition`; fast-typing network race conditions eliminated via `AbortController` cancellation in REST lookup effects; flash-sale ticket reservation drift resolved via monotonic server-synced timestamps and idempotency keys; Cumulative Layout Shift (CLS) reduced from 0.32 to 0.00 via fixed aspect-ratio container wrappers and skeleton placeholders.
+  - **Actionable Architectural Recommendations:**
+    - Formulated targeted engineering recommendations for both Skiddle production (edge caching with `s-maxage=60, stale-while-revalidate=300`, Partytown web workers for third-party tags, Moment.js/jQuery deprecation, list virtualization) and our demo explorer (upstream API Redis caching, hover-triggered route prefetching).
+- **Verification & Documentation:**
+  - Authored comprehensive report: [`docs/16-performance-audit-and-comparison.md`](./16-performance-audit-and-comparison.md).
+  - Updated monorepo documentation index and time investment audit.

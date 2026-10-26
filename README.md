@@ -224,6 +224,7 @@ Chronological engineering logs and architectural decision records:
 - [`docs/13-event-search-filter-and-discovery.md`](./docs/13-event-search-filter-and-discovery.md) - Real-time event search, multi-facet filtering, regex-safe highlighting, and promotion discovery architecture
 - [`docs/14-event-promotion-and-flash-creative-studio.md`](./docs/14-event-promotion-and-flash-creative-studio.md) - Dynamic Flash motion movie generator, `@goldlabelapps/flash` + GSAP engine & procedural Web Audio API synthesis
 - [`docs/15-project-time-and-effort-estimate.md`](./docs/15-project-time-and-effort-estimate.md) - Empirical time investment audit, git history session clustering & ongoing estimate maintenance protocol
+- [`docs/16-performance-audit-and-comparison.md`](./docs/16-performance-audit-and-comparison.md) - Performance audit & runtime comparison: Skiddle production What's On vs modern Next.js 15 Explorer
 
 
 ---

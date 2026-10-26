@@ -356,6 +356,9 @@ export function EventSearch() {
     keyword || (category && category !== 'all') || isDateFilterActive || minDate || maxDate
   );
 
+  const selectedCategory = CATEGORIES.find((c) => c.value === category);
+  const categoryLabel = selectedCategory && selectedCategory.value !== 'all' ? selectedCategory.label : '';
+
   const today = getToday();
   const startDate = addDays(today, startDays);
   const endDate = addDays(today, endDays);
@@ -503,7 +506,7 @@ export function EventSearch() {
                 </span>
               ) : (
                 <span>
-                  Found <strong>{(totalResults > 0 ? totalResults : events.length).toLocaleString()}</strong> event{(totalResults > 0 ? totalResults : events.length) === 1 ? '' : 's'}
+                  Found <strong>{(totalResults > 0 ? totalResults : events.length).toLocaleString()}{totalResults >= 10000 ? '+' : ''}</strong> {categoryLabel ? `${categoryLabel} ` : ''}event{(totalResults > 0 ? totalResults : events.length) === 1 ? '' : 's'}
                   {debouncedKeyword && (
                     <>
                       {' '}for &ldquo;<strong>{debouncedKeyword}</strong>&rdquo;

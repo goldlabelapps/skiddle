@@ -214,6 +214,13 @@ describe('EventSearch Component & Helpers', () => {
       expect(html).toContain('aria-pressed="true"'); // "All" is initially selected
     });
 
+    it('resolves category label properly from CATEGORIES config', () => {
+      const comedy = CATEGORIES.find((c) => c.value === 'COMEDY');
+      expect(comedy?.label).toBe('Comedy');
+      const all = CATEGORIES.find((c) => c.value === 'all');
+      expect(all?.label).toBe('All');
+    });
+
     it('renders date range slider with 1-year timeline and From/To controls', () => {
       const html = renderToStaticMarkup(<EventSearch />);
       expect(html).toContain('From');
