@@ -3,13 +3,24 @@ import styles from "./IPhoneFrame.module.css";
 
 interface IPhoneFrameProps {
   children: React.ReactNode;
+  variant?: 'light' | 'dark';
+  className?: string;
 }
 
-export function IPhoneFrame({ children }: IPhoneFrameProps) {
+export function IPhoneFrame({
+  children,
+  variant = 'light',
+  className = '',
+}: IPhoneFrameProps) {
+  const shadowClass =
+    variant === 'dark'
+      ? `${styles.darkShadow} md:ring-1 md:ring-white/15 md:shadow-[0_0_0_2px_#334155,0_25px_60px_-15px_rgba(0,0,0,0.85),0_0_50px_rgba(0,0,0,0.5)]`
+      : `${styles.lightShadow} md:ring-1 md:ring-black/5 md:shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_0_0_2px_#1e293b,0_10px_25px_-5px_rgba(0,0,0,0.1),0_25px_50px_-12px_rgba(0,0,0,0.25),0_35px_70px_-15px_rgba(0,0,0,0.15)]`;
+
   return (
     <div
       data-testid="iphone-frame"
-      className={`${styles.frame} relative flex flex-col items-center justify-center w-full h-[100dvh] md:h-[calc(100dvh-32px)] md:max-h-[calc(100vh-32px)] md:aspect-[9/19.5] md:w-auto md:max-w-[calc(100vw-32px)] md:rounded-[50px] md:border-[11px] md:border-slate-900 md:ring-1 md:ring-white/15 md:shadow-[0_0_0_2px_#334155,0_25px_60px_-15px_rgba(0,0,0,0.85),0_0_50px_rgba(0,0,0,0.5)] bg-black transition-all overflow-visible select-none`}
+      className={`${styles.frame} ${shadowClass} relative flex flex-col items-center justify-center w-full h-[100dvh] md:h-[calc(100dvh-64px)] md:max-h-[calc(100vh-64px)] md:aspect-[9/19.5] md:w-auto md:max-w-[calc(100vw-64px)] md:rounded-[50px] md:border-[11px] md:border-slate-900 bg-black transition-all overflow-visible select-none ${className}`}
     >
       {/* Side Hardware Buttons (Desktop only) */}
       {/* Action / Mute button */}

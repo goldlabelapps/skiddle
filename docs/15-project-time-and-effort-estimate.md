@@ -10,13 +10,13 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~18.2 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~21.7 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~2.71 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **29 Commits** | Authored by DriveByAbuser across 4 active dates |
+| **Active Engineering Time** | **~18.5 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~22.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~2.75 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **30 Commits** | Authored by DriveByAbuser across 4 active dates |
 | **Total Monorepo Tests** | **129 Tests (100% Pass)** | 120 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
-| **Code Additions** | **+23,900 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
+| **Code Additions** | **+24,000 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
 
 ---
@@ -43,7 +43,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2026-10-15  [==========]  Session 1-3: Legacy Isolation, TypeScript SDK, CLI (4.0h)
 2026-10-16  [=========]   Session 4: Turborepo, Next.js 15, Single Event Schema (3.6h)
 2026-10-25  [==============] Session 5-8: Event Search, Flash Creative Studio, Docs (7.6h)
-2026-10-26  [==]          Session 9: GpxRoute 3D Venue Showcase & Promo Refactor (0.8h)
+2026-10-26  [===]         Session 9: GpxRoute 3D Venue Showcase, PromoFlash & Styling (1.1h)
 ```
 
 ### Day 1 — Thursday, October 15, 2026 (~4.0 Hours)

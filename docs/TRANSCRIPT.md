@@ -357,3 +357,20 @@
   - Authored `apps/web/tests/unit/promo-flash.test.tsx` (3 tests) covering `PromoFlash`, `SkiddleLogoMC`, and `promoActionScript`.
   - Updated `apps/web/tests/unit/promote-page.test.tsx` verifying `PromoFlash` presence and back button removal.
   - Monorepo tests: 129 total tests passing (120 Vitest, 9 PHPUnit) across 100% green suites.
+
+---
+
+### Step 22: Promo Page Desktop Spacing & Light Background Drop Shadow Tuning
+- **Date:** 2026-10-26
+- **Context & Decision:**
+  - With the promo experience set on a clean white canvas (`#ffffff`), the iPhone graphic's previous dark-mode radial halo (`0 0 50px rgba(0,0,0,0.5)`) and harsh `0.85` black drop shadow appeared overly stark and unnatural.
+  - Introduced explicit `variant?: 'light' | 'dark'` support on `IPhoneFrame` (with default `'light'` and explicit `'dark'` for the venue 3D route).
+  - Engineered an ultra-smooth, downward studio drop shadow tailored specifically for white backgrounds:
+    - Subtle anti-aliased rim: `0 0 0 1px rgba(0, 0, 0, 0.08), 0 0 0 2px #1e293b`.
+    - Soft ambient ground shadow: `0 10px 25px -5px rgba(0, 0, 0, 0.1)`.
+    - Multi-layered directional elevation: `0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 35px 70px -15px rgba(0, 0, 0, 0.15)`.
+    - Eliminated the un-directional `0 0 50px` dark smudge.
+  - Increased desktop vertical breathing room above and below the device by updating container padding to `md:p-8` (32px top/bottom) and expanding desktop frame bounds from `calc(100dvh - 32px)` to `calc(100dvh - 64px)`.
+- **Verification & Testing:**
+  - Verified `apps/web/tests/unit/promote-page.test.tsx` and full web test suite (64 tests passing).
+  - 100% test pass rate across 129 monorepo tests (120 Vitest, 9 PHPUnit) and clean TypeScript typecheck.

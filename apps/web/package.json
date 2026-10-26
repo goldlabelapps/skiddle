@@ -17,7 +17,7 @@
     "@ducanh2912/next-pwa": "^10.2.9",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@goldlabelapps/flash": "^3.3.0",
+    "@goldlabelapps/flash": "link:../../../nx-private/packages/flash",
     "@mui/material": "^9.5.0",
     "@skiddle/sdk": "workspace:*",
     "gsap": "^3.15.0",

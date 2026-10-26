@@ -15,18 +15,30 @@
 
 @media (min-width: 768px) {
   .frame {
-    height: calc(100dvh - 32px);
-    max-height: calc(100vh - 32px);
+    height: calc(100dvh - 64px);
+    max-height: calc(100vh - 64px);
     aspect-ratio: 9 / 19.5;
     width: auto;
-    max-width: calc(100vw - 32px);
+    max-width: calc(100vw - 64px);
     border-radius: 50px;
     border: 11px solid #0f172a;
+  }
+
+  .darkShadow {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.15),
       0 0 0 2px #334155,
       0 25px 60px -15px rgba(0, 0, 0, 0.85),
       0 0 50px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightShadow {
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.08),
+      0 0 0 2px #1e293b,
+      0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 35px 70px -15px rgba(0, 0, 0, 0.15);
   }
 }
 

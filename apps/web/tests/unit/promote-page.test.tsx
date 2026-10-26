@@ -38,6 +38,7 @@ describe('PromoPage PromoFlash Experience', () => {
       expect(html).toContain('data-testid="phone-status-bar"');
       expect(html).toContain('bg-white');
       expect(html).toContain('background-color:#ffffff');
+      expect(html).toContain('md:p-8');
 
       // PromoFlash component rendered inside the view area
       expect(html).toContain('data-testid="promo-flash"');
