@@ -10,13 +10,13 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~24.5 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~28.2 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.53 Days** | Standard 8-hour senior engineering days |
+| **Active Engineering Time** | **~25.2 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~29.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.62 Days** | Standard 8-hour senior engineering days |
 | **Modernization Commits** | **68 Commits** | Authored by DriveByAbuser across 5 active dates |
 | **Total Monorepo Tests** | **174 Tests (100% Pass)** | 165 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
-| **Code Additions** | **+25,750 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
+| **Code Additions** | **+25,850 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
 
 ---
@@ -44,7 +44,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2026-10-16  [=========]   Session 4: Turborepo, Next.js 15, Single Event Schema (3.6h)
 2026-10-25  [==============] Session 5-8: Event Search, Flash Creative Studio, Docs (7.6h)
 2026-10-26  [===========]  Session 9-21: GpxRoute 3D, PromoFlash, Actions, Performance & Docs (5.2h)
-2026-10-27  [=====]        Session 22-27: PromoFlash, Clamps, Actions, Buy Tickets CTA & Attention Loop (2.0h)
+2026-10-27  [=======]      Session 22-32: PromoFlash, Clamps, Actions, Buy Tickets CTA, Attention Loop, Date Chip & Elevation (2.9h)
 ```
 
 ### Day 1 — Thursday, October 15, 2026 (~4.0 Hours)
@@ -183,7 +183,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Added unit test asserting `aspect-ratio:1/1`. Monorepo test suite stands at 138 total automated tests (100% pass).
   - *Estimated Effort:* **0.2h**
 
-### Day 5 — Tuesday, October 27, 2026 (~1.1 Hours)
+### Day 5 — Tuesday, October 27, 2026 (~2.9 Hours)
 - **Session 22 (11:10 – 11:20 BST):**
   - Integrated event description presentation underneath the featured image in `PromoFlash`.
   - Implemented `cleanDescription` utility function for HTML tag stripping, entity decoding (`&amp;`, `&#39;`, `&pound;`, `&quot;`), and whitespace normalization.
@@ -239,27 +239,30 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 - **Session 31 (12:50 – 12:52 BST):**
   - Further raised the "Buy Tickets" CTA MovieClip to `bottom: 120px` (from `104px`), opening a 44px channel above the action row and centering the CTA comfortably in the lower third.
   - *Estimated Effort:* **0.1h**
+- **Session 32 (12:55 – 12:56 BST):**
+  - Elevated the "Buy Tickets" CTA to `bottom: 140px` (from `120px`), establishing a balanced midpoint between the bottom action button row (~64px margin below) and the event description (~60px margin above).
+  - *Estimated Effort:* **0.1h**
 
 ---
 
 ## 🏛 4. Effort Distribution by Technical Pillar
 
 ```
-Next.js 15 Web Application & Flash Studio : 10.7h (43%) ███████████████
+Next.js 15 Web Application & Flash Studio : 11.8h (47%) ████████████████
 Architecture, ADRs & Transcripts (16 docs):  5.0h (20%) ████████
-Automated Testing & CI (157 tests)        :  4.3h (17%) ██████
-Core TypeScript SDK (@skiddle/sdk)        :  2.5h (10%) ████
-NX° Developer CLI (@skiddle/cli)          :  2.5h (10%) ████
+Automated Testing & CI (174 tests)        :  4.4h (17%) ██████
+Core TypeScript SDK (@skiddle/sdk)        :  2.0h (8%)  ███
+NX° Developer CLI (@skiddle/cli)          :  2.0h (8%)  ███
 ```
 
 | Pillar | Components / Files | Est. Hours | % of Total |
 | :--- | :--- | :--- | :--- |
-| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoEmailModal`, `/api/promo/email`, routes | **10.7h** | 43% |
+| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoCtaMC`, `PromoVenueDateMC`, `PromoEmailModal`, `/api/promo/email`, routes | **11.8h** | 47% |
 | **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **5.0h** | 20% |
-| **Automated Testing & CI** | 148 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.3h** | 17% |
-| **Core TypeScript SDK** | Zero-dependency client, API v1/v3 routing, fluent builder, eFlyer ViewModel | **2.5h** | 10% |
-| **NX° Developer CLI** | Native terminal UI, `doctor`, `events`, `benchmark`, `scenarios` | **2.5h** | 10% |
-| **Total** | | **25.0h** | **100%** |
+| **Automated Testing & CI** | 165 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.4h** | 17% |
+| **Core TypeScript SDK** | Zero-dependency client, API v1/v3 routing, fluent builder, eFlyer ViewModel | **2.0h** | 8% |
+| **NX° Developer CLI** | Native terminal UI, `doctor`, `events`, `benchmark`, `scenarios` | **2.0h** | 8% |
+| **Total** | | **25.2h** | **100%** |
 
 ---
 

@@ -721,6 +721,18 @@
   - Verified with full test suite passing cleanly (104 web tests across 13 test suites).
   - Production build verified (`pnpm --filter web build`).
 
+---
+
+### Step 43: Balanced Midpoint Elevation of "Buy Tickets" CTA
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Lifted the "Buy Tickets" CTA MovieClip to `bottom: 140px` (up from `120px`).
+  - Achieves an equidistant, balanced visual midpoint: ~64px gap above the lower action button row (`bottom: 28px` + 48px height = 76px) and ~60px gap below the event description bottom edge (~255px).
+- **Verification & Testing:**
+  - Full test suite passing cleanly (104 web tests across 13 test suites).
+  - Production build verified (`pnpm --filter web build`).
+
+
 
 
 
