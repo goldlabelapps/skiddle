@@ -173,7 +173,7 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('aria-label="More events"');
     expect(html).toContain('background-color:#1877F2');
     expect(html).toContain('background-color:#000000');
-    expect(html).toContain('background-color:#ea4335');
+    expect(html).toContain('background-color:#00d26a');
     expect(html).toContain('background-color:#111827');
     // Verifies round border-radius on Facebook & Twitter buttons
     expect(html).toContain('border-radius:50%');

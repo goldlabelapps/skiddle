@@ -622,12 +622,46 @@
   - In `PromoActionsMC` (bottom action icon buttons), replaced the generic magnifying glass search icon with the official vector Skiddle glyph (`SkiddleIcon`, `viewBox="0 0 500 500"`), retaining the same action label ("More events") and routing behavior to `/`.
   - Identified and resolved the button shape inconsistency where `react-share`'s `FacebookShareButton` and `XShareButton` rendered as square buttons due to inline `border-radius: 0` defaults injected by `react-share` when children lack custom borderRadius props.
   - Configured `resetButtonStyle={false}` and explicit `borderRadius: '50%'` inline styles on `FacebookShareButton` and `XShareButton`, while hardening `PromoActionsMC.module.css` with `.actionButton { border-radius: 50% !important; display: flex !important; }` to guarantee circular button geometries across all action items.
+  - Updated the email action button background color from `#ea4335` to `#00d26a` (matching the Skiddle brand green used on the homepage search submit button).
 - **Verification & Testing:**
   - Updated `tests/unit/promo-flash.test.tsx` verifying:
     - Rendering of `data-testid="skiddle-icon"` inside the "More events" action button.
     - Application of `border-radius:50%` inline styles on Facebook and Twitter action buttons.
+    - Application of `background-color:#00d26a` on the email share action button.
   - All 85 unit tests passing clean across 11 test suites.
   - Clean TypeScript typecheck (`tsc --noEmit`).
+
+---
+
+### Step 38: Promo Page Venue Badge, Doors Open Countdown & AirportClacker Flash Component
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - On the promotional Flash experience (`/promo/[id]`), added venue location information and an intuitive countdown to doors opening.
+  - Built a new dedicated Flash component, `AirportClacker`, reminiscent of classic Solari di Udine split-flap airport arrivals boards where numbers and letters whirl and fly around rapidly before settling on the target digits.
+- **Action & Implementation:**
+  - **`AirportClacker` Component (`@goldlabelapps/flash` — `src/MovieClips/AirportClacker/`):**
+    - Built a high-performance mechanical split-flap display with authentic tactile styling: dual top and bottom flap gradients, horizontal split hairline highlight, and mechanical axle pin notches.
+    - Animation engine: when active or on replay, each tile rapidly flips through random character pools (`0-9` for digits, `A-Z` for letters) with individual speed jitter, then sequentially settles left-to-right with a mechanical snap bounce (`scale: 1.08 -> 1.0`).
+    - Added interactive replay: tapping the clacker board spins and settles the tiles again on demand.
+    - Supported visual size variants (`sm`, `md`, `lg`) and theme variants (`dark` with white characters, `amber` with airport yellow lettering).
+  - **Time Calculation & Formatting Utility (`getTimeUntilDoors`):**
+    - Parses 24-hour and 12-hour door times (`19:30`, `7:30pm`, `20:00`) alongside ISO dates.
+    - Automatically formats the countdown in the most human-understandable format:
+      - Multi-day future events: Days, Hours, Minutes (e.g. `170D 05H 45M`, `03D 08H 15M`).
+      - Events today: Hours, Minutes, Seconds (e.g. `05H 30M 00S`).
+      - Events starting soon ($<1$ hour): Minutes, Seconds.
+      - Live doors status: `DOORS OPEN` (within 8-hour window) and `CONCLUDED` (past events).
+  - **`PromoVenueDateMC` MovieClip (`apps/web/src/components/PromoFlash/MovieClips/PromoVenueDateMC.tsx`):**
+    - Combines the venue pill badge (`📍 The Stoller Hall • Manchester`) with the `AirportClacker` countdown board and formatted calendar subtitle (`Thu 15 Apr 2027 • Doors 19:30`).
+  - **Motion Choreography (`PromoFlash.tsx` & `promoActionScript.ts`):**
+    - Extended `separatePromoActionScript` to animate `venueDateTarget` into position (`y: 54` to `72`) between the featured flyer artwork (`y: -65`) and the event description (`y: 138`).
+    - Dynamically scaled `ImageMC` width (`160px` with venue/countdown vs `220px` standalone) ensuring generous vertical margins within the iPhone viewport.
+- **Verification & Testing:**
+  - Authored comprehensive test suite in `apps/web/tests/unit/airport-clacker.test.tsx` (15 tests) covering time parsing, status windows, split-flap rendering, theme styling, and `PromoVenueDateMC` integration.
+  - Re-ran all 12 test suites in `apps/web/tests/unit/`: all **100 tests passed** (100% green).
+  - Built `@goldlabelapps/flash` cleanly with `tsc -p tsconfig.build.json`.
+  - Full TypeScript typecheck verified clean (`tsc --noEmit`).
+
 
 
 

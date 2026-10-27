@@ -195,7 +195,7 @@ export function getDefaultPromoActions(context?: {
       id: 'email',
       label: 'Share via Email',
       ariaLabel: 'Share via Email',
-      backgroundColor: '#ea4335',
+      backgroundColor: '#00d26a',
       color: '#ffffff',
       icon: <MailIcon size={21} color="#ffffff" />,
     },
@@ -349,7 +349,7 @@ export const PromoActionsMC = forwardRef<HTMLDivElement, PromoActionsMCProps>(
                   title={action.label}
                   className={`${styles.actionButton} ${action.className || ''}`}
                   style={{
-                    backgroundColor: action.backgroundColor || '#ea4335',
+                    backgroundColor: action.backgroundColor || '#00d26a',
                     color: action.color || '#ffffff',
                     ...action.style,
                   }}

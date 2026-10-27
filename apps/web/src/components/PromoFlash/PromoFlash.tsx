@@ -3,7 +3,13 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { Stage, CleverText, ImageMC, corkScrew } from '@goldlabelapps/flash';
-import { SkiddleLogoMC, PromoActionsMC, getDefaultPromoActions } from './MovieClips';
+import {
+  SkiddleLogoMC,
+  PromoActionsMC,
+  PromoVenueDateMC,
+  PromoCtaMC,
+  getDefaultPromoActions,
+} from './MovieClips';
 import { separatePromoActionScript, promoActionsActionScript } from './ActionScript';
 import { cleanDescription } from './utils';
 import styles from './PromoFlash.module.css';
@@ -38,6 +44,7 @@ export function PromoFlash({
   const logoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const venueDateRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLElement | null)[]>([]);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -107,6 +114,10 @@ export function PromoFlash({
     descLineHeight = 1.4;
   }
 
+  const hasVenueDate = Boolean(
+    event?.venue?.name || event?.venueName || event?.date || event?.startdate || event?.dateStart
+  );
+
   const playSequence = useCallback(() => {
     if (!logoRef.current || !titleRef.current) return;
 
@@ -131,6 +142,15 @@ export function PromoFlash({
       gsap.set(imageRef.current, {
         autoAlpha: 0,
         scale: 0.88,
+        xPercent: -50,
+        yPercent: -50,
+        y: 0,
+      });
+    }
+    if (venueDateRef.current) {
+      gsap.set(venueDateRef.current, {
+        autoAlpha: 0,
+        scale: 0.92,
         xPercent: -50,
         yPercent: -50,
         y: 0,
@@ -176,16 +196,20 @@ export function PromoFlash({
       '-=0.1',
     );
 
-    // 4. Animate CleverText, large image MovieClip, and description into separated layout
+    // 4. Animate CleverText, large image MovieClip, Venue & AirportClacker, and description
     const hasDesc = Boolean(descriptionText);
-    if (imageRef.current || descriptionRef.current) {
+    const hasVenueDate = Boolean(event?.venue?.name || event?.date || event?.startdate);
+
+    if (imageRef.current || venueDateRef.current || descriptionRef.current) {
       const sepTl = separatePromoActionScript({
         textTarget: titleRef.current,
         imageTarget: imageRef.current,
+        venueDateTarget: venueDateRef.current,
         descriptionTarget: descriptionRef.current,
-        textY: hasDesc ? (len > 35 ? -158 : -150) : -130,
-        imageY: hasDesc ? -10 : 110,
-        descriptionY: 155,
+        textY: hasDesc ? (len > 35 ? -185 : -172) : -150,
+        imageY: hasDesc ? -65 : -45,
+        venueDateY: hasDesc ? 54 : 72,
+        descriptionY: 138,
         duration: 1.0,
         delay: 0.4,
       });
@@ -282,10 +306,22 @@ export function PromoFlash({
               ref={imageRef}
               src={cardImageUrl}
               alt={titleText}
-              width={descriptionText ? 220 : 260}
+              width={
+                hasVenueDate
+                  ? descriptionText
+                    ? 160
+                    : 200
+                  : descriptionText
+                    ? 220
+                    : 260
+              }
               aspectRatio="1/1"
             />
           )}
+          <PromoVenueDateMC
+            ref={venueDateRef}
+            event={event}
+          />
           {descriptionText && (
             <div
               ref={descriptionRef}

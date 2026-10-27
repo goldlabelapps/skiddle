@@ -10,11 +10,11 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~22.9 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~26.5 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.31 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **64 Commits** | Authored by DriveByAbuser across 5 active dates |
-| **Total Monorepo Tests** | **158 Tests (100% Pass)** | 149 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~23.4 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~27.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.37 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **65 Commits** | Authored by DriveByAbuser across 5 active dates |
+| **Total Monorepo Tests** | **170 Tests (100% Pass)** | 161 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
 | **Code Additions** | **+25,000 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
@@ -44,7 +44,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2026-10-16  [=========]   Session 4: Turborepo, Next.js 15, Single Event Schema (3.6h)
 2026-10-25  [==============] Session 5-8: Event Search, Flash Creative Studio, Docs (7.6h)
 2026-10-26  [===========]  Session 9-21: GpxRoute 3D, PromoFlash, Actions, Performance & Docs (5.2h)
-2026-10-27  [===]          Session 22: Event Description in PromoFlash & Typography Scaling (0.4h)
+2026-10-27  [====]         Session 22-26: PromoFlash, Clamps, Actions, Skiddle Icon & Round Buttons (1.6h)
 ```
 
 ### Day 1 — Thursday, October 15, 2026 (~4.0 Hours)
@@ -213,6 +213,14 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Rectified button shape defect where `react-share` injected `border-radius: 0` into Facebook & Twitter share buttons; configured `resetButtonStyle={false}`, inline `borderRadius: '50%'`, and CSS module `border-radius: 50% !important`.
   - Updated unit tests in `apps/web/tests/unit/promo-flash.test.tsx`.
   - *Estimated Effort:* **0.2h**
+- **Session 27 (12:30 – 12:45 BST):**
+  - Designed and authored `AirportClacker` in `@goldlabelapps/flash`: a retro mechanical Solari split-flap arrivals board MovieClip.
+  - Built high-performance split-flap tile mechanics with random character cycling (`0-9`, `A-Z`) settling into target characters with a mechanical snap bounce.
+  - Implemented `getTimeUntilDoors` calculation utility parsing doors open times and generating intuitive countdowns (days/hours/minutes, hours/minutes/seconds today, and live doors open status).
+  - Built `PromoVenueDateMC` MovieClip combining venue pill badge (`📍 The Stoller Hall • Manchester`) with `AirportClacker`.
+  - Integrated into `PromoFlash` choreography and updated `separatePromoActionScript`.
+  - Authored 15 unit tests in `apps/web/tests/unit/airport-clacker.test.tsx`. Total web unit tests reached 100 (170 across monorepo at 100% pass).
+  - *Estimated Effort:* **0.5h**
 
 ---
 

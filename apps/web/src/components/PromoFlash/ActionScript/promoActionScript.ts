@@ -43,9 +43,11 @@ export function promoActionScript({
 export function separatePromoActionScript({
   textTarget,
   imageTarget,
+  venueDateTarget,
   descriptionTarget,
   textY = -130,
   imageY = 110,
+  venueDateY = 70,
   descriptionY = 155,
   duration = 1.0,
   delay = 0.4,
@@ -88,15 +90,36 @@ export function separatePromoActionScript({
     );
   }
 
-  // Animate the event description underneath the featured image
-  if (descriptionTarget) {
+  // Animate the venue & AirportClacker board underneath the image
+  if (venueDateTarget) {
     const position = imageTarget ? '<+=0.1' : '<';
+    tl.fromTo(
+      venueDateTarget,
+      {
+        autoAlpha: 0,
+        scale: 0.92,
+        y: (imageY ?? 0) + 20,
+      },
+      {
+        autoAlpha: 1,
+        scale: 1,
+        y: venueDateY,
+        duration: duration * 0.9,
+        ease: imageEase,
+      },
+      position,
+    );
+  }
+
+  // Animate the event description underneath the featured image / venue
+  if (descriptionTarget) {
+    const position = venueDateTarget ? '<+=0.1' : (imageTarget ? '<+=0.1' : '<');
     tl.fromTo(
       descriptionTarget,
       {
         autoAlpha: 0,
         scale: 0.92,
-        y: (imageY ?? 0) + 30,
+        y: (venueDateY ?? imageY ?? 0) + 30,
       },
       {
         autoAlpha: 1,

@@ -1,4 +1,11 @@
 export { SkiddleLogoMC } from './SkiddleLogoMC';
+export { PromoVenueDateMC } from './PromoVenueDateMC';
+export type { PromoVenueDateMCProps } from './PromoVenueDateMC';
+export {
+  PromoCtaMC,
+  TicketIcon,
+  ArrowRightIcon,
+} from './PromoCtaMC';
 export {
   PromoActionsMC,
   PromoEmailModal,

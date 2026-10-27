@@ -70,14 +70,15 @@
   padding: 0 16px;
   text-align: center;
   color: #475569;
-  font-size: 0.8125rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.4;
   letter-spacing: -0.01em;
   word-break: break-word;
   overflow-wrap: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

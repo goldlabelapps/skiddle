@@ -20,9 +20,11 @@ export interface PromoActionScriptOptions {
 export interface SeparatePromoActionScriptOptions {
   textTarget: HTMLElement | null;
   imageTarget: HTMLElement | null;
+  venueDateTarget?: HTMLElement | null;
   descriptionTarget?: HTMLElement | null;
   textY?: number;
   imageY?: number;
+  venueDateY?: number;
   descriptionY?: number;
   duration?: number;
   delay?: number;
@@ -60,6 +62,19 @@ export interface PromoActionsActionScriptOptions {
   onComplete?: () => void;
 }
 
+export interface PromoCtaMCProps {
+  label?: string;
+  url?: string;
+  event?: any;
+  eventId?: string;
+  entryPrice?: string;
+  isReady?: boolean;
+  className?: string;
+  style?: CSSProperties;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  ariaLabel?: string;
+}
+
 export interface PromoActionsMCProps {
   actions?: PromoActionButton[];
   buttonRefs?: React.MutableRefObject<(HTMLElement | null)[]>;
@@ -81,6 +96,9 @@ export interface PromoFlashProps {
   actions?: PromoActionButton[];
   shareUrl?: string;
   shareTitle?: string;
+  buyUrl?: string;
+  buyLabel?: string;
+  onBuyClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;

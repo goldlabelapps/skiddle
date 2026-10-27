@@ -2,6 +2,10 @@ export { PromoFlash, default } from './PromoFlash';
 export { cleanDescription } from './utils';
 export {
   SkiddleLogoMC,
+  PromoVenueDateMC,
+  PromoCtaMC,
+  TicketIcon,
+  ArrowRightIcon,
   PromoActionsMC,
   PromoEmailModal,
   FacebookIcon,
