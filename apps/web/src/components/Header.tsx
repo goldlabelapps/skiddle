@@ -1,3 +1,4 @@
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -59,21 +60,8 @@ export function Header() {
               transition: 'opacity 0.2s',
             }}
           >
-            SDK
+            @skiddle/sdk
           </Link>
-          <a
-            href="https://www.skiddle.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: '#ffffff',
-              fontSize: 14,
-              textDecoration: 'none',
-              transition: 'opacity 0.2s',
-            }}
-          >
-            Skiddle.com ↗
-          </a>
         </nav>
       </div>
     </header>

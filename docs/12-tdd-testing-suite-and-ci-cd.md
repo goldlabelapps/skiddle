@@ -1,7 +1,7 @@
 # 12 — TDD Testing Suite, E2E Contracts & GitHub Actions CI/CD
 
-> **Document Version:** 2.1.0  
-> **Scope:** Exhaustive technical reference for Test-Driven Development (TDD) workflows, complete test case catalog (99 automated tests: 90 Vitest + 9 PHP across 13 test suites), custom architectural linters, and GitHub Actions / Vercel CI/CD parity.
+> **Document Version:** 3.0.0  
+> **Scope:** Exhaustive technical reference for Test-Driven Development (TDD) workflows, complete test case catalog (171 automated tests: 162 Vitest + 9 PHP across 18 test files), custom architectural linters, and GitHub Actions / Vercel CI/CD parity.
 
 ---
 
@@ -15,7 +15,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-## 2. Complete Test Suite Catalog (99 Automated Tests)
+## 2. Complete Test Suite Catalog (171 Automated Tests)
 
 ### 2.1 `@skiddle/sdk` Unit Test Suite (`packages/sdk/tests/sdk.test.ts` — 30 Tests)
 
@@ -85,7 +85,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-### 2.4 `apps/web` Next.js 15 Unit & E2E Suites (`apps/web/tests/` — 34 Tests across 6 Suites)
+### 2.4 `apps/web` Next.js 15 Unit & E2E Suites (`apps/web/tests/` — 106 Tests across 14 Suites)
 
 #### Server Actions Suite (`apps/web/tests/unit/actions.test.ts` — 7 Tests)
 - **`checkServerConfig reports whether SKIDDLE_API_KEY is configured in environment`**: Toggles `process.env.SKIDDLE_API_KEY` and verifies `{ hasServerApiKey: false }` vs `{ hasServerApiKey: true }`.
@@ -96,7 +96,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 - **`catches SkiddleException and returns structured error payload with HTTP status code`**: Verifies upstream `403 Invalid API key provided` errors return `{ success: false, errorCode: 403, error: 'Invalid API key provided' }`.
 - **`rejects unsupported resource types gracefully`**: Returns `{ success: false, error: 'Unsupported resource: ...' }`.
 
-#### API Route Handlers Suite (`apps/web/tests/unit/api-routes.test.ts` — 8 Tests)
+#### API Route Handlers Suite (`apps/web/tests/unit/api-routes.test.ts` — 10 Tests)
 - **`GET /api/events`**:
   - Rejects with 500 JSON when server API key is unconfigured.
   - Parses search params (`keyword`, `eventcode`, `date`, `limit`) and maps them to SDK conditions.
@@ -108,22 +108,70 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
   - Returns single event listing, raw payload, and debug traces on success.
   - Translates SDK `SkiddleException` (e.g. 404) to HTTP 404 response.
 
-#### Event Detail Page Suite (`apps/web/tests/unit/event-detail-page.test.tsx` — 4 Tests)
+#### App Shell Suite (`apps/web/tests/unit/app-shell.test.tsx` — 2 Tests)
+- **`AppShell`**: Verifies navigation header, brand logo, mobile drawer toggle, and global container mounting.
+
+#### Event Detail Page Suite (`apps/web/tests/unit/event-detail-page.test.tsx` — 5 Tests)
 - **`generateMetadata`**: Validates title format (`Promote Event #<id> | Skiddle`) and dynamic description.
 - **`EventDetailPage`**:
   - Renders "API Key Missing" alert screen when `SKIDDLE_API_KEY` is not present.
   - Renders error recovery screen when listing is not found or API rejects.
   - Renders full `EventDetailClient` with structured pricing, lineup, venue, and JSON inspection on success.
+  - Verifies flyer image asset (`largeimageurl`) rendering in the structured API Data view.
 
-#### Event Search & Helpers Suite (`apps/web/tests/unit/event-search.test.tsx` — 11 Tests)
+#### Event Search & Helpers Suite (`apps/web/tests/unit/event-search.test.tsx` — 23 Tests)
 - **`HighlightText`**: Empty query pass-through, case-insensitive match mark wrapping, regex safe escaping, and null handling.
 - **`CATEGORIES`**: Validates category array configuration (`all`, `LIVE`, `CLUB`, `FEST`, `COMEDY`, `THEATRE`, `SPORT`, etc.).
 - **`stripHtml`**: HTML tag stripping and whitespace trimming.
 - **`normalizeEvent`**: Normalizes legacy API v1 shapes (`results`, `eventname`, `entryprice`) and API v3 shapes (`data`, `eventName`, `entryPrice`, `meta.totalresults`) into unified `EventListItem`.
-- **`EventSearch Initial State`**: Validates clean initial landing render without empty-state flash or premature search spinners.
+- **`EventSearch Initial State & Filtering`**: Validates clean initial landing render without empty-state flash, search input debounce, category pill selection, and date filter triggers.
 
 #### Footer Component Suite (`apps/web/tests/unit/footer.test.tsx` — 1 Test)
-- **`Footer`**: Validates brand description, developer resource links (`/sdk`, Promotion Centre, API docs, GitHub repo), Skiddle navigation links, back-to-top button, and copyright notice.
+- **`Footer`**: Validates brand description, developer resource links (`/sdk`, Promotion Centre, API docs, candidate CV link, GitHub repo), Skiddle navigation links, back-to-top button, and copyright notice.
+
+#### GpxRoute 3D Venue Showcase Suite (`apps/web/tests/unit/gpxroute-venue-page.test.tsx` — 6 Tests)
+- **`GpxRouteVenuePage`**: Verifies Web Component custom elements, iframe postMessage communication bridge, responsive `IPhoneFrame` chassis, telemetry indicators, and fallback rendering.
+
+#### PromoFlash Modular Component Suite (`apps/web/tests/unit/promo-flash.test.tsx` — 23 Tests)
+- **`PromoFlash Architecture & Timeline Sequences`**:
+  - Initializes `promoActionScript` GSAP timeline for vertical and horizontal centering.
+  - Sequences Skiddle logo corkscrew intro, hold duration, and fade-out transition.
+  - Renders multi-line `TitleText` with dynamic `autoSize` font scaling for long titles and enforces 3-line clamping (`-webkit-line-clamp: 3`).
+  - Integrates `CleverText` real-time typewriter typography streaming.
+  - Renders `ImageMC` 1:1 square flyer MovieClip prioritizing `largeimageurl` with fallback to `imageurl`.
+  - Initializes `separatePromoActionScript` timeline moving `CleverText` headline up (`y: -150`), `ImageMC` flyer to center (`y: -10`), and event description underneath (`y: 155`).
+  - Renders event description underneath featured image with entity decoding and HTML tag stripping (`cleanDescription`).
+  - Supports explicit `description` prop override and typography auto-sizing for descriptions $> 180$ characters.
+  - Renders `PromoActionsMC` with Facebook, Twitter (X), Email, and Search action buttons auto-spaced in bottom row with circular styling.
+  - Renders custom action buttons in `PromoActionsMC` (e.g. WhatsApp) in auto-spaced layout.
+  - Initializes `promoActionsActionScript` GSAP timeline for 1-by-1 entrance presentation, centered pop up with top z-index, label fading, and shrinking into resting row.
+  - Renders high-impact "Buy Tickets" CTA MovieClip (`PromoCtaMC`) with pulsing ring aura and light shimmer streak, centered at `bottom: 140px`.
+  - Enforces single-point click interactivity without accidental stage replay triggers.
+
+#### Promo Venue & Date Presentation Suite (`apps/web/tests/unit/promo-venue-date.test.tsx` — 12 Tests)
+- **`PromoVenueDateMC`, `PromoDateChipMC`, & `PromoVenueMC`**:
+  - Validates `formatPromoDate` formatting across native Date instances, ISO strings, and British calendar strings with doors time.
+  - Verifies top standalone date chip positioning with balanced headroom beneath Dynamic Island.
+  - Verifies venue badge display with pin icon and city location.
+  - Asserts proper DOM visual hierarchy and z-index ordering across separate stage elements.
+
+#### Promo Share Email Suite (`apps/web/tests/unit/promo-email.test.tsx` — 7 Tests)
+- **`POST /api/promo/email`**:
+  - Rejects invalid or missing email addresses with structured 400 validation error.
+  - Dispatches email invitation via `sendTemplatedEmail` to `https://private.goldlabel.pro/api/notify/email`.
+  - Utilizes dedicated promotional template `buildPromoShareEmailHtml` featuring full-width hero image, center-aligned typography, and `#00d26a` brand green "View Promo" CTA button.
+  - Verifies header and footer cleanup (absence of extraneous green pill badge and `"Sent via Skiddle Promo"` footer trailer).
+
+#### Root Layout & Unified Ping Telemetry Suite (`apps/web/tests/unit/root-layout.test.tsx` — 1 Test)
+- **`RootLayout Component`**:
+  - Verifies unified `<Ping />` telemetry component mounting from `@goldlabelapps/notify`.
+  - Validates live Skiddle API key authentication (`apiKey="pk_live_skiddle"`), endpoint routing (`https://private.goldlabel.pro/api/notify/ping`), 5000ms periodic heartbeats, and metadata (`app: 'skiddle'`, `appVersion: '0.3.0'`).
+
+#### Event Promotion Studio Suite (`apps/web/tests/unit/promote-page.test.tsx` — 5 Tests)
+- **`PromoteFlashMovieClient`**: Verifies dynamic scene generation, Web Audio synthesis trigger, timeline scrubber controls, audio mute toggle, and fullscreen playback.
+
+#### SDK Accordion Suite (`apps/web/tests/unit/sdk-accordion.test.tsx` — 1 Test)
+- **`SdkAccordion`**: Verifies collapsible documentation accordion, endpoint descriptions, and code sample rendering.
 
 #### E2E & Integration Suite (`apps/web/tests/e2e/web-e2e.test.ts` — 3 Tests)
 - **`validates PWA Web App Manifest contract and icon definitions`**: Tests `src/app/manifest.ts` for `name`, `short_name`, `start_url`, `display: 'standalone'`, `theme_color: '#0b0f19'`, and `>= 5` icon definitions.

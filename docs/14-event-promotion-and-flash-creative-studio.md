@@ -113,33 +113,65 @@ The movie duration is normalized to 12 seconds across four distinct narrative be
 
 ---
 
-## 📄 5. React Developer Job Spec (Sep 26) Integration
+## 🧩 5. Modular PromoFlash & Canonical `/promo/[id]` Route
 
-To ensure full transparency during candidate evaluation and technical interviews, the repository integrates the official Skiddle **React Developer Job Spec - Sep 26.pdf**:
-- Stored permanently in both `docs/React Developer Job Spec - Sep 26.pdf` and `apps/web/public/React Developer Job Spec - Sep 26.pdf`.
-- Linked directly in the global `Footer.tsx` with a distinct icon and direct download / new tab preview.
-- Tested and verified in `apps/web/tests/unit/footer.test.tsx`:
-  ```typescript
-  expect(jobSpecLink).toBeInTheDocument();
-  expect(jobSpecLink).toHaveAttribute('href', '/React Developer Job Spec - Sep 26.pdf');
-  ```
+In Phase 2 of the creative engine modernization, the promotional canvas was decoupled into a reusable, standalone module:
+
+### Architectural Highlights:
+1. **Canonical Route (`/promo/[id]`)**:
+   - Clean, isolated white canvas without application chrome (navigation bar or global footer).
+   - Ideal for iframe embedding, full-screen display, and social preview cards.
+   - Backward-compatible redirect from `/events/[id]/promote`.
+2. **Modular MovieClips (`@goldlabelapps/flash`)**:
+   - **`SkiddleLogoMC`**: Scalable vector Skiddle logo with ActionScript method attachment.
+   - **`corkscrewActionScript` / `asMovieClip.corkScrew("in" | "out")`**: Threading motion modeling 720° spin, scale interpolation, and opacity ease.
+   - **`TitleText`**: Responsive multi-line typography with dynamic `autoSize` scaling based on character count ($>60$ chars: `1.125rem`, $>35$ chars: `1.35rem`, $>20$ chars: `1.5rem`, $\le 20$ chars: `1.75rem`).
+   - **`CleverText`**: Real-time typewriter typography streaming with `active` trigger synchronization.
+   - **`ImageMC`**: 1:1 responsive square flyer container with elevation shadow and rounded borders (`width={160}` when venue/date and description are present).
+   - **`PromoVenueDateMC`**: Integrated venue and date MovieClip cleanly presenting the event's date and doors time badge (`📅 Thu 15 Apr 2027 • Doors 19:30`) alongside the venue location badge (`📍 Depot Mayfield • Manchester`).
+   - **`separatePromoActionScript`**: Coordinated counter-motion moving `CleverText` up to the upper promotion area (`y: -175` to `-185`), unfurling `ImageMC` into the center area (`y: -65`), animating `PromoVenueDateMC` into position (`y: 54`), and fading in the event description cleanly underneath (`y: 138`).
+   - **`cleanDescription`**: Utility function stripping HTML markup and decoding HTML entities (`&amp;`, `&#39;`, `&pound;`, `&quot;`) with dynamic typography scaling ($>180$ chars: `0.75rem`).
+   - **`PromoActionsMC` & `promoActionsActionScript`**: Configurable action buttons (Facebook, Twitter/X, Email, More Events/Search) with a 1-by-1 entrance sequence: pop-up to horizontal center with elevation scale and top z-index, reading description pill fade-in/out, and shrinking down into an auto-spaced resting bottom row.
+3. **Dynamic Social Metadata (OpenGraph & Twitter Card)**:
+   - Server-side metadata generator (`generateMetadata`) utilizing React `cache` request deduplication.
+   - Designates `largeimageurl` for high-resolution OpenGraph (`og:image`) and Twitter (`twitter:image`, `card: 'summary_large_image'`) social cards.
+4. **Interactive Stage Replay**:
+   - Clicking or tapping anywhere on the canvas gracefully resets and replays the GSAP animation timeline from frame zero.
 
 ---
 
-## 🧪 6. Testing & Quality Gate
+## 💼 6. Candidate CV & React Developer Job Spec Assets
+
+To support the hiring assessment workflow, public documents are consolidated directly under `apps/web/public/docs/`:
+- **Candidate CV**: `/docs/Chris Dorward - CV.pdf`
+- **Job Spec**: `/docs/React Developer Job Spec - Sep 26.pdf`
+- Linked in the global `Footer.tsx` under the Candidate column opening securely in new tabs (`target="_blank"`, `rel="noopener noreferrer"`).
+- Tested and verified in `apps/web/tests/unit/footer.test.tsx`.
+
+---
+
+## 🧪 7. Testing & Quality Gate
 
 The promote module is guarded by dedicated automated tests:
 
 ```bash
-# Run Promote Page Vitest Suite
-pnpm --filter web test tests/unit/promote-page.test.tsx
+# Run PromoFlash, Venue & Date, and Promote Page Vitest Suites
+pnpm --filter web test tests/unit/promo-flash.test.tsx tests/unit/promo-venue-date.test.tsx tests/unit/promote-page.test.tsx
 
-# Run Full Monorepo Tests (111 tests passing)
+# Run Full Monorepo Tests
 pnpm test
 ```
 
 ### Verified Test Cases:
-- ✔ Renders promotion canvas stage with event title and venue data.
-- ✔ Toggles audio mute/unmute without crashing.
-- ✔ Updates playback state when scrubbing timeline.
+- ✔ Renders promotion canvas stage with event title, flyer image, venue, and date badges.
+- ✔ Renders `PromoVenueDateMC` with calendar date badge, doors open time, and venue location pin.
+- ✔ Formats British date typography cleanly (`Thu 15 Apr 2027 • Doors 19:30`).
+- ✔ Gracefully omits venue/date elements when metadata is absent.
+- ✔ Initializes `promoActionScript` GSAP timeline with responsive centering.
+- ✔ Automatically scales `TitleText` font sizing for multi-line event titles without canvas overflow.
+- ✔ Streams title typography via `CleverText` typewriter animation.
+- ✔ Renders `ImageMC` thumbnail flyer component with `largeimageurl` priority.
+- ✔ Renders `PromoActionsMC` with Facebook and Search action buttons auto-spaced in bottom row.
+- ✔ Executes `promoActionsActionScript` 1-by-1 entrance, centered pop up with top z-index, label fading, and shrinking into the bottom row.
+- ✔ Toggles audio mute/unmute and timeline playback controls.
 - ✔ Opens and closes the debug telemetry drawer.

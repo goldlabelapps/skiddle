@@ -1,0 +1,395 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 16px 80px;
+  color: #0f172a;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.topNav {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.backLink:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.idBadge {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: monospace;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.idBadge:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.heroCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 0;
+}
+
+.heroGridNoImage {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.imageWrapper {
+  position: relative;
+  min-height: 260px;
+  background: #0f172a;
+}
+
+.heroContent {
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: clamp(20px, 4vw, 32px);
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.dateBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.venueRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.pillGroup {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #334155;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+
+.tabButtonGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tabButton {
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+  color: #64748b;
+  box-sizing: border-box;
+}
+
+.tabButtonActive {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+
+.promoButton {
+  flex: 1;
+  min-width: 180px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: #00d26a;
+  color: #ffffff;
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 210, 106, 0.25);
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.promoButton:hover {
+  background-color: #00be60;
+  box-shadow: 0 6px 16px rgba(0, 210, 106, 0.35);
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.imagesCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.imagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.imageBox {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageBoxHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 8px;
+}
+
+.imageBoxTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.imageKeyBadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  background: #f1f5f9;
+  color: #0284c7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.imageLink {
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.imageLink:hover {
+  color: #0284c7;
+}
+
+.imagePreview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #0b0f19;
+}
+
+.imageBoxFooter {
+  padding: 8px 12px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.imageUrlText {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: #64748b;
+  word-break: break-all;
+  display: block;
+}
+
+.noImagePlaceholder {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 13px;
+  background: #f8fafc;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dlGrid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px 12px;
+  font-size: 13px;
+}
+
+/* Responsive adjustments for mobile (single column) */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 14px 60px;
+  }
+
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .imageWrapper {
+    width: 100%;
+    min-height: 240px;
+    height: 240px;
+  }
+
+  .heroContent {
+    padding: 20px 16px;
+  }
+
+  .dataGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .actionsRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .tabButtonGroup {
+    width: 100%;
+  }
+
+  .tabButton {
+    flex: 1;
+    padding: 0 12px;
+  }
+
+  .promoButton {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .imageWrapper {
+    height: 200px;
+    min-height: 200px;
+  }
+}

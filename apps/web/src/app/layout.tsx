@@ -1,6 +1,7 @@
+import React from 'react';
 import type { Metadata, Viewport } from 'next';
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
+import { Ping } from '@goldlabelapps/notify';
+import { AppShell } from '../components/AppShell';
 import './globals.css';
 
 export const viewport: Viewport = {
@@ -38,9 +39,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
-        {children}
-        <Footer />
+        <Ping
+          apiKey="pk_live_skiddle"
+          endpoint="https://private.goldlabel.pro/api/notify/ping"
+          intervalMs={5000}
+          metadata={{
+            app: 'skiddle',
+            appVersion: '0.3.0',
+          }}
+        />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

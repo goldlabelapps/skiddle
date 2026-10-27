@@ -3,4 +3,10 @@ packages:
   - 'packages/*'
 
 allowBuilds:
+  '@firebase/util': true
   esbuild: true
+  protobufjs: true
+
+minimumReleaseAgeExclude:
+  - '@goldlabelapps/flash@3.9.5'
+  - '@goldlabelapps/notify@3.9.6'

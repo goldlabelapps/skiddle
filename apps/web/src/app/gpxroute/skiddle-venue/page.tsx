@@ -38,7 +38,7 @@ export default function GpxRouteSkiddleVenuePage() {
         overflow: "hidden",
       }}
     >
-      <IPhoneFrame>
+      <IPhoneFrame variant="dark">
         <SkiddleVenue
           host={host}
           venue={venue}

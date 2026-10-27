@@ -10,8 +10,17 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@skiddle/sdk'],
+  transpilePackages: ['@skiddle/sdk', '@goldlabelapps/flash'],
   devIndicators: false,
+  async redirects() {
+    return [
+      {
+        source: '/events/:id',
+        destination: '/promo/:id',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withPWA(nextConfig);

@@ -1,4 +1,5 @@
 import { ApiTester } from '../../components/ApiTester/ApiTester';
+import { SdkAccordion } from '../../components/SdkAccordion/SdkAccordion';
 
 export default function SdkPage() {
   const apiKeyConfigured = Boolean(process.env.SKIDDLE_API_KEY);
@@ -38,10 +39,13 @@ export default function SdkPage() {
         Skiddle SDK
       </h1>
 
-      <p style={{ color: '#475569', fontSize: 'clamp(15px, 3.5vw, 17px)', marginBottom: 28, maxWidth: 840, lineHeight: 1.6, wordBreak: 'break-word' }}>
+      <p style={{ color: '#475569', fontSize: 'clamp(15px, 3.5vw, 17px)', marginBottom: 24, maxWidth: 840, lineHeight: 1.6, wordBreak: 'break-word' }}>
         This Next.js application consumes the shared workspace library <code style={{ color: '#0284c7', background: '#e2e8f0', padding: '2px 6px', borderRadius: 4, wordBreak: 'break-word' }}>@skiddle/sdk</code> directly from{' '}
         <code style={{ color: '#0284c7', background: '#e2e8f0', padding: '2px 6px', borderRadius: 4, wordBreak: 'break-word' }}>packages/sdk</code>. Test endpoints, construct fluent query conditions, and inspect live responses below.
       </p>
+
+      {/* ARCHITECTURE & PHP PORT ACCORDION */}
+      <SdkAccordion />
 
       {/* COMPREHENSIVE INTERACTIVE API TESTER */}
       <ApiTester />
