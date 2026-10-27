@@ -182,7 +182,7 @@ describe('PromoVenueDateMC Venue & Date Display', () => {
         dateTarget: mockDate,
         venueTarget: mockVenue,
         descriptionTarget: mockDesc,
-        dateY: -336,
+        dateY: -308,
         textY: -235,
         imageY: -85,
         venueY: 32,

@@ -37,6 +37,9 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('data-testid="promo-title-container"');
     expect(html).toContain('data-testid="clever-text"');
     expect(html).toContain('aria-label="Test Event"');
+    // Ensure PromoFlash container is not clickable/does not replay on container click
+    expect(html).not.toContain('role="button"');
+    expect(html).not.toContain('title="Click to replay');
   });
 
   it('renders CleverText MovieClip scaling down typography for long multi-line titles', () => {

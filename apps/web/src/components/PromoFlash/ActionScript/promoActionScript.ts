@@ -47,7 +47,7 @@ export function separatePromoActionScript({
   venueTarget,
   venueDateTarget,
   descriptionTarget,
-  dateY = -330,
+  dateY = -308,
   textY = -230,
   imageY = -85,
   venueY = 35,

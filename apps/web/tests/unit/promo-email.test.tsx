@@ -134,7 +134,7 @@ describe('Search Button & Email Sharing Flow', () => {
       expect(data.error).toContain('valid email address is required');
     });
 
-    it('builds Prospect light template and dispatches email via sendTemplatedEmail', async () => {
+    it('builds Promo Share template and dispatches email via sendTemplatedEmail', async () => {
       const { sendTemplatedEmail } = await import('@goldlabelapps/notify');
 
       const validReq = new Request('http://localhost:3000/api/promo/email', {
@@ -160,7 +160,7 @@ describe('Search Button & Email Sharing Flow', () => {
       expect(data.success).toBe(true);
       expect(data.message).toBe('Email dispatched successfully.');
 
-      // Verify sendTemplatedEmail was invoked with the exact Prospect light template structure
+      // Verify sendTemplatedEmail was invoked with the promo share template
       expect(sendTemplatedEmail).toHaveBeenCalledTimes(1);
       const callArg = (sendTemplatedEmail as any).mock.calls[0][0];
 
@@ -169,7 +169,22 @@ describe('Search Button & Email Sharing Flow', () => {
       expect(callArg.payload.subject).toBe('Check out Warehouse Project Opening on Skiddle!');
       expect(callArg.payload.html).toContain('Warehouse Project Opening');
       expect(callArg.payload.html).toContain('Can you believe this lineup? We have to go!');
-      expect(callArg.payload.html).toContain('View Event on Skiddle');
+
+      // Full-size image (max-width:536px, width:100%, not 48x48 icon)
+      expect(callArg.payload.html).toContain('https://example.com/whp.jpg');
+      expect(callArg.payload.html).toContain('max-width:536px;');
+      expect(callArg.payload.html).not.toContain('width="48" height="48"');
+
+      // Center-aligned message
+      expect(callArg.payload.html).toContain('text-align:center;');
+
+      // CTA label changed from "View Event on Skiddle" to "View Promo"
+      expect(callArg.payload.html).toContain('View Promo');
+      expect(callArg.payload.html).not.toContain('View Event on Skiddle');
+
+      // CTA button color matches Skiddle homepage search button (#00d26a)
+      expect(callArg.payload.html).toContain('background-color:#00d26a');
+
       expect(callArg.payload.html).toContain('https://www.skiddle.com/promo/43032215');
       expect(callArg.payload.html).toContain('Skiddle');
     });

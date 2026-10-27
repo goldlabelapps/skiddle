@@ -244,8 +244,8 @@ export function PromoFlash({
     ) {
       const cHeight = containerRef.current?.clientHeight || 800;
       const isCompact = cHeight < 750;
-      // Position Date Chip just under the top (under Dynamic Island / status bar)
-      const computedDateY = Math.round(-cHeight / 2 + 64);
+      // Position Date Chip comfortably under the top Dynamic Island / status bar
+      const computedDateY = Math.round(-cHeight / 2 + (isCompact ? 78 : 92));
       const computedTextY = isCompact
         ? (hasDesc ? (len > 35 ? -225 : -215) : -200)
         : (hasDesc ? (len > 35 ? -245 : -235) : -215);
@@ -320,10 +320,6 @@ export function PromoFlash({
       data-testid="promo-flash"
       className={`${styles.container} ${className || ''}`}
       style={style}
-      onClick={playSequence}
-      role="button"
-      tabIndex={0}
-      title="Click to replay corkscrew & CleverText sequence"
     >
       <Stage color="transparent" className={styles.stage}>
         <div className={styles.stageContent}>

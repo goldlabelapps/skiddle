@@ -732,6 +732,51 @@
   - Full test suite passing cleanly (104 web tests across 13 test suites).
   - Production build verified (`pnpm --filter web build`).
 
+---
+
+### Step 44: Dedicated Promo Share Email Template (`buildPromoShareEmailHtml`)
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Redesigned the share email dispatched when users click the email share action on the promotional card modal (`/api/promo/email`).
+  - Transitioned from the generic prospect template (`buildDefaultLightEmailHtml`) to a dedicated promotional template (`buildPromoShareEmailHtml`) built and exported in `@goldlabelapps/notify`:
+    1. **Full-Size Hero Image:** Rendered the event promotional flyer/artwork in its full natural dimensions (`width: 100%; max-width: 536px; height: auto`) with rounded corners and subtle drop shadow, replacing the cramped 48x48 icon avatar.
+    2. **Center-Aligned Message:** Configured the body and personal message container with explicit centered typography (`text-align: center; max-width: 480px; margin: 0 auto`), establishing an elegant, unified reading flow.
+    3. **"View Promo" CTA Action:** Renamed the primary button label from `"View Event on Skiddle"` to `"View Promo"`.
+    4. **Skiddle Homepage Search Green Button:** Updated the button styling from default blue gradient to `#00d26a` (exact brand green matching the search submit button on Skiddle's homepage: `background-color: #00d26a; color: #ffffff`).
+- **Verification & Testing:**
+  - Authored template unit tests in `packages/notify/tests/promoShareEmailTemplate.test.mjs` verifying full-width hero image rendering, centered text alignments, "View Promo" CTA, and `#00d26a` button styling.
+  - Updated integration tests in `apps/web/tests/unit/promo-email.test.tsx` verifying template dispatch via `sendTemplatedEmail`.
+  - All 105 web tests passing across 13 test suites. Full monorepo tests passing 100% clean.
+
+
+---
+
+### Step 44: Balanced Vertical Adjustment of Standalone Date Chip
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - User requested moving the standalone date chip down a bit to alleviate visual tightness against the top bezel / Dynamic Island.
+  - Adjusted `computedDateY` in `PromoFlash.tsx` from `-cHeight / 2 + 64` to `-cHeight / 2 + 92` (and `+78` on compact viewports).
+  - Updated default `dateY` in `separatePromoActionScript` (`promoActionScript.ts`) to `-308px` (down from `-330px`).
+  - Provides a generous ~54px headroom beneath the Dynamic Island while maintaining a comfortable ~70px clearance above the centered event title container.
+- **Verification & Testing:**
+  - Updated unit test coordinate assertions in `apps/web/tests/unit/promo-venue-date.test.tsx`.
+  - All 105 web unit tests across 13 suites pass 100% clean (`pnpm --filter web test`).
+  - Full workspace typecheck verified (`pnpm typecheck`).
+
+---
+
+### Step 45: Remove Container Click Replay from PromoFlash Experience
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Removed accidental container-level click replay handler (`onClick={playSequence}`) from `PromoFlash.tsx`.
+  - Stripped `role="button"`, `tabIndex={0}`, and `title="Click to replay..."` from the root container element.
+  - Ensures that the promotional experience does not restart on background click, leaving only interactive share buttons (`PromoActionsMC`) and the primary ticket purchasing CTA (`PromoCtaMC`) clickable as intended.
+- **Verification & Testing:**
+  - Added unit test assertion in `apps/web/tests/unit/promo-flash.test.tsx` verifying root element has no `role="button"` or replay tooltip.
+  - All 102 web unit tests across 12 test suites passing cleanly (`pnpm --filter web test:unit`).
+
+
+
 
 
 

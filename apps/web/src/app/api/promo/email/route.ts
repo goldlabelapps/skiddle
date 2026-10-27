@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import {
-  buildDefaultLightEmailHtml,
+  buildPromoShareEmailHtml,
   sendTemplatedEmail,
 } from '@goldlabelapps/notify';
 
@@ -40,17 +40,17 @@ export async function POST(request: Request) {
     const subject = `Check out ${eventName} on Skiddle!`;
     const cleanMessage = typeof message === 'string' ? message.trim() : '';
 
-    // Replicate the exact Prospect light email template used on private
-    const html = buildDefaultLightEmailHtml({
+    // Build the responsive promotional share email template
+    const html = buildPromoShareEmailHtml({
       appName: 'Skiddle',
       appLogoUrl: 'https://www.skiddle.com/favicon.ico',
-      prospectEmail: trimmedEmail,
+      recipientEmail: trimmedEmail,
       heading: subject,
-      body: cleanMessage || `You've been invited to check out ${eventName} on Skiddle.`,
-      ctaLabel: 'View Event on Skiddle',
+      eventName,
+      message: cleanMessage || `You've been invited to check out ${eventName} on Skiddle.`,
+      ctaLabel: 'View Promo',
       ctaUrl,
-      avatar,
-      avatarUrl: avatar,
+      imageUrl: avatar,
       badgeLabel: '🎟️ Skiddle Promo',
       sentUsingLabel: 'Skiddle Promo',
       sentUsingUrl: 'https://www.skiddle.com',

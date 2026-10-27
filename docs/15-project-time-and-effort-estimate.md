@@ -10,13 +10,13 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~25.2 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~29.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.62 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **68 Commits** | Authored by DriveByAbuser across 5 active dates |
-| **Total Monorepo Tests** | **174 Tests (100% Pass)** | 165 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~25.6 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~29.5 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.69 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **69 Commits** | Authored by DriveByAbuser across 5 active dates |
+| **Total Monorepo Tests** | **176 Tests (100% Pass)** | 167 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
-| **Code Additions** | **+25,850 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
+| **Code Additions** | **+26,100 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
 
 ---
@@ -242,27 +242,37 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 - **Session 32 (12:55 – 12:56 BST):**
   - Elevated the "Buy Tickets" CTA to `bottom: 140px` (from `120px`), establishing a balanced midpoint between the bottom action button row (~64px margin below) and the event description (~60px margin above).
   - *Estimated Effort:* **0.1h**
+- **Session 33 (12:57 – 13:00 BST):**
+  - Architected dedicated promotional share email template `buildPromoShareEmailHtml` in `@goldlabelapps/notify`.
+  - Configured full-width hero promotional image rendering (preserving aspect ratio, up to 536px), center-aligned invitation message, "View Promo" CTA label, and `#00d26a` brand green button styling matching Skiddle's homepage search.
+  - Updated `/api/promo/email` route and authored unit/integration tests in notify and web. Monorepo tests expand to 176 (100% pass).
+  - *Estimated Effort:* **0.3h**
+- **Session 34 (13:00 – 13:02 BST):**
+  - Removed container-level click replay handler (`onClick={playSequence}`), `role="button"`, and replay title tooltip from `PromoFlash.tsx`.
+  - Enforced single-point interactivity so only share buttons and the ticket CTA are clickable.
+  - Updated unit test assertions in `promo-flash.test.tsx`.
+  - *Estimated Effort:* **0.1h**
 
 ---
 
 ## 🏛 4. Effort Distribution by Technical Pillar
 
 ```
-Next.js 15 Web Application & Flash Studio : 11.8h (47%) ████████████████
-Architecture, ADRs & Transcripts (16 docs):  5.0h (20%) ████████
-Automated Testing & CI (174 tests)        :  4.4h (17%) ██████
+Next.js 15 Web Application & Flash Studio : 12.0h (47%) ████████████████
+Architecture, ADRs & Transcripts (16 docs):  5.1h (20%) ████████
+Automated Testing & CI (176 tests)        :  4.4h (17%) ██████
 Core TypeScript SDK (@skiddle/sdk)        :  2.0h (8%)  ███
 NX° Developer CLI (@skiddle/cli)          :  2.0h (8%)  ███
 ```
 
 | Pillar | Components / Files | Est. Hours | % of Total |
 | :--- | :--- | :--- | :--- |
-| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoCtaMC`, `PromoVenueDateMC`, `PromoEmailModal`, `/api/promo/email`, routes | **11.8h** | 47% |
-| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **5.0h** | 20% |
-| **Automated Testing & CI** | 165 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.4h** | 17% |
+| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoCtaMC`, `PromoVenueDateMC`, `PromoEmailModal`, `/api/promo/email`, routes | **12.1h** | 47% |
+| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **5.1h** | 20% |
+| **Automated Testing & CI** | 167 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.4h** | 17% |
 | **Core TypeScript SDK** | Zero-dependency client, API v1/v3 routing, fluent builder, eFlyer ViewModel | **2.0h** | 8% |
 | **NX° Developer CLI** | Native terminal UI, `doctor`, `events`, `benchmark`, `scenarios` | **2.0h** | 8% |
-| **Total** | | **25.2h** | **100%** |
+| **Total** | | **25.6h** | **100%** |
 
 ---
 
