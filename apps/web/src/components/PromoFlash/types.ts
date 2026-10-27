@@ -20,10 +20,14 @@ export interface PromoActionScriptOptions {
 export interface SeparatePromoActionScriptOptions {
   textTarget: HTMLElement | null;
   imageTarget: HTMLElement | null;
+  dateTarget?: HTMLElement | null;
+  venueTarget?: HTMLElement | null;
   venueDateTarget?: HTMLElement | null;
   descriptionTarget?: HTMLElement | null;
+  dateY?: number;
   textY?: number;
   imageY?: number;
+  venueY?: number;
   venueDateY?: number;
   descriptionY?: number;
   duration?: number;

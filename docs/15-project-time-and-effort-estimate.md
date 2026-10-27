@@ -10,13 +10,13 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~23.4 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~27.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.37 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **65 Commits** | Authored by DriveByAbuser across 5 active dates |
-| **Total Monorepo Tests** | **170 Tests (100% Pass)** | 161 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~24.5 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~28.2 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.53 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **68 Commits** | Authored by DriveByAbuser across 5 active dates |
+| **Total Monorepo Tests** | **174 Tests (100% Pass)** | 165 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
-| **Code Additions** | **+25,000 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
+| **Code Additions** | **+25,750 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
 
 ---
@@ -44,7 +44,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2026-10-16  [=========]   Session 4: Turborepo, Next.js 15, Single Event Schema (3.6h)
 2026-10-25  [==============] Session 5-8: Event Search, Flash Creative Studio, Docs (7.6h)
 2026-10-26  [===========]  Session 9-21: GpxRoute 3D, PromoFlash, Actions, Performance & Docs (5.2h)
-2026-10-27  [====]         Session 22-26: PromoFlash, Clamps, Actions, Skiddle Icon & Round Buttons (1.6h)
+2026-10-27  [=====]        Session 22-27: PromoFlash, Clamps, Actions, Buy Tickets CTA & Attention Loop (2.0h)
 ```
 
 ### Day 1 — Thursday, October 15, 2026 (~4.0 Hours)
@@ -214,13 +214,31 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Updated unit tests in `apps/web/tests/unit/promo-flash.test.tsx`.
   - *Estimated Effort:* **0.2h**
 - **Session 27 (12:30 – 12:45 BST):**
-  - Designed and authored `AirportClacker` in `@goldlabelapps/flash`: a retro mechanical Solari split-flap arrivals board MovieClip.
-  - Built high-performance split-flap tile mechanics with random character cycling (`0-9`, `A-Z`) settling into target characters with a mechanical snap bounce.
-  - Implemented `getTimeUntilDoors` calculation utility parsing doors open times and generating intuitive countdowns (days/hours/minutes, hours/minutes/seconds today, and live doors open status).
-  - Built `PromoVenueDateMC` MovieClip combining venue pill badge (`📍 The Stoller Hall • Manchester`) with `AirportClacker`.
+  - Integrated venue location and clean date presentation on the promotional Flash experience (`/promo/[id]`).
+  - Iterated away from unnecessary visual clatter (split-flap arrivals board) in favor of crisp, legible date and venue badges.
+  - Implemented `formatPromoDate` formatting native dates, ISO timestamps, and British calendar strings.
+  - Built `PromoVenueDateMC` MovieClip combining the dark slate date & doors pill (`📅 Thu 15 Apr 2027 • Doors 19:30`) with the venue location badge (`📍 The Stoller Hall • Manchester`).
   - Integrated into `PromoFlash` choreography and updated `separatePromoActionScript`.
-  - Authored 15 unit tests in `apps/web/tests/unit/airport-clacker.test.tsx`. Total web unit tests reached 100 (170 across monorepo at 100% pass).
-  - *Estimated Effort:* **0.5h**
+  - Authored 9 unit tests in `apps/web/tests/unit/promo-venue-date.test.tsx`. Total web unit tests stand at 94 (164 across monorepo at 100% pass).
+  - *Estimated Effort:* **0.4h**
+- **Session 28 (12:35 – 12:40 BST):**
+  - Integrated high-impact "Buy Tickets" Call-To-Action MovieClip (`PromoCtaMC`) with direct Skiddle purchasing URL (`target="_blank"`).
+  - Authored entrance spring animation and looping heartbeat attention loop (pulsing ring aura and light shimmer streak).
+  - Added unit test suite in `apps/web/tests/unit/promo-flash.test.tsx` (5 new tests, 102 web tests across 13 test suites). Total monorepo tests expand to 172.
+  - *Estimated Effort:* **0.4h**
+- **Session 29 (12:44 – 12:46 BST):**
+  - Refined vertical positioning of `PromoCtaMC` by moving the "Buy Tickets" CTA button up to `bottom: 104px` (from `88px`), establishing a consistent 28px vertical rhythm above the lower action button row.
+  - Verified 100% green tests and production build.
+  - *Estimated Effort:* **0.1h**
+- **Session 30 (12:46 – 12:49 BST):**
+  - Refactored `PromoVenueDateMC` into distinct `PromoDateChipMC` and `PromoVenueMC` MovieClips.
+  - Moved the Date chip to the top above the title container (`dateY`: `-235px`).
+  - Shifted all stage elements up vertically (`textY`: `-170px`, `imageY`: `-40px`, `venueY`: `+68px`, `descriptionY`: `+145px`) with expanded breathing room.
+  - Authored unit test coverage verifying visual hierarchy in DOM. Monorepo tests expand to 174 (100% pass).
+  - *Estimated Effort:* **0.2h**
+- **Session 31 (12:50 – 12:52 BST):**
+  - Further raised the "Buy Tickets" CTA MovieClip to `bottom: 120px` (from `104px`), opening a 44px channel above the action row and centering the CTA comfortably in the lower third.
+  - *Estimated Effort:* **0.1h**
 
 ---
 

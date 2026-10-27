@@ -5,6 +5,9 @@ import {
   PromoFlash,
   cleanDescription,
   SkiddleLogoMC,
+  PromoCtaMC,
+  TicketIcon,
+  ArrowRightIcon,
   PromoActionsMC,
   FacebookIcon,
   TwitterXIcon,
@@ -367,6 +370,81 @@ describe('PromoFlash Modular Component Architecture', () => {
 
       expect(tl).toBeDefined();
       expect(typeof tl?.to).toBe('function');
+    });
+  });
+
+  describe('PromoCtaMC High-Impact "Buy Tickets" CTA', () => {
+    it('renders PromoCtaMC with label "Buy Tickets" and blank target', () => {
+      const html = renderToStaticMarkup(
+        <PromoCtaMC
+          eventId="43032215"
+          event={{
+            eventname: 'Manchester Summer Festival',
+            link: 'https://www.skiddle.com/e/43032215/',
+          }}
+        />
+      );
+
+      expect(html).toContain('data-testid="promo-cta-mc"');
+      expect(html).toContain('data-testid="promo-cta-button"');
+      expect(html).toContain('Buy Tickets');
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('rel="noopener noreferrer"');
+      expect(html).toContain('href="https://www.skiddle.com/e/43032215/"');
+      expect(html).toContain('data-testid="promo-cta-ticket-icon"');
+      expect(html).toContain('data-testid="promo-cta-arrow-icon"');
+    });
+
+    it('falls back to default Skiddle event URL if no explicit link is provided', () => {
+      const html = renderToStaticMarkup(
+        <PromoCtaMC eventId="998877" />
+      );
+
+      expect(html).toContain('href="https://www.skiddle.com/e/998877/"');
+    });
+
+    it('applies ready class when isReady is true to trigger looping attention animation', () => {
+      const htmlReady = renderToStaticMarkup(
+        <PromoCtaMC eventId="43032215" isReady={true} />
+      );
+      expect(htmlReady).toContain('ready');
+
+      const htmlNotReady = renderToStaticMarkup(
+        <PromoCtaMC eventId="43032215" isReady={false} />
+      );
+      expect(htmlNotReady).not.toContain('ready');
+    });
+
+    it('renders PromoCtaMC seamlessly within PromoFlash container', () => {
+      const html = renderToStaticMarkup(
+        <PromoFlash
+          id="43032215"
+          event={{
+            eventname: 'Warehouse Project Live',
+            link: 'https://www.skiddle.com/whats-on/Manchester/Depot-Mayfield/Warehouse-Project/43032215/',
+          }}
+        />
+      );
+
+      expect(html).toContain('data-testid="promo-cta-mc"');
+      expect(html).toContain('data-testid="promo-cta-button"');
+      expect(html).toContain('Buy Tickets');
+      expect(html).toContain('href="https://www.skiddle.com/whats-on/Manchester/Depot-Mayfield/Warehouse-Project/43032215/"');
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('rel="noopener noreferrer"');
+    });
+
+    it('allows custom label and custom buyUrl override', () => {
+      const html = renderToStaticMarkup(
+        <PromoFlash
+          id="43032215"
+          buyLabel="Buy Tickets Now"
+          buyUrl="https://www.skiddle.com/custom-tickets/"
+        />
+      );
+
+      expect(html).toContain('Buy Tickets Now');
+      expect(html).toContain('href="https://www.skiddle.com/custom-tickets/"');
     });
   });
 });

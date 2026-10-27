@@ -1,6 +1,15 @@
 export { SkiddleLogoMC } from './SkiddleLogoMC';
-export { PromoVenueDateMC } from './PromoVenueDateMC';
-export type { PromoVenueDateMCProps } from './PromoVenueDateMC';
+export {
+  PromoVenueDateMC,
+  PromoDateChipMC,
+  PromoVenueMC,
+  formatPromoDate,
+} from './PromoVenueDateMC';
+export type {
+  PromoVenueDateMCProps,
+  PromoDateChipMCProps,
+  PromoVenueMCProps,
+} from './PromoVenueDateMC';
 export {
   PromoCtaMC,
   TicketIcon,

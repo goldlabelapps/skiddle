@@ -7,6 +7,8 @@ import {
   SkiddleLogoMC,
   PromoActionsMC,
   PromoVenueDateMC,
+  PromoDateChipMC,
+  PromoVenueMC,
   PromoCtaMC,
   getDefaultPromoActions,
 } from './MovieClips';
@@ -36,6 +38,9 @@ export function PromoFlash({
   actions: customActions,
   shareUrl,
   shareTitle,
+  buyUrl,
+  buyLabel = 'Buy Tickets',
+  onBuyClick,
   className,
   style,
   onAnimationComplete,
@@ -43,13 +48,17 @@ export function PromoFlash({
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const dateRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const venueRef = useRef<HTMLDivElement>(null);
   const venueDateRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLElement | null)[]>([]);
   const labelRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [typingActive, setTypingActive] = useState(false);
+  const [ctaReady, setCtaReady] = useState(false);
 
   const defaultActions = useMemo(
     () =>
@@ -123,6 +132,7 @@ export function PromoFlash({
 
     timelineRef.current?.kill();
     setTypingActive(false);
+    setCtaReady(false);
 
     const tl = gsap.timeline({
       onComplete: onAnimationComplete,
@@ -138,10 +148,28 @@ export function PromoFlash({
       yPercent: -50,
       y: 0,
     });
+    if (dateRef.current) {
+      gsap.set(dateRef.current, {
+        autoAlpha: 0,
+        scale: 0.92,
+        xPercent: -50,
+        yPercent: -50,
+        y: 0,
+      });
+    }
     if (imageRef.current) {
       gsap.set(imageRef.current, {
         autoAlpha: 0,
         scale: 0.88,
+        xPercent: -50,
+        yPercent: -50,
+        y: 0,
+      });
+    }
+    if (venueRef.current) {
+      gsap.set(venueRef.current, {
+        autoAlpha: 0,
+        scale: 0.92,
         xPercent: -50,
         yPercent: -50,
         y: 0,
@@ -163,6 +191,13 @@ export function PromoFlash({
         xPercent: -50,
         yPercent: -50,
         y: 0,
+      });
+    }
+    if (ctaRef.current) {
+      gsap.set(ctaRef.current, {
+        autoAlpha: 0,
+        scale: 0.75,
+        y: 35,
       });
     }
 
@@ -196,20 +231,45 @@ export function PromoFlash({
       '-=0.1',
     );
 
-    // 4. Animate CleverText, large image MovieClip, Venue & AirportClacker, and description
+    // 4. Animate CleverText, Date chip, large image MovieClip, Venue chip, and description
     const hasDesc = Boolean(descriptionText);
     const hasVenueDate = Boolean(event?.venue?.name || event?.date || event?.startdate);
 
-    if (imageRef.current || venueDateRef.current || descriptionRef.current) {
+    if (
+      dateRef.current ||
+      imageRef.current ||
+      venueRef.current ||
+      venueDateRef.current ||
+      descriptionRef.current
+    ) {
+      const cHeight = containerRef.current?.clientHeight || 800;
+      const isCompact = cHeight < 750;
+      // Position Date Chip just under the top (under Dynamic Island / status bar)
+      const computedDateY = Math.round(-cHeight / 2 + 64);
+      const computedTextY = isCompact
+        ? (hasDesc ? (len > 35 ? -225 : -215) : -200)
+        : (hasDesc ? (len > 35 ? -245 : -235) : -215);
+      const computedImageY = isCompact
+        ? (hasDesc ? -75 : -50)
+        : (hasDesc ? -85 : -55);
+      const computedVenueY = isCompact
+        ? (hasDesc ? 28 : 55)
+        : (hasDesc ? 32 : 65);
+      const computedDescY = isCompact ? 105 : 115;
+
       const sepTl = separatePromoActionScript({
         textTarget: titleRef.current,
+        dateTarget: dateRef.current,
         imageTarget: imageRef.current,
+        venueTarget: venueRef.current,
         venueDateTarget: venueDateRef.current,
         descriptionTarget: descriptionRef.current,
-        textY: hasDesc ? (len > 35 ? -185 : -172) : -150,
-        imageY: hasDesc ? -65 : -45,
-        venueDateY: hasDesc ? 54 : 72,
-        descriptionY: 138,
+        dateY: computedDateY,
+        textY: computedTextY,
+        imageY: computedImageY,
+        venueY: computedVenueY,
+        venueDateY: computedVenueY,
+        descriptionY: computedDescY,
         duration: 1.0,
         delay: 0.4,
       });
@@ -226,7 +286,25 @@ export function PromoFlash({
     if (actionsTl) {
       tl.add(actionsTl, '+=0.2');
     }
-  }, [actions, descriptionText, onAnimationComplete]);
+
+    // 6. AND LASTLY: Eye-catching "Buy Tickets" CTA animates in as the final element
+    if (ctaRef.current) {
+      tl.to(
+        ctaRef.current,
+        {
+          autoAlpha: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.65,
+          ease: 'back.out(1.4)',
+          onComplete: () => {
+            setCtaReady(true);
+          },
+        },
+        '+=0.15',
+      );
+    }
+  }, [actions, descriptionText, buyUrl, buyLabel, onBuyClick, onAnimationComplete]);
 
   useEffect(() => {
     playSequence();
@@ -254,6 +332,11 @@ export function PromoFlash({
             size={140}
             color="#000000"
             className={styles.logo}
+          />
+          {/* Standalone Date & Doors Open Chip positioned at top above event title */}
+          <PromoDateChipMC
+            ref={dateRef}
+            event={event}
           />
           <div
             ref={titleRef}
@@ -318,8 +401,9 @@ export function PromoFlash({
               aspectRatio="1/1"
             />
           )}
-          <PromoVenueDateMC
-            ref={venueDateRef}
+          {/* Standalone Venue Location Chip positioned underneath featured flyer image */}
+          <PromoVenueMC
+            ref={venueRef}
             event={event}
           />
           {descriptionText && (
@@ -337,6 +421,17 @@ export function PromoFlash({
           )}
         </div>
       </Stage>
+
+      {/* High-impact "Buy Tickets" CTA MovieClip */}
+      <PromoCtaMC
+        ref={ctaRef}
+        label={buyLabel}
+        url={buyUrl}
+        event={event}
+        eventId={id}
+        isReady={ctaReady}
+        onClick={onBuyClick}
+      />
 
       {/* Action Buttons MovieClip at the bottom of the Promo page */}
       <PromoActionsMC

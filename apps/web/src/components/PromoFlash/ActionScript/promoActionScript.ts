@@ -43,12 +43,16 @@ export function promoActionScript({
 export function separatePromoActionScript({
   textTarget,
   imageTarget,
+  dateTarget,
+  venueTarget,
   venueDateTarget,
   descriptionTarget,
-  textY = -130,
-  imageY = 110,
-  venueDateY = 70,
-  descriptionY = 155,
+  dateY = -330,
+  textY = -230,
+  imageY = -85,
+  venueY = 35,
+  venueDateY = 35,
+  descriptionY = 115,
   duration = 1.0,
   delay = 0.4,
   ease = 'power3.inOut',
@@ -70,6 +74,26 @@ export function separatePromoActionScript({
     `+=${delay}`,
   );
 
+  // Animate the Date chip to the top above the title
+  if (dateTarget) {
+    tl.fromTo(
+      dateTarget,
+      {
+        autoAlpha: 0,
+        scale: 0.92,
+        y: textY,
+      },
+      {
+        autoAlpha: 1,
+        scale: 1,
+        y: dateY,
+        duration: duration * 0.9,
+        ease: imageEase,
+      },
+      '<',
+    );
+  }
+
   // Animate the large image MovieClip moving down to separate nicely
   if (imageTarget) {
     tl.fromTo(
@@ -90,8 +114,29 @@ export function separatePromoActionScript({
     );
   }
 
-  // Animate the venue & AirportClacker board underneath the image
-  if (venueDateTarget) {
+  // Animate the venue chip underneath the image
+  if (venueTarget) {
+    const position = imageTarget ? '<+=0.1' : '<';
+    tl.fromTo(
+      venueTarget,
+      {
+        autoAlpha: 0,
+        scale: 0.92,
+        y: (imageY ?? 0) + 20,
+      },
+      {
+        autoAlpha: 1,
+        scale: 1,
+        y: venueY,
+        duration: duration * 0.9,
+        ease: imageEase,
+      },
+      position,
+    );
+  }
+
+  // Backward compatibility for compound venueDateTarget
+  if (venueDateTarget && !venueTarget) {
     const position = imageTarget ? '<+=0.1' : '<';
     tl.fromTo(
       venueDateTarget,
@@ -113,13 +158,14 @@ export function separatePromoActionScript({
 
   // Animate the event description underneath the featured image / venue
   if (descriptionTarget) {
-    const position = venueDateTarget ? '<+=0.1' : (imageTarget ? '<+=0.1' : '<');
+    const resolvedVenueY = venueTarget ? venueY : (venueDateTarget ? venueDateY : imageY);
+    const position = (venueTarget || venueDateTarget) ? '<+=0.1' : (imageTarget ? '<+=0.1' : '<');
     tl.fromTo(
       descriptionTarget,
       {
         autoAlpha: 0,
         scale: 0.92,
-        y: (venueDateY ?? imageY ?? 0) + 30,
+        y: (resolvedVenueY ?? 0) + 30,
       },
       {
         autoAlpha: 1,

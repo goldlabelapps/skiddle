@@ -633,34 +633,96 @@
 
 ---
 
-### Step 38: Promo Page Venue Badge, Doors Open Countdown & AirportClacker Flash Component
+### Step 38: Promo Page Venue & Date Presentation Integration
 - **Date:** 2026-10-27
 - **Context & Decision:**
-  - On the promotional Flash experience (`/promo/[id]`), added venue location information and an intuitive countdown to doors opening.
-  - Built a new dedicated Flash component, `AirportClacker`, reminiscent of classic Solari di Udine split-flap airport arrivals boards where numbers and letters whirl and fly around rapidly before settling on the target digits.
+  - On the promotional Flash experience (`/promo/[id]`), added venue location information and formatted date/doors time.
+  - Explored a split-flap arrivals board mechanism, but immediately recognized it added visual noise to the mobile canvas. User requested removing the clacker and displaying the date and venue directly.
+  - Designed a high-contrast, distraction-free badge presentation in `PromoVenueDateMC`:
+    - Date badge: deep slate pill (`#0f172a`) with cyan calendar glyph, formatted British date (`Thu 15 Apr 2027`), and doors open time (`• Doors 19:30`).
+    - Venue badge: subtle light grey pill with sky-blue location pin, venue name, and city (`📍 The Stoller Hall • Manchester`).
 - **Action & Implementation:**
-  - **`AirportClacker` Component (`@goldlabelapps/flash` — `src/MovieClips/AirportClacker/`):**
-    - Built a high-performance mechanical split-flap display with authentic tactile styling: dual top and bottom flap gradients, horizontal split hairline highlight, and mechanical axle pin notches.
-    - Animation engine: when active or on replay, each tile rapidly flips through random character pools (`0-9` for digits, `A-Z` for letters) with individual speed jitter, then sequentially settles left-to-right with a mechanical snap bounce (`scale: 1.08 -> 1.0`).
-    - Added interactive replay: tapping the clacker board spins and settles the tiles again on demand.
-    - Supported visual size variants (`sm`, `md`, `lg`) and theme variants (`dark` with white characters, `amber` with airport yellow lettering).
-  - **Time Calculation & Formatting Utility (`getTimeUntilDoors`):**
-    - Parses 24-hour and 12-hour door times (`19:30`, `7:30pm`, `20:00`) alongside ISO dates.
-    - Automatically formats the countdown in the most human-understandable format:
-      - Multi-day future events: Days, Hours, Minutes (e.g. `170D 05H 45M`, `03D 08H 15M`).
-      - Events today: Hours, Minutes, Seconds (e.g. `05H 30M 00S`).
-      - Events starting soon ($<1$ hour): Minutes, Seconds.
-      - Live doors status: `DOORS OPEN` (within 8-hour window) and `CONCLUDED` (past events).
+  - **`formatPromoDate` Utility (`PromoVenueDateMC.tsx`):**
+    - Parses native Date objects, ISO strings, and standard `YYYY-MM-DD` strings into locale-formatted date strings (`Thu 15 Apr 2027`).
   - **`PromoVenueDateMC` MovieClip (`apps/web/src/components/PromoFlash/MovieClips/PromoVenueDateMC.tsx`):**
-    - Combines the venue pill badge (`📍 The Stoller Hall • Manchester`) with the `AirportClacker` countdown board and formatted calendar subtitle (`Thu 15 Apr 2027 • Doors 19:30`).
+    - Renders the date and venue badges with responsive text truncation, subtle shadows, and centered vertical alignment.
+    - Gracefully omits either badge if metadata is absent and unmounts if neither venue nor date is provided.
   - **Motion Choreography (`PromoFlash.tsx` & `promoActionScript.ts`):**
-    - Extended `separatePromoActionScript` to animate `venueDateTarget` into position (`y: 54` to `72`) between the featured flyer artwork (`y: -65`) and the event description (`y: 138`).
-    - Dynamically scaled `ImageMC` width (`160px` with venue/countdown vs `220px` standalone) ensuring generous vertical margins within the iPhone viewport.
+    - Animated `venueDateTarget` into position (`y: 54` to `72`) between the featured flyer artwork (`y: -65`) and the event description (`y: 138`).
+    - Dynamically scaled `ImageMC` width (`160px` when venue/date and description are present vs `220px` standalone) ensuring generous vertical margins within the iPhone viewport.
 - **Verification & Testing:**
-  - Authored comprehensive test suite in `apps/web/tests/unit/airport-clacker.test.tsx` (15 tests) covering time parsing, status windows, split-flap rendering, theme styling, and `PromoVenueDateMC` integration.
-  - Re-ran all 12 test suites in `apps/web/tests/unit/`: all **100 tests passed** (100% green).
-  - Built `@goldlabelapps/flash` cleanly with `tsc -p tsconfig.build.json`.
-  - Full TypeScript typecheck verified clean (`tsc --noEmit`).
+  - Authored comprehensive test suite in `apps/web/tests/unit/promo-venue-date.test.tsx` (9 tests) covering date parsing, badge rendering, event payload normalization, and `PromoFlash` integration.
+  - Re-ran all 12 test suites in `apps/web/tests/unit/`: all **94 tests passed** (100% green).
+  - Clean TypeScript typecheck verified (`tsc --noEmit`).
+
+---
+
+### Step 39: High-Impact "Buy Tickets" CTA MovieClip & Attention Loop
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Designed and integrated a high-impact Call-To-Action button ("Buy Tickets") opening the Skiddle event purchasing URL in a new blank tab (`target="_blank"`, `rel="noopener noreferrer"`).
+  - Positioned as the final element to animate into the scene on the `/promo/[id]` presentation, appearing with a spring entrance bounce (`scale: 0.75 -> 1.0`, `y: 35 -> 0`, `ease: back.out(1.4)`) only after the action buttons have settled into the bottom row.
+  - Implemented an eye-catching looping animation that repeats every 3.6 seconds to invite the click:
+    - Synchronized double heartbeat pulse (`scale: 1.06 -> 0.98 -> 1.04 -> 1.0`).
+    - Sonar aura ring expanding outward behind the button (`scale: 1.18, 1.38`, `opacity: 0`).
+    - Diagonal shimmering light streak sweeping across the button surface.
+- **Action & Implementation:**
+  - **`PromoCtaMC` MovieClip (`apps/web/src/components/PromoFlash/MovieClips/PromoCtaMC.tsx` & `.module.css`):**
+    - Chunky, tactile pill CTA (`height: 54px`, `max-width: 320px`, vibrant Skiddle green gradient `#00d26a` $\rightarrow$ `#009944`, multi-layered drop shadows, crisp ticket SVG icon, and forward arrow icon).
+    - Stops event propagation on click (`e.stopPropagation()`) so clicking "Buy Tickets" opens the Skiddle URL without triggering stage corkscrew replay.
+  - **Motion Timeline Integration (`PromoFlash.tsx`):**
+    - Sequenced as Step 6 at the tail of the GSAP master timeline.
+    - Activates `isReady=true` on entrance completion to turn on the GPU-accelerated CSS keyframe attention loop.
+- **Verification & Testing:**
+  - Authored comprehensive unit tests in `apps/web/tests/unit/promo-flash.test.tsx` (5 new tests, 23 total in file) verifying `data-testid="promo-cta-mc"`, label "Buy Tickets", `target="_blank"`, `rel="noopener noreferrer"`, URL fallbacks, ready class application, and custom overrides.
+  - Monorepo tests expand to **169 tests** (99 web + 38 sdk + 23 cli + 9 PHP) passing 100% clean.
+  - Verified full TypeScript typecheck (`pnpm typecheck`) across `@skiddle/cli`, `@skiddle/sdk`, and `web`.
+
+---
+
+### Step 40: Adjusted Vertical Alignment of "Buy Tickets" CTA
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Adjusted the vertical positioning of `PromoCtaMC` to lift the primary "Buy Tickets" Call-To-Action button higher on the screen (`bottom: 104px`, up from `88px`).
+  - Provides a balanced 28px vertical breathing room above the 48px circular action buttons row (`bottom: 28px`), harmonizing with the iPhone viewport layout and preventing visual crowding against the lower interactive icons.
+- **Verification & Testing:**
+  - Verified with full test suite passing cleanly (102 web tests across 13 test suites).
+  - Production build verified (`pnpm --filter web build`).
+
+---
+
+### Step 41: Date Chip Placement Above Title & Vertical Spacing Shift
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - User requested moving the Date chip to the top above the event title and spacing everything out a bit more vertically with an upward shift.
+  - Refactored `PromoVenueDateMC` into distinct MovieClips: `PromoDateChipMC` (standalone date & doors time pill) and `PromoVenueMC` (standalone venue location pill), while preserving `PromoVenueDateMC` for compound backward compatibility.
+  - Positioned `PromoDateChipMC` at the top of the stage above `titleRef` with dedicated `dateY` coordinates (`-245px` to `-235px` when description is present, `-225px` standalone).
+  - Shifted all child elements up vertically to establish an airy, balanced visual rhythm inside the mobile iPhone canvas:
+    - Date Chip (`dateY`): `-235px` (above title)
+    - Title / CleverText (`textY`): `-170px` (shifted up from `-150px` / `-172px`)
+    - Featured Flyer Image (`imageY`): `-40px` (shifted up from `-45px`)
+    - Venue Location Chip (`venueY`): `+68px` (underneath featured flyer image)
+    - Description (`descriptionY`): `+145px`
+    - Buy Tickets CTA (`bottom: 104px`): generous breathing room below description
+  - Updated GSAP `separatePromoActionScript` choreography so `dateTarget` reveals upward above the title synchronously as `textTarget` moves to `textY`.
+- **Verification & Testing:**
+  - Expanded `apps/web/tests/unit/promo-venue-date.test.tsx` (11 tests, up from 9) validating `PromoDateChipMC`, `PromoVenueMC`, and DOM rendering order asserting Date Chip appears before Title, Title before Image, and Image before Venue.
+  - Monorepo tests expanded to **174 tests** (104 web + 38 sdk + 23 cli + 9 PHP) passing 100% clean.
+  - Full TypeScript typecheck verified (`pnpm typecheck`).
+
+---
+
+### Step 42: Secondary Elevation of "Buy Tickets" CTA
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Further elevated the "Buy Tickets" CTA MovieClip (`bottom: 120px`, up from `104px`).
+  - Creates a 44px clear vertical channel above the bottom action icons, centering the CTA button gracefully in the lower third of the viewport while preserving comfortable clearance beneath the event description.
+- **Verification & Testing:**
+  - Verified with full test suite passing cleanly (104 web tests across 13 test suites).
+  - Production build verified (`pnpm --filter web build`).
+
+
+
 
 
 
