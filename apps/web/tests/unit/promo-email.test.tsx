@@ -185,6 +185,10 @@ describe('Search Button & Email Sharing Flow', () => {
       // CTA button color matches Skiddle homepage search button (#00d26a)
       expect(callArg.payload.html).toContain('background-color:#00d26a');
 
+      // Green Skiddle Promo chip and "Sent via Skiddle Promo" are removed
+      expect(callArg.payload.html).not.toContain('background-color:#e6fbf0');
+      expect(callArg.payload.html).not.toContain('Sent via Skiddle Promo');
+
       expect(callArg.payload.html).toContain('https://www.skiddle.com/promo/43032215');
       expect(callArg.payload.html).toContain('Skiddle');
     });

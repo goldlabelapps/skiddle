@@ -252,6 +252,10 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Enforced single-point interactivity so only share buttons and the ticket CTA are clickable.
   - Updated unit test assertions in `promo-flash.test.tsx`.
   - *Estimated Effort:* **0.1h**
+- **Session 35 (13:03 – 13:05 BST):**
+  - Refined email template header and footer: removed top green badge chip (`🎟️ Skiddle Promo`) and removed redundant `"Sent via Skiddle Promo"` footer label.
+  - Updated unit test suites in notify and web with negative match assertions.
+  - *Estimated Effort:* **0.1h**
 
 ---
 

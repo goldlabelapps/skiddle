@@ -765,15 +765,19 @@
 
 ---
 
-### Step 45: Remove Container Click Replay from PromoFlash Experience
+### Step 47: Streamlined Promo Share Email Template Header & Footer Cleanup
 - **Date:** 2026-10-27
 - **Context & Decision:**
-  - Removed accidental container-level click replay handler (`onClick={playSequence}`) from `PromoFlash.tsx`.
-  - Stripped `role="button"`, `tabIndex={0}`, and `title="Click to replay..."` from the root container element.
-  - Ensures that the promotional experience does not restart on background click, leaving only interactive share buttons (`PromoActionsMC`) and the primary ticket purchasing CTA (`PromoCtaMC`) clickable as intended.
+  - Removed extraneous promotional metadata elements from the share email template for a cleaner, high-converting layout:
+    1. **Removed Green Badge Chip:** Completely stripped the top green pill chip (`🎟️ Skiddle Promo`) from `buildPromoShareEmailHtml` and `route.ts`. The header now focuses exclusively on the Skiddle logo and brand text.
+    2. **Removed "Sent via Skiddle Promo" Footer Label:** Removed the extra `"Sent via Skiddle Promo"` header from the email footer attribution, preserving only the clean, subtle powered-by link (`Sent using Skiddle Promo`).
+    3. **Plaintext Fallback Alignment:** Removed `"Sent via Skiddle Promo"` trailer from `buildPromoShareEmailText`.
 - **Verification & Testing:**
-  - Added unit test assertion in `apps/web/tests/unit/promo-flash.test.tsx` verifying root element has no `role="button"` or replay tooltip.
-  - All 102 web unit tests across 12 test suites passing cleanly (`pnpm --filter web test:unit`).
+  - Updated unit test assertions in `packages/notify/tests/promoShareEmailTemplate.test.mjs` asserting absence of green badge chips (`background-color:#e6fbf0`) and absence of `"Sent via Skiddle Promo"`.
+  - Updated integration test suite in `apps/web/tests/unit/promo-email.test.tsx`.
+  - All 105 web unit tests across 13 test suites pass 100% clean (`pnpm --filter web test`).
+  - Full TypeScript typecheck verified (`pnpm typecheck`).
+
 
 
 

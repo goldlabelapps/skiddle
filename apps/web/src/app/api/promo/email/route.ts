@@ -51,10 +51,8 @@ export async function POST(request: Request) {
       ctaLabel: 'View Promo',
       ctaUrl,
       imageUrl: avatar,
-      badgeLabel: '🎟️ Skiddle Promo',
       sentUsingLabel: 'Skiddle Promo',
       sentUsingUrl: 'https://www.skiddle.com',
-      footerLabel: 'Sent via Skiddle Promo',
     });
 
     const apiKey =
