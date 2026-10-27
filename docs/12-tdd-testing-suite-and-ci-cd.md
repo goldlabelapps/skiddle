@@ -1,7 +1,7 @@
 # 12 — TDD Testing Suite, E2E Contracts & GitHub Actions CI/CD
 
-> **Document Version:** 2.2.0  
-> **Scope:** Exhaustive technical reference for Test-Driven Development (TDD) workflows, complete test case catalog (138 automated tests: 129 Vitest + 9 PHP across 16 test files), custom architectural linters, and GitHub Actions / Vercel CI/CD parity.
+> **Document Version:** 3.0.0  
+> **Scope:** Exhaustive technical reference for Test-Driven Development (TDD) workflows, complete test case catalog (171 automated tests: 162 Vitest + 9 PHP across 18 test files), custom architectural linters, and GitHub Actions / Vercel CI/CD parity.
 
 ---
 
@@ -15,7 +15,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-## 2. Complete Test Suite Catalog (138 Automated Tests)
+## 2. Complete Test Suite Catalog (171 Automated Tests)
 
 ### 2.1 `@skiddle/sdk` Unit Test Suite (`packages/sdk/tests/sdk.test.ts` — 30 Tests)
 
@@ -85,7 +85,7 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 
 ---
 
-### 2.4 `apps/web` Next.js 15 Unit & E2E Suites (`apps/web/tests/` — 73 Tests across 11 Suites)
+### 2.4 `apps/web` Next.js 15 Unit & E2E Suites (`apps/web/tests/` — 106 Tests across 14 Suites)
 
 #### Server Actions Suite (`apps/web/tests/unit/actions.test.ts` — 7 Tests)
 - **`checkServerConfig reports whether SKIDDLE_API_KEY is configured in environment`**: Toggles `process.env.SKIDDLE_API_KEY` and verifies `{ hasServerApiKey: false }` vs `{ hasServerApiKey: true }`.
@@ -132,19 +132,40 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 #### GpxRoute 3D Venue Showcase Suite (`apps/web/tests/unit/gpxroute-venue-page.test.tsx` — 6 Tests)
 - **`GpxRouteVenuePage`**: Verifies Web Component custom elements, iframe postMessage communication bridge, responsive `IPhoneFrame` chassis, telemetry indicators, and fallback rendering.
 
-#### PromoFlash Modular Component Suite (`apps/web/tests/unit/promo-flash.test.tsx` — 16 Tests)
-- **`PromoFlash Architecture`**:
+#### PromoFlash Modular Component Suite (`apps/web/tests/unit/promo-flash.test.tsx` — 23 Tests)
+- **`PromoFlash Architecture & Timeline Sequences`**:
   - Initializes `promoActionScript` GSAP timeline for vertical and horizontal centering.
   - Sequences Skiddle logo corkscrew intro, hold duration, and fade-out transition.
-  - Renders multi-line `TitleText` with dynamic `autoSize` font scaling for long titles.
+  - Renders multi-line `TitleText` with dynamic `autoSize` font scaling for long titles and enforces 3-line clamping (`-webkit-line-clamp: 3`).
   - Integrates `CleverText` real-time typewriter typography streaming.
   - Renders `ImageMC` 1:1 square flyer MovieClip prioritizing `largeimageurl` with fallback to `imageurl`.
   - Initializes `separatePromoActionScript` timeline moving `CleverText` headline up (`y: -150`), `ImageMC` flyer to center (`y: -10`), and event description underneath (`y: 155`).
   - Renders event description underneath featured image with entity decoding and HTML tag stripping (`cleanDescription`).
   - Supports explicit `description` prop override and typography auto-sizing for descriptions $> 180$ characters.
-  - Renders `PromoActionsMC` with Facebook, Twitter (X), Email, and Search action buttons auto-spaced in bottom row.
+  - Renders `PromoActionsMC` with Facebook, Twitter (X), Email, and Search action buttons auto-spaced in bottom row with circular styling.
   - Renders custom action buttons in `PromoActionsMC` (e.g. WhatsApp) in auto-spaced layout.
   - Initializes `promoActionsActionScript` GSAP timeline for 1-by-1 entrance presentation, centered pop up with top z-index, label fading, and shrinking into resting row.
+  - Renders high-impact "Buy Tickets" CTA MovieClip (`PromoCtaMC`) with pulsing ring aura and light shimmer streak, centered at `bottom: 140px`.
+  - Enforces single-point click interactivity without accidental stage replay triggers.
+
+#### Promo Venue & Date Presentation Suite (`apps/web/tests/unit/promo-venue-date.test.tsx` — 12 Tests)
+- **`PromoVenueDateMC`, `PromoDateChipMC`, & `PromoVenueMC`**:
+  - Validates `formatPromoDate` formatting across native Date instances, ISO strings, and British calendar strings with doors time.
+  - Verifies top standalone date chip positioning with balanced headroom beneath Dynamic Island.
+  - Verifies venue badge display with pin icon and city location.
+  - Asserts proper DOM visual hierarchy and z-index ordering across separate stage elements.
+
+#### Promo Share Email Suite (`apps/web/tests/unit/promo-email.test.tsx` — 7 Tests)
+- **`POST /api/promo/email`**:
+  - Rejects invalid or missing email addresses with structured 400 validation error.
+  - Dispatches email invitation via `sendTemplatedEmail` to `https://private.goldlabel.pro/api/notify/email`.
+  - Utilizes dedicated promotional template `buildPromoShareEmailHtml` featuring full-width hero image, center-aligned typography, and `#00d26a` brand green "View Promo" CTA button.
+  - Verifies header and footer cleanup (absence of extraneous green pill badge and `"Sent via Skiddle Promo"` footer trailer).
+
+#### Root Layout & Unified Ping Telemetry Suite (`apps/web/tests/unit/root-layout.test.tsx` — 1 Test)
+- **`RootLayout Component`**:
+  - Verifies unified `<Ping />` telemetry component mounting from `@goldlabelapps/notify`.
+  - Validates live Skiddle API key authentication (`apiKey="pk_live_skiddle"`), endpoint routing (`https://private.goldlabel.pro/api/notify/ping`), 5000ms periodic heartbeats, and metadata (`app: 'skiddle'`, `appVersion: '0.3.0'`).
 
 #### Event Promotion Studio Suite (`apps/web/tests/unit/promote-page.test.tsx` — 5 Tests)
 - **`PromoteFlashMovieClient`**: Verifies dynamic scene generation, Web Audio synthesis trigger, timeline scrubber controls, audio mute toggle, and fullscreen playback.

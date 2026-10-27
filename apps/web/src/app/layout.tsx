@@ -1,4 +1,6 @@
+import React from 'react';
 import type { Metadata, Viewport } from 'next';
+import { Ping } from '@goldlabelapps/notify';
 import { AppShell } from '../components/AppShell';
 import './globals.css';
 
@@ -37,6 +39,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Ping
+          apiKey="pk_live_skiddle"
+          endpoint="https://private.goldlabel.pro/api/notify/ping"
+          intervalMs={5000}
+          metadata={{
+            app: 'skiddle',
+            appVersion: '0.3.0',
+          }}
+        />
         <AppShell>{children}</AppShell>
       </body>
     </html>

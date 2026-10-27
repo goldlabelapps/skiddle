@@ -10,14 +10,14 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~25.6 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~29.5 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.69 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **69 Commits** | Authored by DriveByAbuser across 5 active dates |
-| **Total Monorepo Tests** | **176 Tests (100% Pass)** | 167 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~26.3 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~30.4 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.80 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **71 Commits** | Authored by DriveByAbuser across 5 active dates |
+| **Total Monorepo Tests** | **171 Tests (100% Pass)** | 162 Vitest (SDK, CLI, Web) + 9 PHPUnit across 18 test files |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
-| **Code Additions** | **+26,100 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
-| **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
+| **Code Additions** | **+26,200 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
+| **Current Monorepo Version** | **v1.3.0** (Web App **v0.3.0**) | Bumped ready for Vercel production deployment |
 
 ---
 
@@ -44,7 +44,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
 2026-10-16  [=========]   Session 4: Turborepo, Next.js 15, Single Event Schema (3.6h)
 2026-10-25  [==============] Session 5-8: Event Search, Flash Creative Studio, Docs (7.6h)
 2026-10-26  [===========]  Session 9-21: GpxRoute 3D, PromoFlash, Actions, Performance & Docs (5.2h)
-2026-10-27  [=======]      Session 22-32: PromoFlash, Clamps, Actions, Buy Tickets CTA, Attention Loop, Date Chip & Elevation (2.9h)
+2026-10-27  [=========]    Session 22-36: PromoFlash, Email, CTA, Ping Telemetry & v1.3.0 (3.3h)
 ```
 
 ### Day 1 — Thursday, October 15, 2026 (~4.0 Hours)
@@ -183,7 +183,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Added unit test asserting `aspect-ratio:1/1`. Monorepo test suite stands at 138 total automated tests (100% pass).
   - *Estimated Effort:* **0.2h**
 
-### Day 5 — Tuesday, October 27, 2026 (~2.9 Hours)
+### Day 5 — Tuesday, October 27, 2026 (~3.3 Hours)
 - **Session 22 (11:10 – 11:20 BST):**
   - Integrated event description presentation underneath the featured image in `PromoFlash`.
   - Implemented `cleanDescription` utility function for HTML tag stripping, entity decoding (`&amp;`, `&#39;`, `&pound;`, `&quot;`), and whitespace normalization.
@@ -256,27 +256,36 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Refined email template header and footer: removed top green badge chip (`🎟️ Skiddle Promo`) and removed redundant `"Sent via Skiddle Promo"` footer label.
   - Updated unit test suites in notify and web with negative match assertions.
   - *Estimated Effort:* **0.1h**
+- **Session 36 (13:10 – 13:25 BST):**
+  - Integrated `@goldlabelapps/notify` unified `<Ping />` telemetry component into root layout (`apps/web/src/app/layout.tsx`).
+  - Configured live Skiddle authentication (`apiKey="pk_live_skiddle"`), endpoint routing (`https://private.goldlabel.pro/api/notify/ping`), 5000ms periodic heartbeats, and app metadata (`{ app: 'skiddle', appVersion: '0.3.0' }`).
+  - Whitelisted and registered `skiddle` application within the `nx-private` notify authentication whitelist (`apiKeyAuth.ts`).
+  - Authored unit test suite in `apps/web/tests/unit/root-layout.test.tsx` verifying Ping component mount, props, API key, and metadata.
+  - Bumped `apps/web/package.json` to version `0.3.0` and monorepo root `package.json` to `1.3.0`.
+  - Updated `pnpm-workspace.yaml` `allowBuilds` for `@firebase/util: true`, `protobufjs: true`, and `esbuild: true` for clean headless CI runs.
+  - Final project sign-off: verified all 171 automated tests across 18 test files pass 100% clean.
+  - *Estimated Effort:* **0.4h**
 
 ---
 
 ## 🏛 4. Effort Distribution by Technical Pillar
 
 ```
-Next.js 15 Web Application & Flash Studio : 12.0h (47%) ████████████████
-Architecture, ADRs & Transcripts (16 docs):  5.1h (20%) ████████
-Automated Testing & CI (176 tests)        :  4.4h (17%) ██████
+Next.js 15 Web Application & Flash Studio : 12.5h (48%) ████████████████
+Architecture, ADRs & Transcripts (16 docs):  5.2h (20%) ████████
+Automated Testing & CI (171 tests)        :  4.6h (17%) ██████
 Core TypeScript SDK (@skiddle/sdk)        :  2.0h (8%)  ███
 NX° Developer CLI (@skiddle/cli)          :  2.0h (8%)  ███
 ```
 
 | Pillar | Components / Files | Est. Hours | % of Total |
 | :--- | :--- | :--- | :--- |
-| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoCtaMC`, `PromoVenueDateMC`, `PromoEmailModal`, `/api/promo/email`, routes | **12.1h** | 47% |
-| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **5.1h** | 20% |
-| **Automated Testing & CI** | 167 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.4h** | 17% |
+| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoCtaMC`, `PromoVenueDateMC`, `PromoEmailModal`, `/api/promo/email`, `Ping` telemetry, routes | **12.5h** | 48% |
+| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript (50 steps), performance audit | **5.2h** | 20% |
+| **Automated Testing & CI** | 162 Vitest tests, 9 PHPUnit tests (171 total across 18 test files), Turborepo pipeline, GitHub Actions | **4.6h** | 17% |
 | **Core TypeScript SDK** | Zero-dependency client, API v1/v3 routing, fluent builder, eFlyer ViewModel | **2.0h** | 8% |
 | **NX° Developer CLI** | Native terminal UI, `doctor`, `events`, `benchmark`, `scenarios` | **2.0h** | 8% |
-| **Total** | | **25.6h** | **100%** |
+| **Total** | | **26.3h** | **100%** |
 
 ---
 
