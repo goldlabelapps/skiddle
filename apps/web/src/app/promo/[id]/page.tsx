@@ -3,7 +3,8 @@ import type { Metadata } from 'next';
 import { createClient } from '@skiddle/sdk';
 import type { SkiddleEventDetail } from '@skiddle/sdk';
 import { IPhoneFrame } from '../../../components/SkiddleVenue';
-import { PromoFlash, cleanDescription } from '../../../components/PromoFlash';
+import { PromoFlash } from '../../../components/PromoFlash';
+import { cleanDescription } from '../../../components/PromoFlash/utils';
 
 export const dynamic = 'force-dynamic';
 

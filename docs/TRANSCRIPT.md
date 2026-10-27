@@ -574,6 +574,7 @@
     3. **Search Button Routing:** Configured the search action button (`id: 'search'`, "More events") to cleanly route back to the homepage (`/`) so users can browse and find another event from Skiddle's production catalogue.
     4. **Animated Email Zoom-in Modal:** Built `PromoEmailModal` featuring tactile GSAP spring zoom-in (`scale: 0.72` → `1.0`, `ease: back.out(1.5)`), backdrop blur dismiss, and top Skiddle logo header (`SkiddleLogoMC`).
     5. **Prospect Light Email Template Integration:** Replicated the exact light-mode email template used for Prospects in `private`, powered by `@goldlabelapps/notify`. Implemented `/api/promo/email` route that requires a valid email, accepts an optional message/body, and dispatches via `sendTemplatedEmail` to `https://private.goldlabel.pro/api/notify/email`.
+    6. **Server Component Boundary Fix:** Extracted `cleanDescription` into an isomorphic [`utils.ts`](file:///Users/milky/My%20Drive/GitHub/skiddle/apps/web/src/components/PromoFlash/utils.ts) module without `'use client'`, resolving the Next.js boundary error when invoked inside `generateMetadata` in Server Components.
 - **Verification & Testing:**
   - Authored unit and integration test suite `apps/web/tests/unit/promo-email.test.tsx` verifying:
     - Search button routing and stopPropagation behavior.
@@ -583,3 +584,50 @@
     - Fallback invitation message when body is omitted.
   - All 87 web tests passing (157 total monorepo tests: 87 web + 38 sdk + 23 cli + 9 PHP).
   - Next.js production build (`pnpm --filter web build`) passing clean with `/api/promo/email` route registered.
+
+---
+
+### Step 35: Promo Page Event Title Strict 3-Line Clamp & Extended Typography Scaling
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Observed that long event titles on the promotional card (`/promo/[id]`) could wrap into 4 or more lines, creating vertical imbalance and crowding the featured artwork in the motion choreography.
+  - Enforced a strict 3-line clamp rule on the event headline in `PromoFlash.tsx` and `PromoFlash.module.css`:
+    - Added CSS module `.title` with standard WebKit line clamp properties (`display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;`).
+    - Mirror-configured inline styling on `titleRef` for static markup rendering consistency across SSR.
+    - Extended dynamic typography scaling: introduced a 5th scale tier reducing font size to `1rem` and line height to `1.3` when event titles exceed 90 characters, maximizing readable text before the 3-line truncation threshold is reached.
+    - Optimized separation vertical offset in `separatePromoActionScript`: adjusts `textY` to `-158` (from `-150`) when descriptions are present and titles exceed 35 characters, providing 8px additional clearance above the featured image.
+- **Verification & Testing:**
+  - Added unit tests in `apps/web/tests/unit/promo-flash.test.tsx` verifying:
+    - 3-line clamp styles (`-webkit-line-clamp:3`, `line-clamp:3`, `overflow:hidden`, `text-overflow:ellipsis`).
+    - Dynamic scale down to `1rem` for titles $>90$ characters.
+  - All 18 tests in `promo-flash.test.tsx` passing. Total monorepo tests expand to 158 (88 web + 38 sdk + 23 cli + 9 PHP).
+
+---
+
+### Step 36: Streamline Direct Event-to-Promo Click-Through Navigation
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Removed the intermediate event detail step (`/events/[id]`), enabling users to navigate directly from the event search results to the promotional Flash presentation (`/promo/[id]`).
+  - Updated `EventSearch.tsx` card links from `href={`/events/${event.id}`}` to `href={`/promo/${event.id}`}`.
+  - Added HTTP redirect rule in `next.config.mjs` routing `/events/:id` directly to `/promo/:id` (HTTP 307 temporary redirect) so existing direct URLs seamlessly land on the promo experience.
+- **Verification & Testing:**
+  - Ran web unit tests: all 88 tests in 12 test suites passing.
+  - Verified production Next.js build (`pnpm --filter web build`) passing clean with static pages and dynamic routes intact.
+
+---
+
+### Step 37: Skiddle Logo Action Button & Round Social Share Button Styling
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - In `PromoActionsMC` (bottom action icon buttons), replaced the generic magnifying glass search icon with the official vector Skiddle glyph (`SkiddleIcon`, `viewBox="0 0 500 500"`), retaining the same action label ("More events") and routing behavior to `/`.
+  - Identified and resolved the button shape inconsistency where `react-share`'s `FacebookShareButton` and `XShareButton` rendered as square buttons due to inline `border-radius: 0` defaults injected by `react-share` when children lack custom borderRadius props.
+  - Configured `resetButtonStyle={false}` and explicit `borderRadius: '50%'` inline styles on `FacebookShareButton` and `XShareButton`, while hardening `PromoActionsMC.module.css` with `.actionButton { border-radius: 50% !important; display: flex !important; }` to guarantee circular button geometries across all action items.
+- **Verification & Testing:**
+  - Updated `tests/unit/promo-flash.test.tsx` verifying:
+    - Rendering of `data-testid="skiddle-icon"` inside the "More events" action button.
+    - Application of `border-radius:50%` inline styles on Facebook and Twitter action buttons.
+  - All 85 unit tests passing clean across 11 test suites.
+  - Clean TypeScript typecheck (`tsc --noEmit`).
+
+
+

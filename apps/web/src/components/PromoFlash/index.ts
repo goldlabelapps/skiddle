@@ -1,4 +1,5 @@
-export { PromoFlash, cleanDescription, default } from './PromoFlash';
+export { PromoFlash, default } from './PromoFlash';
+export { cleanDescription } from './utils';
 export {
   SkiddleLogoMC,
   PromoActionsMC,
@@ -7,6 +8,7 @@ export {
   TwitterXIcon,
   MailIcon,
   SearchIcon,
+  SkiddleIcon,
   FacebookShareButton,
   TwitterShareButton,
   XShareButton,

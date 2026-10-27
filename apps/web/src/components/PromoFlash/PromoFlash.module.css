@@ -33,6 +33,33 @@
   justify-content: center;
 }
 
+.title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 320px;
+  padding: 0 1.25rem;
+  text-align: center;
+  color: #000000;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
 .description {
   position: absolute;
   left: 50%;

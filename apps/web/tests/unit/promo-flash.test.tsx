@@ -10,6 +10,7 @@ import {
   TwitterXIcon,
   MailIcon,
   SearchIcon,
+  SkiddleIcon,
   FacebookShareButton,
   TwitterShareButton,
   XShareButton,
@@ -47,6 +48,28 @@ describe('PromoFlash Modular Component Architecture', () => {
     // Verifies dynamic autoSize scaling to 1.125rem for >60 chars
     expect(html).toContain('font-size:1.125rem');
     expect(html).toContain('word-break:break-word');
+    // Verifies strict 3-line clamp constraints to prevent title overflowing over 3 lines
+    expect(html).toContain('-webkit-line-clamp:3');
+    expect(html).toContain('line-clamp:3');
+    expect(html).toContain('-webkit-box-orient:vertical');
+    expect(html).toContain('overflow:hidden');
+    expect(html).toContain('text-overflow:ellipsis');
+  });
+
+  it('enforces 3-line clamp and scales typography to 1rem for very long event titles (>90 chars)', () => {
+    const extraLongTitle =
+      'The Ultimate Annual Summer Electronic Dance Festival 2026 - Live in Concert with Special International Guest DJs and Visual Artists';
+    const html = renderToStaticMarkup(
+      <PromoFlash id="43032215" event={{ eventname: extraLongTitle }} />
+    );
+
+    expect(html).toContain('data-testid="promo-title-container"');
+    expect(html).toContain('font-size:1rem');
+    expect(html).toContain('-webkit-line-clamp:3');
+    expect(html).toContain('line-clamp:3');
+    expect(html).toContain('-webkit-box-orient:vertical');
+    expect(html).toContain('overflow:hidden');
+    expect(html).toContain('text-overflow:ellipsis');
   });
 
   it('renders SkiddleLogoMC MovieClip with customized size and color', () => {
@@ -131,7 +154,7 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('alt="Intimate Acoustic Session"');
   });
 
-  it('renders PromoActionsMC with Facebook, Twitter (X), Email, and Search action buttons at the bottom', () => {
+  it('renders PromoActionsMC with Facebook, Twitter (X), Email, and Skiddle (More events) action buttons at the bottom', () => {
     const html = renderToStaticMarkup(
       <PromoFlash id="43032215" event={{ eventname: 'Action Buttons Event' }} />
     );
@@ -143,6 +166,7 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('data-testid="promo-action-twitter"');
     expect(html).toContain('data-testid="promo-action-email"');
     expect(html).toContain('data-testid="promo-action-search"');
+    expect(html).toContain('data-testid="skiddle-icon"');
     expect(html).toContain('aria-label="Share to Facebook"');
     expect(html).toContain('aria-label="Share to Twitter (X)"');
     expect(html).toContain('aria-label="Share via Email"');
@@ -151,6 +175,8 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('background-color:#000000');
     expect(html).toContain('background-color:#ea4335');
     expect(html).toContain('background-color:#111827');
+    // Verifies round border-radius on Facebook & Twitter buttons
+    expect(html).toContain('border-radius:50%');
     // Verifies react-share button component classes
     expect(html).toContain('react-share__ShareButton');
   });

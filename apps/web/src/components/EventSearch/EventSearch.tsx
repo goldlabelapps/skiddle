@@ -653,7 +653,7 @@ export function EventSearch() {
             {events.map((event) => (
               <Link
                 key={event.id}
-                href={`/events/${event.id}`}
+                href={`/promo/${event.id}`}
                 className={styles.card}
                 title={`View ${event.eventName}`}
               >

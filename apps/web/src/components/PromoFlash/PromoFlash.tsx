@@ -5,30 +5,11 @@ import { gsap } from 'gsap';
 import { Stage, CleverText, ImageMC, corkScrew } from '@goldlabelapps/flash';
 import { SkiddleLogoMC, PromoActionsMC, getDefaultPromoActions } from './MovieClips';
 import { separatePromoActionScript, promoActionsActionScript } from './ActionScript';
+import { cleanDescription } from './utils';
 import styles from './PromoFlash.module.css';
 import type { PromoFlashProps } from './types';
 
-/**
- * Strips HTML tags and decodes common HTML entities for display in canvas / text clips.
- */
-export function cleanDescription(desc?: string): string {
-  if (!desc) return '';
-  return desc
-    .replace(/<[^>]+>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#0*39;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/&pound;/g, '£')
-    .replace(/&euro;/g, '€')
-    .replace(/&copy;/g, '©')
-    .replace(/&reg;/g, '®')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+export { cleanDescription };
 
 /**
  * PromoFlash - Interactive promotional experience component powered by @goldlabelapps/flash.
@@ -91,13 +72,17 @@ export function PromoFlash({
     (id ? `Event #${id}` : 'Skiddle Event');
 
   // Dynamic typography sizing to ensure multi-line long titles fit comfortably
+  // and clamp strictly to a maximum of 3 lines without overflowing
   let fontSize = '1.75rem';
   let lineHeight = 1.25;
   const len = titleText.trim().length;
 
-  if (len > 60) {
+  if (len > 90) {
+    fontSize = '1rem';
+    lineHeight = 1.3;
+  } else if (len > 60) {
     fontSize = '1.125rem';
-    lineHeight = 1.4;
+    lineHeight = 1.35;
   } else if (len > 35) {
     fontSize = '1.35rem';
     lineHeight = 1.35;
@@ -198,7 +183,7 @@ export function PromoFlash({
         textTarget: titleRef.current,
         imageTarget: imageRef.current,
         descriptionTarget: descriptionRef.current,
-        textY: hasDesc ? -150 : -130,
+        textY: hasDesc ? (len > 35 ? -158 : -150) : -130,
         imageY: hasDesc ? -10 : 110,
         descriptionY: 155,
         duration: 1.0,
@@ -249,6 +234,7 @@ export function PromoFlash({
           <div
             ref={titleRef}
             data-testid="promo-title-container"
+            className={styles.title}
             style={{
               position: 'absolute',
               left: '50%',
@@ -266,6 +252,12 @@ export function PromoFlash({
               wordBreak: 'break-word',
               overflowWrap: 'break-word',
               hyphens: 'auto',
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              lineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
               boxSizing: 'border-box',
               opacity: 0,
               pointerEvents: 'none',

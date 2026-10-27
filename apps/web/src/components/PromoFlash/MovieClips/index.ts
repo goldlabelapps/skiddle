@@ -6,6 +6,7 @@ export {
   TwitterXIcon,
   MailIcon,
   SearchIcon,
+  SkiddleIcon,
   FacebookShareButton,
   TwitterShareButton,
   XShareButton,

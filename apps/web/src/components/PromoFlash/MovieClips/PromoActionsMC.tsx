@@ -119,11 +119,45 @@ export function SearchIcon({
 }
 
 /**
+ * Skiddle SVG Icon with official mark branding.
+ */
+export function SkiddleIcon({
+  size = 22,
+  color = 'currentColor',
+}: {
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <svg
+      data-testid="skiddle-icon"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 500 500"
+      width={size}
+      height={size}
+      fill={color}
+      aria-hidden="true"
+      style={{ display: 'block' }}
+    >
+      <path
+        fill={color}
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M328.42,205.68l-61.3,34.71l-34.35-19.46l95.67-54.17L328.42,205.68z M301.25,298.36l33.28,18.84
+		l-163.07,92.32v-37.69L301.25,298.36z M232.76,259.6l34.35,19.46l-95.67,54.17v-38.91L232.76,259.6z M198.58,201.64l-33.28-18.84
+		l163.07-92.32v37.69L198.58,201.64z M362.52,32.58L137.48,160.01v45.56l61.3,34.71L137.48,275v192.42l225.03-127.44v-45.56
+		l-61.3-34.72l61.3-34.71L362.52,32.58z"
+      />
+    </svg>
+  );
+}
+
+/**
  * Generates the default action buttons configuration:
  * 1. Facebook: "Share to Facebook" (via react-share FacebookShareButton)
  * 2. Twitter (X): "Share to X" (via react-share XShareButton)
  * 3. Email: "Share via Email"
- * 4. Search: "More events"
+ * 4. Search: "More events" (with Skiddle logo)
  */
 export function getDefaultPromoActions(context?: {
   id?: string;
@@ -171,7 +205,7 @@ export function getDefaultPromoActions(context?: {
       ariaLabel: 'More events',
       backgroundColor: '#111827',
       color: '#ffffff',
-      icon: <SearchIcon size={22} color="#ffffff" />,
+      icon: <SkiddleIcon size={22} color="#ffffff" />,
       onClick: (e) => {
         e.stopPropagation();
         if (typeof window === 'undefined') return;
@@ -267,8 +301,10 @@ export const PromoActionsMC = forwardRef<HTMLDivElement, PromoActionsMCProps>(
                   hashtag={action.shareHashtag}
                   aria-label={action.ariaLabel || action.label}
                   title={action.label}
+                  resetButtonStyle={false}
                   className={`${styles.actionButton} ${action.className || ''}`}
                   style={{
+                    borderRadius: '50%',
                     backgroundColor: action.backgroundColor || '#1877F2',
                     color: action.color || '#ffffff',
                     border: '1px solid rgba(255, 255, 255, 0.25)',
@@ -288,8 +324,10 @@ export const PromoActionsMC = forwardRef<HTMLDivElement, PromoActionsMCProps>(
                   url={effectiveUrl}
                   text={action.shareTitle || shareTitle || 'Check out this event on Skiddle!'}
                   aria-label={action.ariaLabel || action.label}
+                  resetButtonStyle={false}
                   className={`${styles.actionButton} ${action.className || ''}`}
                   style={{
+                    borderRadius: '50%',
                     backgroundColor: action.backgroundColor || '#000000',
                     color: action.color || '#ffffff',
                     border: '1px solid rgba(255, 255, 255, 0.25)',

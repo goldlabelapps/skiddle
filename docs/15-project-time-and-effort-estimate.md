@@ -10,11 +10,11 @@
 
 | Metric | Measured Value | Notes |
 | :--- | :--- | :--- |
-| **Active Engineering Time** | **~22.4 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
-| **Total Project Investment** | **~26.0 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
-| **Equivalent Developer Days** | **~3.25 Days** | Standard 8-hour senior engineering days |
-| **Modernization Commits** | **63 Commits** | Authored by DriveByAbuser across 5 active dates |
-| **Total Monorepo Tests** | **157 Tests (100% Pass)** | 148 Vitest (SDK, CLI, Web) + 9 PHPUnit |
+| **Active Engineering Time** | **~22.9 Hours** | Direct coding, refactoring, benchmark profiling, and test authoring |
+| **Total Project Investment** | **~26.5 Hours** | Includes architectural design, telemetry research, and comprehensive docs |
+| **Equivalent Developer Days** | **~3.31 Days** | Standard 8-hour senior engineering days |
+| **Modernization Commits** | **64 Commits** | Authored by DriveByAbuser across 5 active dates |
+| **Total Monorepo Tests** | **158 Tests (100% Pass)** | 149 Vitest (SDK, CLI, Web) + 9 PHPUnit |
 | **Architectural Documents** | **16 Guides + Transcript** | Comprehensive technical documentation in `/docs` |
 | **Code Additions** | **+25,000 Lines** | Polyglot monorepo across TS, React, Node, and PHP |
 | **Current Monorepo Version** | **v1.2.0** | Bumped from v1.1.0 on October 25, 2026 |
@@ -183,7 +183,7 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
   - Added unit test asserting `aspect-ratio:1/1`. Monorepo test suite stands at 138 total automated tests (100% pass).
   - *Estimated Effort:* **0.2h**
 
-### Day 5 — Tuesday, October 27, 2026 (~0.9 Hours)
+### Day 5 — Tuesday, October 27, 2026 (~1.1 Hours)
 - **Session 22 (11:10 – 11:20 BST):**
   - Integrated event description presentation underneath the featured image in `PromoFlash`.
   - Implemented `cleanDescription` utility function for HTML tag stripping, entity decoding (`&amp;`, `&#39;`, `&pound;`, `&quot;`), and whitespace normalization.
@@ -199,27 +199,41 @@ To calculate the time spent accurately and avoid speculative guesswork, the esti
     - Integrated `@goldlabelapps/notify` and built `/api/promo/email` route replicating the exact Prospect light email template from `private` (`buildDefaultLightEmailHtml`), validating required email with optional body/message and dispatching via `sendTemplatedEmail` to `https://private.goldlabel.pro/api/notify/email`.
   - Authored comprehensive test suite in `apps/web/tests/unit/promo-email.test.tsx`. Total automated tests expanded to 157.
   - *Estimated Effort:* **0.5h**
+- **Session 24 (12:00 – 12:05 BST):**
+  - Implemented strict 3-line clamp on promo page event title in `PromoFlash.tsx` and `PromoFlash.module.css`.
+  - Added extended typography scale down to `1rem` for $>90$ characters and lifted `textY` separation to `-158` for multi-line titles with descriptions.
+  - Authored unit tests asserting `-webkit-line-clamp: 3` and 1rem scaling in `apps/web/tests/unit/promo-flash.test.tsx`. Total monorepo tests expand to 158.
+  - *Estimated Effort:* **0.3h**
+- **Session 25 (12:15 – 12:20 BST):**
+  - Streamlined direct event-to-promo navigation: eliminated the intermediate event detail step (`/events/[id]`), navigating directly from search results to `/promo/[id]`.
+  - Added automatic HTTP redirect in `next.config.mjs` forwarding `/events/:id` to `/promo/:id`.
+  - *Estimated Effort:* **0.2h**
+- **Session 26 (12:22 – 12:28 BST):**
+  - Swapped search icon with official Skiddle vector mark (`SkiddleIcon`, viewBox `0 0 500 500`) in `PromoActionsMC` while preserving "More events" label.
+  - Rectified button shape defect where `react-share` injected `border-radius: 0` into Facebook & Twitter share buttons; configured `resetButtonStyle={false}`, inline `borderRadius: '50%'`, and CSS module `border-radius: 50% !important`.
+  - Updated unit tests in `apps/web/tests/unit/promo-flash.test.tsx`.
+  - *Estimated Effort:* **0.2h**
 
 ---
 
 ## 🏛 4. Effort Distribution by Technical Pillar
 
 ```
-Next.js 15 Web Application & Flash Studio : 10.3h (42%) ███████████████
-Architecture, ADRs & Transcripts (16 docs):  4.9h (20%) ████████
-Automated Testing & CI (157 tests)        :  4.3h (18%) ███████
+Next.js 15 Web Application & Flash Studio : 10.7h (43%) ███████████████
+Architecture, ADRs & Transcripts (16 docs):  5.0h (20%) ████████
+Automated Testing & CI (157 tests)        :  4.3h (17%) ██████
 Core TypeScript SDK (@skiddle/sdk)        :  2.5h (10%) ████
 NX° Developer CLI (@skiddle/cli)          :  2.5h (10%) ████
 ```
 
 | Pillar | Components / Files | Est. Hours | % of Total |
 | :--- | :--- | :--- | :--- |
-| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoEmailModal`, `/api/promo/email`, routes | **10.3h** | 42% |
-| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **4.9h** | 20% |
-| **Automated Testing & CI** | 148 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.3h** | 18% |
+| **Next.js 15 Web App** | `EventSearch`, `EventDetailClient`, `PromoFlash`, `PromoActionsMC`, `PromoEmailModal`, `/api/promo/email`, routes | **10.7h** | 43% |
+| **Architecture & Docs** | 16 architectural ADRs, interview guide, migration transcript, performance audit | **5.0h** | 20% |
+| **Automated Testing & CI** | 148 Vitest tests, 9 PHPUnit tests, Turborepo pipeline, GitHub Actions | **4.3h** | 17% |
 | **Core TypeScript SDK** | Zero-dependency client, API v1/v3 routing, fluent builder, eFlyer ViewModel | **2.5h** | 10% |
 | **NX° Developer CLI** | Native terminal UI, `doctor`, `events`, `benchmark`, `scenarios` | **2.5h** | 10% |
-| **Total** | | **24.5h** | **100%** |
+| **Total** | | **25.0h** | **100%** |
 
 ---
 
