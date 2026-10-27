@@ -32,3 +32,31 @@
   align-items: center;
   justify-content: center;
 }
+
+.description {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 290px;
+  padding: 0 16px;
+  text-align: center;
+  color: #475569;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+

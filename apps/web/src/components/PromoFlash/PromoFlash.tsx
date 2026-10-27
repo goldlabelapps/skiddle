@@ -9,20 +9,46 @@ import styles from './PromoFlash.module.css';
 import type { PromoFlashProps } from './types';
 
 /**
+ * Strips HTML tags and decodes common HTML entities for display in canvas / text clips.
+ */
+export function cleanDescription(desc?: string): string {
+  if (!desc) return '';
+  return desc
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0*39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&pound;/g, '£')
+    .replace(/&euro;/g, '€')
+    .replace(/&copy;/g, '©')
+    .replace(/&reg;/g, '®')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
  * PromoFlash - Interactive promotional experience component powered by @goldlabelapps/flash.
  * Features modular MovieClips and ActionScript timelines:
  * 1. Skiddle logo corkscrews in.
  * 2. Pauses for 1 second.
  * 3. Skiddle logo fades out.
  * 4. CleverText MovieClip activates, typing the event title with responsive multi-line wrapping.
- * 5. CleverText moves up and the large image MovieClip animates in moving down until nicely separated.
+ * 5. CleverText moves up, large image MovieClip animates into center, and event description
+ *    fades in gracefully underneath the featured image.
  * 6. Action buttons slide up 1-by-1 from offscreen bottom, pop up centered with top z-index,
  *    display their text description fading in and out, and shrink down into the auto-spaced bottom row.
  */
 export function PromoFlash({
   id,
   event,
+  description,
   actions: customActions,
+  shareUrl,
+  shareTitle,
   className,
   style,
   onAnimationComplete,
@@ -31,14 +57,21 @@ export function PromoFlash({
   const logoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const descriptionRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLElement | null)[]>([]);
   const labelRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [typingActive, setTypingActive] = useState(false);
 
   const defaultActions = useMemo(
-    () => getDefaultPromoActions({ id, event }),
-    [id, event]
+    () =>
+      getDefaultPromoActions({
+        id,
+        event,
+        shareUrl,
+        shareTitle,
+      }),
+    [id, event, shareUrl, shareTitle]
   );
   const actions = customActions || defaultActions;
 
@@ -73,6 +106,22 @@ export function PromoFlash({
     lineHeight = 1.3;
   }
 
+  // Extract, clean and format event description
+  const rawDescription =
+    description ??
+    event?.description ??
+    event?.desc ??
+    event?.details ??
+    '';
+  const descriptionText = cleanDescription(rawDescription);
+
+  let descFontSize = '0.8125rem';
+  let descLineHeight = 1.45;
+  if (descriptionText.length > 180) {
+    descFontSize = '0.75rem';
+    descLineHeight = 1.4;
+  }
+
   const playSequence = useCallback(() => {
     if (!logoRef.current || !titleRef.current) return;
 
@@ -97,6 +146,15 @@ export function PromoFlash({
       gsap.set(imageRef.current, {
         autoAlpha: 0,
         scale: 0.88,
+        xPercent: -50,
+        yPercent: -50,
+        y: 0,
+      });
+    }
+    if (descriptionRef.current) {
+      gsap.set(descriptionRef.current, {
+        autoAlpha: 0,
+        scale: 0.95,
         xPercent: -50,
         yPercent: -50,
         y: 0,
@@ -133,13 +191,16 @@ export function PromoFlash({
       '-=0.1',
     );
 
-    // 4. Animate CleverText and large image MovieClips separating up and down respectively
-    if (imageRef.current) {
+    // 4. Animate CleverText, large image MovieClip, and description into separated layout
+    const hasDesc = Boolean(descriptionText);
+    if (imageRef.current || descriptionRef.current) {
       const sepTl = separatePromoActionScript({
         textTarget: titleRef.current,
         imageTarget: imageRef.current,
-        textY: -130,
-        imageY: 110,
+        descriptionTarget: descriptionRef.current,
+        textY: hasDesc ? -150 : -130,
+        imageY: hasDesc ? -10 : 110,
+        descriptionY: 155,
         duration: 1.0,
         delay: 0.4,
       });
@@ -156,7 +217,7 @@ export function PromoFlash({
     if (actionsTl) {
       tl.add(actionsTl, '+=0.2');
     }
-  }, [actions, onAnimationComplete]);
+  }, [actions, descriptionText, onAnimationComplete]);
 
   useEffect(() => {
     playSequence();
@@ -164,7 +225,7 @@ export function PromoFlash({
     return () => {
       timelineRef.current?.kill();
     };
-  }, [playSequence, titleText]);
+  }, [playSequence, titleText, descriptionText]);
 
   return (
     <div
@@ -229,9 +290,22 @@ export function PromoFlash({
               ref={imageRef}
               src={cardImageUrl}
               alt={titleText}
-              width={260}
+              width={descriptionText ? 220 : 260}
               aspectRatio="1/1"
             />
+          )}
+          {descriptionText && (
+            <div
+              ref={descriptionRef}
+              data-testid="promo-description"
+              className={styles.description}
+              style={{
+                fontSize: descFontSize,
+                lineHeight: descLineHeight,
+              }}
+            >
+              {descriptionText}
+            </div>
           )}
         </div>
       </Stage>
@@ -241,6 +315,10 @@ export function PromoFlash({
         actions={actions}
         buttonRefs={buttonRefs}
         labelRef={labelRef}
+        event={event}
+        eventId={id}
+        shareUrl={shareUrl}
+        shareTitle={shareTitle || (event?.eventname ? `Check out ${event.eventname} on Skiddle!` : undefined)}
       />
     </div>
   );

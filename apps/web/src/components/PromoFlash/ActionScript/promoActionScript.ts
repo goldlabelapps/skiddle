@@ -37,14 +37,16 @@ export function promoActionScript({
 }
 
 /**
- * separatePromoActionScript - ActionScript timeline animating CleverText and ImageMC
- * moving up and down respectively until they are nicely separated.
+ * separatePromoActionScript - ActionScript timeline animating CleverText, ImageMC,
+ * and description moving into balanced vertical positions until nicely separated.
  */
 export function separatePromoActionScript({
   textTarget,
   imageTarget,
+  descriptionTarget,
   textY = -130,
   imageY = 110,
+  descriptionY = 155,
   duration = 1.0,
   delay = 0.4,
   ease = 'power3.inOut',
@@ -83,6 +85,27 @@ export function separatePromoActionScript({
         ease: imageEase,
       },
       '<',
+    );
+  }
+
+  // Animate the event description underneath the featured image
+  if (descriptionTarget) {
+    const position = imageTarget ? '<+=0.1' : '<';
+    tl.fromTo(
+      descriptionTarget,
+      {
+        autoAlpha: 0,
+        scale: 0.92,
+        y: (imageY ?? 0) + 30,
+      },
+      {
+        autoAlpha: 1,
+        scale: 1,
+        y: descriptionY,
+        duration: duration * 0.9,
+        ease: imageEase,
+      },
+      position,
     );
   }
 

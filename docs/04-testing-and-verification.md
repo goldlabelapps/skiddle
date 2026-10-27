@@ -35,7 +35,7 @@ flowchart TD
     subgraph Packages ["Workspace Coverage"]
         Unit --> SDK_U["packages/sdk/tests/sdk.test.ts (30 tests)"]
         Unit --> CLI_U["packages/cli/tests/cli.test.js (16 tests)"]
-        Unit --> Web_U["apps/web/tests/unit/ (10 suites: 70 tests)"]
+        Unit --> Web_U["apps/web/tests/unit/ (10 suites: 76 tests)"]
 
         E2E --> SDK_E["packages/sdk/tests/e2e.test.ts (3 tests)"]
         E2E --> CLI_E["packages/cli/tests/e2e.test.js (7 tests)"]
@@ -122,7 +122,7 @@ All test, lint, and typecheck tasks in `turbo.json` declare `"dependsOn": ["^bui
 | `tests/unit/event-search.test.tsx` | `pnpm --filter web test:unit` | **23** | Component rendering, `HighlightText` regex safety, `stripHtml` tag stripping, `CATEGORIES` validation, `normalizeEvent` transformation of v1/v3 shapes, and filtering logic. |
 | `tests/unit/footer.test.tsx` | `pnpm --filter web test:unit` | **1** | Global `Footer` component: developer resources (`/sdk`, Promotion Centre, API docs, candidate CV link, GitHub repo), navigation, and copyright. |
 | `tests/unit/gpxroute-venue-page.test.tsx` | `pnpm --filter web test:unit` | **6** | GpxRoute 3D Skiddle venue showcase: Web Component custom elements, iframe postMessage bridge, and responsive `IPhoneFrame` chassis. |
-| `tests/unit/promo-flash.test.tsx` | `pnpm --filter web test:unit` | **10** | Modular `PromoFlash` component: `promoActionScript` GSAP timeline, vertical/horizontal centering, `TitleText` autoSize scaling, `CleverText` integration, `ImageMC` 1:1 flyer rendering (`largeimageurl` priority), `separatePromoActionScript` choreography, `PromoActionsMC` action buttons, and `promoActionsActionScript` 1-by-1 entrance presentation. |
+| `tests/unit/promo-flash.test.tsx` | `pnpm --filter web test:unit` | **16** | Modular `PromoFlash` component: `promoActionScript` GSAP timeline, vertical/horizontal centering, `TitleText` autoSize scaling, `CleverText` integration, `ImageMC` 1:1 flyer rendering (`largeimageurl` priority), `separatePromoActionScript` choreography with event description underneath featured image, `cleanDescription` entity stripping, `PromoActionsMC` action buttons, and `promoActionsActionScript` 1-by-1 entrance presentation. |
 | `tests/unit/promote-page.test.tsx` | `pnpm --filter web test:unit` | **5** | Event Promotion Studio (`/events/[id]/promote` & `/promo/[id]`): fullscreen playback, Web Audio synthesis trigger, timeline controls, and audio mute toggle. |
 | `tests/unit/sdk-accordion.test.tsx` | `pnpm --filter web test:unit` | **1** | Interactive SDK method documentation accordion and code sample rendering. |
 | `tests/e2e/web-e2e.test.ts` | `pnpm --filter web test:e2e` | **3** | PWA Web App Manifest contract, RootLayout metadata/viewport validation, and full E2E Server Action → `@skiddle/sdk` → `toEFlyerPromotionData` pipeline. |

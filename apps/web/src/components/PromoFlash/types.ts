@@ -20,8 +20,10 @@ export interface PromoActionScriptOptions {
 export interface SeparatePromoActionScriptOptions {
   textTarget: HTMLElement | null;
   imageTarget: HTMLElement | null;
+  descriptionTarget?: HTMLElement | null;
   textY?: number;
   imageY?: number;
+  descriptionY?: number;
   duration?: number;
   delay?: number;
   ease?: string;
@@ -36,6 +38,11 @@ export interface PromoActionButton {
   ariaLabel?: string;
   backgroundColor?: string;
   color?: string;
+  shareUrl?: string;
+  shareTitle?: string;
+  shareHashtag?: string;
+  className?: string;
+  style?: CSSProperties;
   onClick?: (event: React.MouseEvent, context?: { id?: string; event?: any }) => void;
 }
 
@@ -57,6 +64,12 @@ export interface PromoActionsMCProps {
   actions?: PromoActionButton[];
   buttonRefs?: React.MutableRefObject<(HTMLElement | null)[]>;
   labelRef?: React.RefObject<HTMLDivElement | null>;
+  shareUrl?: string;
+  shareTitle?: string;
+  event?: any;
+  eventId?: string;
+  isEmailModalOpen?: boolean;
+  onEmailModalClose?: () => void;
   className?: string;
   style?: CSSProperties;
 }
@@ -64,7 +77,10 @@ export interface PromoActionsMCProps {
 export interface PromoFlashProps {
   id?: string;
   event?: any;
+  description?: string;
   actions?: PromoActionButton[];
+  shareUrl?: string;
+  shareTitle?: string;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;

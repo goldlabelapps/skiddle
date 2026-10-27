@@ -3,14 +3,9 @@ import type { Metadata } from 'next';
 import { createClient } from '@skiddle/sdk';
 import type { SkiddleEventDetail } from '@skiddle/sdk';
 import { IPhoneFrame } from '../../../components/SkiddleVenue';
-import { PromoFlash } from '../../../components/PromoFlash';
+import { PromoFlash, cleanDescription } from '../../../components/PromoFlash';
 
 export const dynamic = 'force-dynamic';
-
-function cleanDescription(desc?: string): string {
-  if (!desc) return '';
-  return desc.replace(/<[^>]*>?/gm, '').trim();
-}
 
 const getEvent = cache(async (id: string): Promise<SkiddleEventDetail | null> => {
   const apiKey = process.env.SKIDDLE_API_KEY;

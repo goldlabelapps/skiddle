@@ -539,3 +539,47 @@
 - **Verification & Testing:**
     - Updated `apps/web/tests/unit/promo-flash.test.tsx` asserting `aspect-ratio:1/1`.
     - Verified all 70 unit tests in `apps/web` pass with zero regressions.
+
+---
+
+### Step 33: Event Description Presentation Underneath Featured Image in PromoFlash
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Added event description presentation underneath the featured image in `PromoFlash`.
+  - Implemented `cleanDescription` utility function that strips HTML tags (`<p>`, `<div>`, etc.), decodes common HTML entities (`&amp;`, `&#39;`, `&pound;`, `&quot;`, `&nbsp;`), and normalizes whitespace for clean rendering on the promotional canvas.
+  - Positioned the description element underneath the featured `ImageMC` artwork with responsive clamp (`WebkitLineClamp: 3`) and dynamic typography scaling (reducing font size from `0.8125rem` to `0.75rem` when descriptions exceed 180 characters).
+  - Enhanced `separatePromoActionScript`:
+    - Added `descriptionTarget` and `descriptionY` support to `SeparatePromoActionScriptOptions`.
+    - Coordinates three-tier motion choreography when description is present: moves `CleverText` headline up (`y: -150`), unfurls `ImageMC` (`y: -10`, with compact width `220px` to optimize vertical clearance), and fades in the description smoothly underneath the image (`y: 155`).
+    - Gracefully falls back to 2-tier positioning (`textY = -130`, `imageY = 110`, full `260px` image) when no description exists.
+  - Re-exported `cleanDescription` from `@skiddle/components/PromoFlash` and consumed in `/promo/[id]/page.tsx` for metadata generation.
+- **Verification & Testing:**
+  - Added 6 unit tests to `apps/web/tests/unit/promo-flash.test.tsx` verifying:
+    - HTML stripping and entity decoding in `cleanDescription`.
+    - Rendering of event description underneath `ImageMC` with `width:220px` scale adjustment.
+    - Explicit `description` prop override support.
+    - Typography auto-sizing down to `0.75rem` for long descriptions ($>180$ chars).
+    - Omission of description container when description is empty.
+    - Initialization of `separatePromoActionScript` timeline with `descriptionTarget`.
+  - All 146 monorepo tests passing: 76 Vitest (web) + 38 Vitest (sdk) + 23 Vitest (cli) + 9 PHPUnit. Full monorepo typecheck and linting clean.
+
+---
+
+### Step 34: Social Sharing (react-share), Search Routing & Animated Zoom-in Email Modal with Prospect Light Template
+- **Date:** 2026-10-27
+- **Context & Decision:**
+  - Connected the bottom action buttons in `PromoActionsMC` to live production functionality:
+    1. **Facebook Sharing:** Integrated `FacebookShareButton` from `react-share` (^6.1.0) with custom circular brand styling and official Facebook glyph. Opens standard Facebook share popup with resolved event URL.
+    2. **Twitter (X) Sharing:** Integrated `XShareButton` (aliased as `TwitterShareButton`) from `react-share` with tweet text pre-populated (`Check out [Event Name] on Skiddle!`) and resolved event link.
+    3. **Search Button Routing:** Configured the search action button (`id: 'search'`, "More events") to cleanly route back to the homepage (`/`) so users can browse and find another event from Skiddle's production catalogue.
+    4. **Animated Email Zoom-in Modal:** Built `PromoEmailModal` featuring tactile GSAP spring zoom-in (`scale: 0.72` → `1.0`, `ease: back.out(1.5)`), backdrop blur dismiss, and top Skiddle logo header (`SkiddleLogoMC`).
+    5. **Prospect Light Email Template Integration:** Replicated the exact light-mode email template used for Prospects in `private`, powered by `@goldlabelapps/notify`. Implemented `/api/promo/email` route that requires a valid email, accepts an optional message/body, and dispatches via `sendTemplatedEmail` to `https://private.goldlabel.pro/api/notify/email`.
+- **Verification & Testing:**
+  - Authored unit and integration test suite `apps/web/tests/unit/promo-email.test.tsx` verifying:
+    - Search button routing and stopPropagation behavior.
+    - `PromoEmailModal` structure, required recipient email field, optional message input, Skiddle logo header, and submit button labeled "Send".
+    - `/api/promo/email` HTTP 400 validation on invalid email.
+    - Template generation with `buildDefaultLightEmailHtml` and dispatch via `sendTemplatedEmail`.
+    - Fallback invitation message when body is omitted.
+  - All 87 web tests passing (157 total monorepo tests: 87 web + 38 sdk + 23 cli + 9 PHP).
+  - Next.js production build (`pnpm --filter web build`) passing clean with `/api/promo/email` route registered.

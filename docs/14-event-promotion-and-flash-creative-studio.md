@@ -127,8 +127,9 @@ In Phase 2 of the creative engine modernization, the promotional canvas was deco
    - **`corkscrewActionScript` / `asMovieClip.corkScrew("in" | "out")`**: Threading motion modeling 720° spin, scale interpolation, and opacity ease.
    - **`TitleText`**: Responsive multi-line typography with dynamic `autoSize` scaling based on character count ($>60$ chars: `1.125rem`, $>35$ chars: `1.35rem`, $>20$ chars: `1.5rem`, $\le 20$ chars: `1.75rem`).
    - **`CleverText`**: Real-time typewriter typography streaming with `active` trigger synchronization.
-   - **`ImageMC`**: 1:1 responsive square flyer container with elevation shadow and rounded borders.
-   - **`separatePromoActionScript`**: Coordinated counter-motion moving `CleverText` up to the upper promotion area and unfurling `ImageMC` down into the center lower zone.
+   - **`ImageMC`**: 1:1 responsive square flyer container with elevation shadow and rounded borders (`width={220}` when description is present).
+   - **`separatePromoActionScript`**: Coordinated counter-motion moving `CleverText` up to the upper promotion area (`y: -150`), unfurling `ImageMC` into the center area (`y: -10`), and fading in the event description cleanly underneath the featured image (`y: 155`).
+   - **`cleanDescription`**: Utility function stripping HTML markup and decoding HTML entities (`&amp;`, `&#39;`, `&pound;`, `&quot;`) with dynamic typography scaling ($>180$ chars: `0.75rem`).
    - **`PromoActionsMC` & `promoActionsActionScript`**: Configurable action buttons (Facebook, Twitter/X, Email, More Events/Search) with a 1-by-1 entrance sequence: pop-up to horizontal center with elevation scale and top z-index, reading description pill fade-in/out, and shrinking down into an auto-spaced resting bottom row.
 3. **Dynamic Social Metadata (OpenGraph & Twitter Card)**:
    - Server-side metadata generator (`generateMetadata`) utilizing React `cache` request deduplication.
@@ -156,7 +157,7 @@ The promote module is guarded by dedicated automated tests:
 # Run PromoFlash and Promote Page Vitest Suites
 pnpm --filter web test tests/unit/promo-flash.test.tsx tests/unit/promote-page.test.tsx
 
-# Run Full Monorepo Tests (138 tests passing: 129 Vitest + 9 PHP)
+# Run Full Monorepo Tests (146 tests passing: 137 Vitest + 9 PHP)
 pnpm test
 ```
 

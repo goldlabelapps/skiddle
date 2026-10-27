@@ -3,12 +3,16 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
   PromoFlash,
+  cleanDescription,
   SkiddleLogoMC,
   PromoActionsMC,
   FacebookIcon,
   TwitterXIcon,
   MailIcon,
   SearchIcon,
+  FacebookShareButton,
+  TwitterShareButton,
+  XShareButton,
   getDefaultPromoActions,
   promoActionScript,
   separatePromoActionScript,
@@ -147,6 +151,34 @@ describe('PromoFlash Modular Component Architecture', () => {
     expect(html).toContain('background-color:#000000');
     expect(html).toContain('background-color:#ea4335');
     expect(html).toContain('background-color:#111827');
+    // Verifies react-share button component classes
+    expect(html).toContain('react-share__ShareButton');
+  });
+
+  it('hooks up react-share FacebookShareButton and TwitterShareButton (XShareButton) with shareUrl and title', () => {
+    expect(FacebookShareButton).toBeDefined();
+    expect(TwitterShareButton).toBeDefined();
+    expect(XShareButton).toBeDefined();
+
+    const customUrl = 'https://www.skiddle.com/e/43032215/';
+    const customTitle = 'Unmissable Techno Night';
+
+    const html = renderToStaticMarkup(
+      <PromoActionsMC
+        shareUrl={customUrl}
+        shareTitle={customTitle}
+        actions={getDefaultPromoActions({
+          id: '43032215',
+          event: { eventname: customTitle },
+          shareUrl: customUrl,
+        })}
+      />
+    );
+
+    expect(html).toContain('data-testid="promo-action-facebook"');
+    expect(html).toContain('data-testid="promo-action-twitter"');
+    expect(html).toContain('aria-label="Share to Facebook"');
+    expect(html).toContain('aria-label="Share to Twitter (X)"');
   });
 
   it('renders custom action buttons in PromoActionsMC when passed', () => {
@@ -211,5 +243,104 @@ describe('PromoFlash Modular Component Architecture', () => {
 
     expect(tl).toBeDefined();
     expect(typeof tl?.to).toBe('function');
+  });
+
+  describe('cleanDescription helper', () => {
+    it('strips HTML tags and decodes entities cleanly', () => {
+      expect(
+        cleanDescription(
+          '<p>Underground warehouse techno experience &amp; live visuals &pound;15.</p>'
+        )
+      ).toBe('Underground warehouse techno experience & live visuals £15.');
+      expect(cleanDescription('   <div><span>Test &quot;Quotes&#39;</span></div>   ')).toBe(
+        'Test "Quotes\''
+      );
+      expect(cleanDescription('')).toBe('');
+      expect(cleanDescription(undefined)).toBe('');
+    });
+  });
+
+  describe('Event Description Underneath Featured Image', () => {
+    it('renders event description underneath the featured image when provided in event data', () => {
+      const html = renderToStaticMarkup(
+        <PromoFlash
+          id="43032215"
+          event={{
+            eventname: 'Manchester Warehouse Techno Rave',
+            imageurl: 'https://example.com/event.jpg',
+            description: '<p>Underground warehouse techno experience in Manchester.</p>',
+          }}
+        />
+      );
+
+      expect(html).toContain('data-testid="flash-image-mc"');
+      expect(html).toContain('data-testid="promo-description"');
+      expect(html).toContain('Underground warehouse techno experience in Manchester.');
+      // When description is present, image width scales to 220px to leave comfortable vertical spacing
+      expect(html).toContain('width:220px');
+    });
+
+    it('renders custom description prop when provided directly', () => {
+      const html = renderToStaticMarkup(
+        <PromoFlash
+          id="43032215"
+          event={{
+            eventname: 'Intimate Acoustic Session',
+          }}
+          description="Special acoustic performance featuring special guests."
+        />
+      );
+
+      expect(html).toContain('data-testid="promo-description"');
+      expect(html).toContain('Special acoustic performance featuring special guests.');
+    });
+
+    it('scales down typography for long descriptions exceeding 180 characters', () => {
+      const longDescription =
+        'Manchester Camerata return to Stoller Hall for an extraordinary evening celebrating the genius of Mozart with full orchestral performance, guest soloists, and exceptional acoustics.';
+      const html = renderToStaticMarkup(
+        <PromoFlash
+          id="43032215"
+          event={{
+            eventname: 'Mozart Concert',
+            description: longDescription,
+          }}
+        />
+      );
+
+      expect(html).toContain('data-testid="promo-description"');
+      expect(html).toContain('font-size:0.75rem');
+      expect(html).toContain(longDescription);
+    });
+
+    it('omits description container when no description is present', () => {
+      const html = renderToStaticMarkup(
+        <PromoFlash id="43032215" event={{ eventname: 'Event Without Description' }} />
+      );
+
+      expect(html).not.toContain('data-testid="promo-description"');
+    });
+
+    it('initializes separatePromoActionScript timeline with descriptionTarget', () => {
+      const mockText = { nodeType: 1, style: {} } as unknown as HTMLElement;
+      const mockImage = { nodeType: 1, style: {} } as unknown as HTMLElement;
+      const mockDesc = { nodeType: 1, style: {} } as unknown as HTMLElement;
+      const onComplete = vi.fn();
+
+      const tl = separatePromoActionScript({
+        textTarget: mockText,
+        imageTarget: mockImage,
+        descriptionTarget: mockDesc,
+        textY: -150,
+        imageY: -10,
+        descriptionY: 155,
+        duration: 0.8,
+        delay: 0.2,
+        onComplete,
+      });
+
+      expect(tl).toBeDefined();
+      expect(typeof tl?.to).toBe('function');
+    });
   });
 });

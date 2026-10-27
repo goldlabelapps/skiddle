@@ -1,6 +1,16 @@
-import React, { forwardRef } from 'react';
+'use client';
+
+import React, { forwardRef, useState, useEffect } from 'react';
+import {
+  FacebookShareButton,
+  XShareButton,
+} from 'react-share';
+import { PromoEmailModal } from './PromoEmailModal';
 import type { PromoActionButton, PromoActionsMCProps } from '../types';
 import styles from './PromoActionsMC.module.css';
+
+export const TwitterShareButton = XShareButton;
+export { FacebookShareButton, XShareButton, PromoEmailModal };
 
 /**
  * Facebook SVG Icon with standard white Facebook "f" branding.
@@ -110,16 +120,22 @@ export function SearchIcon({
 
 /**
  * Generates the default action buttons configuration:
- * 1. Facebook: "Share to Facebook"
- * 2. Twitter (X): "Share to X"
+ * 1. Facebook: "Share to Facebook" (via react-share FacebookShareButton)
+ * 2. Twitter (X): "Share to X" (via react-share XShareButton)
  * 3. Email: "Share via Email"
  * 4. Search: "More events"
  */
 export function getDefaultPromoActions(context?: {
   id?: string;
   event?: any;
+  shareUrl?: string;
+  shareTitle?: string;
 }): PromoActionButton[] {
   const eventName = context?.event?.eventname || 'Skiddle Event';
+  const url =
+    context?.shareUrl ||
+    (typeof window !== 'undefined' ? window.location.href : '') ||
+    (context?.id ? `https://www.skiddle.com/e/${context.id}/` : 'https://www.skiddle.com');
 
   return [
     {
@@ -129,13 +145,7 @@ export function getDefaultPromoActions(context?: {
       backgroundColor: '#1877F2',
       color: '#ffffff',
       icon: <FacebookIcon size={22} color="#ffffff" />,
-      onClick: (e) => {
-        e.stopPropagation();
-        if (typeof window === 'undefined') return;
-        const currentUrl = window.location.href;
-        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-        window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=450');
-      },
+      shareUrl: url,
     },
     {
       id: 'twitter',
@@ -144,14 +154,8 @@ export function getDefaultPromoActions(context?: {
       backgroundColor: '#000000',
       color: '#ffffff',
       icon: <TwitterXIcon size={19} color="#ffffff" />,
-      onClick: (e) => {
-        e.stopPropagation();
-        if (typeof window === 'undefined') return;
-        const currentUrl = window.location.href;
-        const text = `Check out ${eventName} on Skiddle!`;
-        const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(currentUrl)}`;
-        window.open(tweetUrl, '_blank', 'noopener,noreferrer,width=600,height=450');
-      },
+      shareUrl: url,
+      shareTitle: context?.shareTitle || `Check out ${eventName} on Skiddle!`,
     },
     {
       id: 'email',
@@ -160,16 +164,6 @@ export function getDefaultPromoActions(context?: {
       backgroundColor: '#ea4335',
       color: '#ffffff',
       icon: <MailIcon size={21} color="#ffffff" />,
-      onClick: (e) => {
-        e.stopPropagation();
-        if (typeof window === 'undefined') return;
-        const currentUrl = window.location.href;
-        const subject = encodeURIComponent(`Check out: ${eventName}`);
-        const body = encodeURIComponent(
-          `Hey,\n\nI thought you might want to check out this event on Skiddle:\n\n${eventName}\n${currentUrl}\n`
-        );
-        window.location.href = `mailto:?subject=${subject}&body=${body}`;
-      },
     },
     {
       id: 'search',
@@ -189,19 +183,59 @@ export function getDefaultPromoActions(context?: {
 
 /**
  * PromoActionsMC - Modular MovieClip rendering action button icons at the bottom of the Promo page.
+ * Uses react-share for first-class Facebook & Twitter (X) sharing integrations.
+ * Email action opens an animated zoom-in email share modal.
+ * Search action routes back to the homepage.
  * Supports auto-spaced flex layout and high z-index centered pop-up presentation.
  */
 export const PromoActionsMC = forwardRef<HTMLDivElement, PromoActionsMCProps>(
   function PromoActionsMC(
     {
-      actions = [],
+      actions: customActions,
       buttonRefs,
       labelRef,
+      shareUrl,
+      shareTitle,
+      event,
+      eventId,
+      isEmailModalOpen,
+      onEmailModalClose,
       className,
       style,
     },
     ref
   ) {
+    const defaultActions = React.useMemo(
+      () =>
+        getDefaultPromoActions({
+          id: eventId,
+          event,
+          shareUrl,
+          shareTitle,
+        }),
+      [eventId, event, shareUrl, shareTitle]
+    );
+
+    const actions = customActions || defaultActions;
+    const [clientUrl, setClientUrl] = useState<string>(shareUrl || '');
+    const [internalEmailModalOpen, setInternalEmailModalOpen] = useState(false);
+
+    const modalOpen =
+      isEmailModalOpen !== undefined ? isEmailModalOpen : internalEmailModalOpen;
+
+    const handleEmailModalClose = () => {
+      setInternalEmailModalOpen(false);
+      onEmailModalClose?.();
+    };
+
+    useEffect(() => {
+      if (!shareUrl && typeof window !== 'undefined') {
+        setClientUrl(window.location.href);
+      }
+    }, [shareUrl]);
+
+    const resolvedShareUrl = shareUrl || clientUrl || 'https://www.skiddle.com';
+
     return (
       <div
         ref={ref}
@@ -222,36 +256,125 @@ export const PromoActionsMC = forwardRef<HTMLDivElement, PromoActionsMCProps>(
           data-testid="promo-actions-row"
           className={styles.actionsRow}
         >
-          {actions.map((action, index) => (
-            <div
-              key={action.id}
-              ref={(el) => {
-                if (buttonRefs) {
-                  buttonRefs.current[index] = el;
-                }
-              }}
-              data-testid={`promo-action-${action.id}`}
-              className={styles.buttonWrapper}
-            >
-              <button
-                type="button"
-                aria-label={action.ariaLabel || action.label}
-                title={action.label}
-                className={styles.actionButton}
-                style={{
-                  backgroundColor: action.backgroundColor || '#111827',
-                  color: action.color || '#ffffff',
+          {actions.map((action, index) => {
+            const effectiveUrl = action.shareUrl || resolvedShareUrl;
+            let buttonElement: React.ReactNode;
+
+            if (action.id === 'facebook') {
+              buttonElement = (
+                <FacebookShareButton
+                  url={effectiveUrl}
+                  hashtag={action.shareHashtag}
+                  aria-label={action.ariaLabel || action.label}
+                  title={action.label}
+                  className={`${styles.actionButton} ${action.className || ''}`}
+                  style={{
+                    backgroundColor: action.backgroundColor || '#1877F2',
+                    color: action.color || '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    ...action.style,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    action.onClick?.(e);
+                  }}
+                >
+                  {action.icon}
+                </FacebookShareButton>
+              );
+            } else if (action.id === 'twitter' || action.id === 'x') {
+              buttonElement = (
+                <XShareButton
+                  url={effectiveUrl}
+                  text={action.shareTitle || shareTitle || 'Check out this event on Skiddle!'}
+                  aria-label={action.ariaLabel || action.label}
+                  className={`${styles.actionButton} ${action.className || ''}`}
+                  style={{
+                    backgroundColor: action.backgroundColor || '#000000',
+                    color: action.color || '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    ...action.style,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    action.onClick?.(e);
+                  }}
+                >
+                  {action.icon}
+                </XShareButton>
+              );
+            } else if (action.id === 'email') {
+              buttonElement = (
+                <button
+                  type="button"
+                  aria-label={action.ariaLabel || action.label}
+                  title={action.label}
+                  className={`${styles.actionButton} ${action.className || ''}`}
+                  style={{
+                    backgroundColor: action.backgroundColor || '#ea4335',
+                    color: action.color || '#ffffff',
+                    ...action.style,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setInternalEmailModalOpen(true);
+                    action.onClick?.(e);
+                  }}
+                >
+                  {action.icon}
+                </button>
+              );
+            } else {
+              buttonElement = (
+                <button
+                  type="button"
+                  aria-label={action.ariaLabel || action.label}
+                  title={action.label}
+                  className={`${styles.actionButton} ${action.className || ''}`}
+                  style={{
+                    backgroundColor: action.backgroundColor || '#111827',
+                    color: action.color || '#ffffff',
+                    ...action.style,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (action.onClick) {
+                      action.onClick(e);
+                    } else if (action.id === 'search' && typeof window !== 'undefined') {
+                      window.location.href = '/';
+                    }
+                  }}
+                >
+                  {action.icon}
+                </button>
+              );
+            }
+
+            return (
+              <div
+                key={action.id}
+                ref={(el) => {
+                  if (buttonRefs) {
+                    buttonRefs.current[index] = el;
+                  }
                 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  action.onClick?.(e);
-                }}
+                data-testid={`promo-action-${action.id}`}
+                className={styles.buttonWrapper}
               >
-                {action.icon}
-              </button>
-            </div>
-          ))}
+                {buttonElement}
+              </div>
+            );
+          })}
         </div>
+
+        {/* Animated Zoom-in Email Overlay Modal */}
+        <PromoEmailModal
+          isOpen={modalOpen}
+          onClose={handleEmailModalClose}
+          event={event}
+          eventId={eventId}
+          shareUrl={resolvedShareUrl}
+        />
       </div>
     );
   }

@@ -132,14 +132,16 @@ Every feature, endpoint, and bugfix across the Skiddle monorepo is developed usi
 #### GpxRoute 3D Venue Showcase Suite (`apps/web/tests/unit/gpxroute-venue-page.test.tsx` — 6 Tests)
 - **`GpxRouteVenuePage`**: Verifies Web Component custom elements, iframe postMessage communication bridge, responsive `IPhoneFrame` chassis, telemetry indicators, and fallback rendering.
 
-#### PromoFlash Modular Component Suite (`apps/web/tests/unit/promo-flash.test.tsx` — 10 Tests)
+#### PromoFlash Modular Component Suite (`apps/web/tests/unit/promo-flash.test.tsx` — 16 Tests)
 - **`PromoFlash Architecture`**:
   - Initializes `promoActionScript` GSAP timeline for vertical and horizontal centering.
   - Sequences Skiddle logo corkscrew intro, hold duration, and fade-out transition.
   - Renders multi-line `TitleText` with dynamic `autoSize` font scaling for long titles.
   - Integrates `CleverText` real-time typewriter typography streaming.
   - Renders `ImageMC` 1:1 square flyer MovieClip prioritizing `largeimageurl` with fallback to `imageurl`.
-  - Initializes `separatePromoActionScript` timeline moving `CleverText` headline up (`y: -130`) and `ImageMC` flyer down (`y: 110`).
+  - Initializes `separatePromoActionScript` timeline moving `CleverText` headline up (`y: -150`), `ImageMC` flyer to center (`y: -10`), and event description underneath (`y: 155`).
+  - Renders event description underneath featured image with entity decoding and HTML tag stripping (`cleanDescription`).
+  - Supports explicit `description` prop override and typography auto-sizing for descriptions $> 180$ characters.
   - Renders `PromoActionsMC` with Facebook, Twitter (X), Email, and Search action buttons auto-spaced in bottom row.
   - Renders custom action buttons in `PromoActionsMC` (e.g. WhatsApp) in auto-spaced layout.
   - Initializes `promoActionsActionScript` GSAP timeline for 1-by-1 entrance presentation, centered pop up with top z-index, label fading, and shrinking into resting row.
